@@ -1,0 +1,459 @@
+
+
+/*****************************************
+GENERAL STYLING
+*****************************************/
+body {
+	background: #34495E;
+	color: #ddd;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+	margin: 0;
+}
+
+header {
+	background: #2D3F52;
+	padding-bottom: 5px;
+}
+
+nav {
+	float: right;
+	width: 320px;
+	margin: 5px 20px 0 0;
+}
+
+/*R emove border radius on input on iOS */
+input {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	-webkit-border-radius: 0;
+	border-radius: 0;
+}
+
+#nav-pills {
+	float: right;
+}
+
+#searchIcon {
+	display: inline;
+	position: relative;
+	top: 4px;
+	height: 15px;
+	cursor: pointer;
+	margin-right: 5px;
+}
+
+#searchInput {
+	width: 0;
+	transition: width 0.2s;
+	background: #2D3F52;
+	color: #ddd;
+	border: none;
+	border-bottom: solid 1px #E74C3C;
+	font-size: 0.8em;
+	font-weight: 100;
+	padding: 0;
+}
+
+#searchInput:focus {
+	outline: none;
+}
+
+#searchInput.expanded {
+	width: 120px;
+}
+
+.clear {
+	clear: both;
+}
+
+#mainIcon {
+	font-size: 2em;
+	margin-right: 20px;
+	margin-left: 20px;
+	display: none;
+}
+
+#mainTitle {
+	text-align: center;
+	margin: 20px auto;
+	font-size: 3em;
+	font-weight: 100;
+}
+
+button:focus {
+	outline: none;
+}
+
+main {
+	margin: 20px auto;
+}
+
+
+
+/*****************************************
+MEDIA QUERIES
+*****************************************/
+/*Smartphone portrait*/
+@media only screen and (min-width: 320px) and (max-width: 479px){
+	main {
+		width: 300px;
+	}
+	#URLinput {
+		width: 180px;
+	}
+}
+
+/*Smartphone landscape*/
+@media only screen and (min-width: 480px) and (max-width: 767px){
+	main {
+		width: 450px;
+	}
+	#URLinput {
+		width: 350px;
+	}
+}
+
+/*Ipad portrait*/
+@media only screen and (min-width: 768px) and (max-width: 991px){
+	main {
+		width: 700px;
+	}
+	#URLinput {
+		width: 600px;
+	}
+}
+
+/*Ipad landscape*/
+@media only screen and (min-width: 992px) and (max-width: 1023px){
+	main {
+		width: 900px;
+	}
+	#URLinput {
+		width: 800px;
+	}
+}
+
+/*Desktop*/
+@media only screen and (min-width: 1024px) and (max-width: 1279px){
+	main {
+		width: 1000px;
+	}
+	#URLinput {
+		width: 900px;
+	}
+}
+
+/*Wide*/
+@media only screen and (min-width: 1280px){
+	main {
+		width: 1200px;
+	}
+	#URLinput {
+		width: 1100px;
+	}
+}
+
+
+
+/*****************************************
+USER - LOGIN FORM
+*****************************************/
+
+#user {
+	display: inline-block;
+}
+
+#login-buttons {
+	display: inline-block;
+	position: relative;
+	z-index: 2;
+}
+
+#login-sign-in-link, #login-name-link {
+	display: inline-block;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+#login-dropdown-list {
+	clear: both;
+	background: #292F33;
+	width: 250px;
+	position: absolute;
+	left: -165px;
+	margin-top: 10px;
+	padding: 20px 20px 10px;
+}
+
+a.login-close-text {
+	float: right;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.login-close-text-clear {
+	clear: both;
+}
+
+#login-buttons-password, .additional-link-container, #login-buttons-open-change-password, #login-buttons-logout, #login-buttons-do-change-password {
+	background: #C0392B;
+	padding: 10px 0;
+	margin: 20px auto;
+	border-radius: 15px;
+	cursor: pointer;
+	width: 200px;
+	text-align: center;
+	transition: background 0.2s, color 0.2s;
+}
+
+#login-buttons-password:hover, .additional-link-container:hover, #login-buttons-open-change-password:hover, #login-buttons-logout:hover {
+	background: #E74C3C;
+}
+
+.login-form {
+	margin: 20px 0;
+}
+
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px #292F33 inset;
+    -webkit-text-fill-color: white;
+}
+
+input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0px 1000px #292F33 inset;
+    -webkit-text-fill-color: white;
+}
+
+#login-buttons input:focus {
+	outline: none;
+}
+
+#login-password-label, #login-username-label, #login-password-label, #login-old-password-label, #login-password-again-label {
+	display: block;
+	width: 200px;
+	text-align: center;
+	position: relative;
+	margin: 10px auto 0;
+	color: #aaa;
+}
+
+#login-password-label:after, #login-username-label:after, #login-password-label:after, #login-old-password-label:after, #login-password-again-label:after {
+	content: ":";
+	margin-left: -3px;
+}
+
+#login-username, #login-password, #login-old-password, #login-password-again {
+	background: none;
+	border: none;
+	border-bottom: solid 1px #aaa;
+	text-align: center;
+	width: 200px;
+	position: relative;
+	display: block;
+	margin: 0px auto 30px;
+	padding: 5px 0;
+	font-size: 1em;
+	color: #ddd;
+}
+
+#login-buttons .info-message {
+	color: #ddd;
+	padding: 10px 0;
+	margin: 5px auto;
+	width: 200px;
+	text-align: center;
+}
+
+#login-buttons .error-message {
+	color: #E74C3C;
+	padding: 10px 0;
+	margin: 5px auto;
+	width: 200px;
+	text-align: center;
+}
+
+
+
+#userNameAndCount {
+	display: inline-block;
+}
+
+/*****************************************
+SUBMIT FORM
+*****************************************/
+
+#addLinkForm {
+	margin: 10px auto 20px;
+	overflow: hidden;
+}
+
+#URLinput {
+	background: #34495E;
+	color: #ddd;
+	border: none;
+	border-bottom: solid 1px #E74C3C;
+	padding: 3px 3px 3px 7px;
+	float: left;
+	height: 32px;
+	font-size: 1.1em;
+	font-weight: 100;
+}
+
+#URLinput:focus {
+	outline: none;
+}
+
+#URLSubmit {
+	background: #E74C3C;
+	color: #ddd;
+	border: solid 2px #E74C3C;
+	text-align: center;
+	position: relative;
+	transition: background 0.2s, color 0.2s, border 0.2s;
+	float: right;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	font-size: 1.1em;
+	padding: 8px 16px 6px;
+	z-index: 0;
+}
+
+#URLSubmit:hover {
+	background: #C0392B;
+	border: solid 2px #C0392B;
+	cursor: pointer;
+}
+
+#URLSubmit:focus {
+	outline: none;
+}
+
+#navButtons.hidden {
+	/*visibility: hidden;*/
+	display: none;
+}
+
+#navButtons {
+	width: 290px;
+	margin: 16px auto 0;
+	overflow: hidden;
+}
+
+#pageCounter {
+	font-size: 0.9em;
+	margin: 4px 18px;
+	padding-top: 5px;
+	float: left;
+}
+
+#navButtons button {
+	background: #E74C3C;
+	color: #ddd;
+	border: solid 2px #E74C3C;
+	text-align: center;
+	position: relative;
+	width: 90px;
+	/*border-radius: 2px;*/
+	transition: background 0.2s, color 0.2s, border 0.2s;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	font-size: 0.9em;
+	padding: 9px 16px 7px;
+}
+
+#navButtons button:hover {
+	background: #C0392B;
+	border: solid 2px #C0392B;
+	cursor: pointer;
+}
+
+#previousBtn {
+	float: left;
+}
+
+#nextBtn {
+	float: right;
+}
+
+/*****************************************
+MAIN LIST
+*****************************************/
+
+#mainList {
+	clear: both;
+	margin-top: 10px;
+}
+
+#mainList table {
+	list-style: none;
+	margin: 5px 0 15px;
+	-webkit-padding-start: 10px;
+}
+
+table {
+	list-style: none;
+	margin: 5px 0 15px;
+	-webkit-padding-start: 10px;
+}
+
+tr.items {
+	margin: 3px 0;
+	color: #ddd;
+}
+
+td {
+	vertical-align: top;
+}
+
+.itemDate {
+	font-size: 0.8em;
+	font-style: italic;
+	width: 80px;
+	text-align: right;
+	padding-top: 3px;
+}
+
+a.itemTitle {
+	text-decoration: none;
+	padding: 1px 3px 1px 1px;
+	height: 18px;
+	margin-left: -2px;
+	color: #ddd;
+	letter-spacing: 0.01em;
+}
+
+.waiting a.itemTitle {
+	color: #777;
+}
+
+.failed a.itemTitle {
+	color: #E74C3C;
+}
+
+a.itemTitle:hover {
+	background: #E74C3C;
+}
+
+.itemDeleteBtn {
+	background: #E74C3C;
+	border: none;
+	color: #fff;
+	padding: 0px 3px 0px;
+	font-size: 1em;
+	font-weight: 400;
+	cursor: pointer;
+	-webkit-appearance: none;
+   -moz-appearance: none;
+   appearance: none;
+}
+
+.itemDeleteBtn:hover {
+	background: #C0392B;
+	/*color: #E74C3C;*/
+	transition: background 0.2s, color 0.2s;
+}
+
+

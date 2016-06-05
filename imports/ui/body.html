@@ -1,0 +1,47 @@
+<body>
+	<header>
+		<nav>
+			<div id="nav-pills">
+				<input id="searchInput" name="search" type="text" placeholder="search..." autocomplete="off">
+				<img src="/searchIcon.png" id="searchIcon">
+				<div id="user">
+					<span class="icon-user"></span>
+					{{ > loginButtons }}
+					<span id="userNameAndCount">{{ user.name }} - {{ user.count }} links</span>
+				</div>
+			</div>
+		</nav>
+		<div class="clear"></div>
+		<div id="mainTitleWrapper">
+			<span id="mainIcon" class="icon-share"></span>
+			<h1 id="mainTitle">Bare Links</h1>
+		</div>
+	</header>
+	<main>
+		<form id="addLinkForm">
+			<input id="URLinput" type="url" name="URL" placeholder="Full URL (including http://)" autocomplete="off" autofocus>
+			<input id="URLSubmit" type="submit" value="Add">
+		</form>
+		<section id="navButtons" class={{ showPages }}>
+			<button id="previousBtn">Previous</button>
+			<span id="pageCounter">page {{ currentPage }} of {{ maxPages }}</span>
+			<button id="nextBtn">Next</button>
+		</section>
+		<section id="mainList">
+			<table>
+				{{ #each links }}
+					{{ >link }}
+				{{ /each }}
+			</table>
+		</section>
+	</main>
+</body>
+
+<template name='link'>
+	<tr class="items {{ success }}">
+		<td><button class="itemDeleteBtn">&times;</button></td>
+		<td class="itemDate">{{ formatDate createdAt }}</td>
+		<td>-</td>
+		<td><a href="{{ url }}" class="itemTitle">{{ title }}</a></td>
+	</tr>
+</template>
