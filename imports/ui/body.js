@@ -10,10 +10,13 @@ import './body.html';
 linksPerPage = 50;
 
 
+Meteor.startup(function() {
+	Meteor.subscribe('links');	
+})
+
 Template.body.onCreated(function bodyOnCreated() {
 	this.page = new ReactiveVar(1);
 	this.query = new ReactiveVar("");
-	Meteor.subscribe('links', Meteor.userId());
 });
 
 

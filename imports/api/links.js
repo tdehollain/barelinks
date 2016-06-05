@@ -8,8 +8,8 @@ var Entities = require('html-entities').XmlEntities;
 entities = new Entities();
 
 if(Meteor.isServer) {
-	Meteor.publish('links', function linksPublication(userId) {
-		return Links.find({ user: userId });
+	Meteor.publish('links', function linksPublication() {
+		return Links.find({ user: this.userId });
 	});
 }
 
