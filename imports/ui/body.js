@@ -10,27 +10,6 @@ import './body.html';
 linksPerPage = 50;
 
 
-// if (Meteor.isClient) {
-//   Accounts.onLogin(function () {
-// 		console.log("User logged in: " + Meteor.user.username);
-// 	});
-// }
-
-Template.body.onRendered(function(){
-   this.autorun(function(){
-     Template.currentData();
-   });
-});
-
-// Template.loginButtons.rendered = function() {
-// 	Tracker.autorun(function() {
-// 		if(Meteor.userId) {
-// 			console.log("User logged in: " + Meteor.user);
-// 		}
-// 	});
-// };
-
-
 Template.body.onCreated(function bodyOnCreated() {
 	this.page = new ReactiveVar(1);
 	this.query = new ReactiveVar("");
@@ -42,22 +21,18 @@ Template.body.onCreated(function bodyOnCreated() {
 Template.body.helpers({
 	user: {
 		count: function() {
-			return Links.find({ user: Meteor.userId() }).count();
+			return Links.find().count();
 		}
 	},
 	links: function() {
 		var nbSkip = linksPerPage*(Template.instance().page.get() - 1);
-		// var queryRegex = new RegExp(Template.instance().query.get(), 'i');
-		return Links.find({ sort: { createdAt: -1 }, limit: linksPerPage, skip: nbSkip });
-	// links: function() {
-	// 	var nbSkip = linksPerPage*(Template.instance().page.get() - 1);
-	// 	var queryRegex = new RegExp(Template.instance().query.get(), 'i');
-	// 	return Links.find({ title: queryRegex }, { sort: { createdAt: -1 }, limit: linksPerPage, skip: nbSkip });
+		var queryRegex = new RegExp(Template.instance().query.get(), 'i');
+		return Links.find({ title: queryRegex }, { sort: { createdAt: -1 }, limit: linksPerPage, skip: nbSkip });
 	},
 	showPages: function() {
 		var nbSkip = linksPerPage*(Template.instance().page.get() - 1);
 		var queryRegex = new RegExp(Template.instance().query.get(), 'i');
-		return Links.find({ user: Meteor.userId(), title: queryRegex }).count() > linksPerPage ? "" : "hidden";
+		return Links.find({ title: queryRegex }).count() > linksPerPage ? "" : "hidden";
 	},
 	currentPage: function() {
 		return Template.instance().page.get();
@@ -65,7 +40,7 @@ Template.body.helpers({
 	maxPages: function() {
 		var nbSkip = linksPerPage*(Template.instance().page.get() - 1);
 		var queryRegex = new RegExp(Template.instance().query.get(), 'i');
-		return Math.floor((Links.find({ user: Meteor.userId(), title: queryRegex }).count() - 1) / linksPerPage) + 1;
+		return Math.floor((Links.find({ title: queryRegex }).count() - 1) / linksPerPage) + 1;
 	}
 });
 
