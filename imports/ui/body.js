@@ -53,7 +53,7 @@ Template.body.events({
 	'submit #addLinkForm'(event) {
 		event.preventDefault();
 
-		var url = event.target.URL.value
+		var url = event.target.URL.value;
 		if(url !== "") {
 			Meteor.call('addLink', Meteor.userId(), url, new Date());
 		}

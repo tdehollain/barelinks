@@ -54,6 +54,7 @@ Meteor.methods({
 					title = title.replaceAll("&laquo;", "«");
 					title = title.replaceAll("&rsquo;", "'");
 					if (title === "") title = url;
+					console.log(title);
 
 					// Add title to Link entry in DB
 					Links.update(newId, {
