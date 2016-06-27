@@ -2,28 +2,28 @@
   "appName": "Bare Links",
   "appLocation": {
     "local": "~/apps/barelinks",
-    //"git": "",
-    //"branch": "master"
+    "git": "",
+    "branch": "master"
   },
   "meteorSettingsLocation": "",
   "prebuildScript": "",
   "meteorBuildFlags": "--production",
   "env": {
-    // "ROOT_URL": "",
+    "ROOT_URL": "",
     "PORT": 8005,
-    // "MONGO_URL": ""
+    "MONGO_URL": ""
   },
-  // "server": {
-  //   "host": "",
-  //   "username": "",
-  //   "password": "",
-  //   "deploymentDir": "/opt/pm2-meteor",
-  //   "loadProfile": "",
-  //   "nvm": {
-  //     "bin": "",
-  //     "use": ""
-  //   },
-  //   "exec_mode": "cluster_mode",
-  //   "instances": 1
-  // }
+  "server": {
+    "host": "",
+    "username": "",
+    "password": "",
+    "deploymentDir": "/opt/pm2-meteor",
+    "loadProfile": "",
+    "nvm": {
+      "bin": "",
+      "use": ""
+    },
+    "exec_mode": "cluster_mode",
+    "instances": 1
+  }
 }
