@@ -9,9 +9,9 @@
   "prebuildScript": "",
   "meteorBuildFlags": "--production",
   "env": {
-    "ROOT_URL": "",
+    "ROOT_URL": "http://www.barelinks.in",
     "PORT": 8005,
-    "MONGO_URL": ""
+    "MONGO_URL": "mongodb://localhost:27017/links"
   },
   "server": {
     "host": "",
