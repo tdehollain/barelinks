@@ -28,9 +28,9 @@ Meteor.methods({
 			var options = {
 				npmRequestOptions: {
 					gzip: true,
-					headers: {
-						"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36",	
-					}
+					// headers: {
+					// 	"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36",	
+					// }
 				}
 			};
 			HTTP.get(url, options, function(err, res) {
