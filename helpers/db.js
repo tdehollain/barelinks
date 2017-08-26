@@ -1,6 +1,6 @@
 
 module.exports = function(mongoose){
-	const url = 'mongodb://localhost/barelinksDB:9001';
+	const url = 'mongodb://localhost:9001/barelinksDB';
 
 	const urlListSchema = new mongoose.Schema({
 		user: String,
