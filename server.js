@@ -11,7 +11,7 @@ const bodyParser = require('body-parser');
 const app = express();
 
 // Config =================================================
-const db = require("./db")(mongoose);
+const db = require("./helpers/db")(mongoose);
 mongoose.connect(db.url);
 
 // uncomment after placing your favicon in /public
@@ -20,7 +20,7 @@ mongoose.connect(db.url);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'views/build')));
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -32,6 +32,10 @@ app.use('/', router);
 app.set('view engine', 'pug');
 
 // Routes =================================================
-require("./routes")(router, db);
+require("./helpers/routes")(router, db);
+
+app.get("/", (req, res) => {
+	res.sendFile(path.join(__dirname, 'views/build', 'index.html'));
+})
 
 app.listen(8001);
