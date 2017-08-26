@@ -36,6 +36,12 @@ class MainView extends Component {
 				},...this.state.links]
 			});
 		}
+
+		// empty form
+		this.setState({
+			"enteredURL": ""
+		});
+
 		fetch("/api/add/Thib/" + encodeURIComponent(this.state.enteredURL) + '/' + new Date(), {
 			"method": "POST",
 			"headers": {
@@ -59,6 +65,7 @@ class MainView extends Component {
 			this.setState({
 				"links": newLinks
 			});
+
 		});
 	}
 

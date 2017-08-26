@@ -2,9 +2,23 @@ import React, { Component } from 'react';
 
 class MainForm extends Component {
 
+	constructor(props) {
+		super(props);
+
+		this.focus = this.focus.bind(this);
+	}
+
+	focus() {
+		this.textInput.focus();
+	}
+
 	submitLink(e) {
 		alert();
 		e.preventDefault();
+	}
+
+	componentDidMount() {
+		this.focus();
 	}
 
 	render() {
@@ -14,6 +28,7 @@ class MainForm extends Component {
 					<input 
 						type='url' 
 						placeholder='enter URL'
+						ref={input => { this.textInput = input }}
 						value={this.props.URLvalue}
 						onChange={this.props.handleURLchange}
 					/>
