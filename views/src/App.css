@@ -1,14 +1,36 @@
-.App {
-  text-align: center;
+
+.App button {
+	cursor: pointer;
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
+.App .delBtn {
+	line-height: 0.75;
+	height: 1rem;
+	border-radius: 0;
+	padding: 0 1px 2px;
+	margin-top: 1px;
+	font-weight: bold;
 }
 
-.App-intro {
-  font-size: large;
+.TopBar button {
+	color: #ECEFF1;
+	border-color: #ECEFF1;
+}
+
+.MainForm {
+	margin-top: 40px;
+	margin-bottom: 50px;
+}
+
+.LinksList ul {
+	list-style-type: none;
+}
+
+.LinksList a {
+	color: #37474F;
+}
+
+.LinksList a:hover {
+	color: #ECEFF1;
+	background: #37474F;
 }

@@ -95,7 +95,7 @@ class MainView extends Component {
 
 	render() {
 		return (
-			<div className='MainView'>
+			<div className='MainView container'>
 				<MainForm
 					URLvalue={this.state.enteredURL}
 					handleURLchange={this.handleURLchange} 

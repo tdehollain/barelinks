@@ -15,14 +15,19 @@ class LinksList extends Component {
 	render() {
 		return (
 			<div className='LinksList'>
-				<ul>
+				<ul className='pl-1'>
 				{
 					this.props.list.map((val, index) => {
 					return (
 						<li key={ index } id={ val._id }>
-							<button onClick={this.props.removeLink.bind(this, index, val._id)}>x</button>
-							<span>{this.formatDate(new Date(val.date))}</span>
-							<a href={val.url}>{val.title}</a>
+							<button
+								type='button'
+								className='delBtn btn btn-danger'
+								onClick={this.props.removeLink.bind(this, index, val._id)}>
+									&times;
+							</button>
+							<span className="small font-italic mx-1 mt-0">{this.formatDate(new Date(val.date))}</span>
+							<a className='p-1' href={val.url}>{val.title.trim()}</a>
 						</li>
 					)
 				})}
