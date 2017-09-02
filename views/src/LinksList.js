@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import LinkTags from './LinkTabs';
 
 class LinksList extends Component {
 
@@ -17,17 +18,28 @@ class LinksList extends Component {
 			<div className='LinksList'>
 				<ul className='pl-1'>
 				{
-					this.props.list.map((val, index) => {
+					this.props.list.map((elem, index) => {
 					return (
-						<li key={ index } id={ val._id }>
+						<li key={ index } id={ elem._id }>
 							<button
 								type='button'
 								className='delBtn btn btn-danger'
-								onClick={this.props.removeLink.bind(this, index, val._id)}>
+								onClick={this.props.removeLink.bind(this, index, elem._id)}>
 									&times;
 							</button>
-							<span className="small font-italic mx-1 mt-0">{this.formatDate(new Date(val.date))}</span>
-							<a className='p-1' href={val.url}>{val.title.trim()}</a>
+							<span className="small font-italic mx-1 mt-0">{this.formatDate(new Date(elem.date))}</span>
+							<a 
+								className='link' 
+								id={'link_' + index}
+								href={elem.url}>{elem.title.trim()}
+							</a>
+							<LinkTags 
+								linkKey={index}
+								linkId={elem._id}
+								showAddTagModal={this.props.showAddTagModal}
+								removeTag={this.props.removeTag}
+								tags={elem.tags}
+							/>
 						</li>
 					)
 				})}

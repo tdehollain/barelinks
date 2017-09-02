@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
+import $ from 'jquery';
 
 class MainForm extends Component {
 
 	submitLink(e) {
 		alert();
 		e.preventDefault();
+	}
+
+	componentDidMount() {
+		$('#urlInput').focus();
 	}
 
 	render() {

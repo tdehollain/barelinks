@@ -11,7 +11,7 @@ module.exports = function(router, db) {
 		});
 	});
 
-	router.post('/api/add/:user/:url/:date', function(req, res) {
+	router.get('/api/add/:user/:url/:date', function(req, res) {
 
 		getTitle(req.params.url, title => {
 
@@ -19,7 +19,8 @@ module.exports = function(router, db) {
 				"user": req.params.user,
 				"url": req.params.url,
 				"title": title,
-				"date": req.params.date
+				"date": req.params.date,
+				"tags": []
 			};
 
 			db.post(entry, function(err) {
@@ -38,6 +39,18 @@ module.exports = function(router, db) {
 	router.delete('/api/delete/:user/:id', function(req, res) {
 		db.del(req.params.user, req.params.id, function(err) {
 			res.json({success: true});
+		});
+	});
+
+	router.get('/api/addTag/:user/:linkId/:tagName/:tagColor', function(req, res) {
+		db.addTag(req.params.user, req.params.linkId, req.params.tagName, req.params.tagColor, function() {
+			res.json({ success: true });
+		});
+	});
+
+	router.delete('/api/removeTag/:user/:linkId/:tagName', function(req, res) {
+		db.removeTag(req.params.user, req.params.linkId, req.params.tagName, function() {
+			res.json({ success: true });
 		});
 	});
 

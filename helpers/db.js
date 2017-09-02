@@ -6,7 +6,11 @@ module.exports = function(mongoose){
 		user: String,
 		url: String,
 		title: String,
-		date: Date
+		date: Date,
+		tags: [{
+			name: String,
+			color: String
+		}]
 	});
 
 	const urlListModel = mongoose.model('urlListModel', urlListSchema, 'urlListColl')
@@ -16,11 +20,10 @@ module.exports = function(mongoose){
 		let entryModel = new urlListModel({
 			user: entry.user,
 			url: entry.url,
-			title: entry.title,
-			date: entry.date
+			title: entry.title
 		});
 
-		entryModel.save(function(err) {
+		entryModel.save(err => {
 			console.log("New entry saved: (" + entry.date + ") " + entry.url);
 			done(err);
 		});
@@ -33,8 +36,7 @@ module.exports = function(mongoose){
 			.skip((page - 1) * resultsPerPage)
 			.limit(parseInt(resultsPerPage))
 			.sort('-date')
-			.select('date url title _id')
-			.exec(function(err, res) {
+			.exec((err, res) => {
 				let count = res.length;
 				let endOfList = (page)*resultsPerPage >= count ? true : false
 				done(res, count, endOfList);
@@ -42,16 +44,46 @@ module.exports = function(mongoose){
 	};
 
 	const del = function(user, id, done) {
-		urlListModel.remove({_id: id}, function(err) {
+		urlListModel.remove({_id: id}, err => {
 			console.log("entry deleted: " + id);
 			done(err);
 		});
 	};
 
+	const addTag = function(user, id, tagName, tagColor, done) {
+		let newTag = {
+			"name": tagName,
+			"color": tagColor
+		}
+		
+		urlListModel.update(
+			{ _id: mongoose.Types.ObjectId(id) }, 
+			{ $push: { tags: newTag } }, 
+			(err, link) => {
+				done();
+			}
+		);
+	};
+
+	const removeTag = function(user, id, tagName, done) {
+		
+		urlListModel.update(
+			{ _id: mongoose.Types.ObjectId(id) }, 
+			{ $pull: { tags: { name: tagName } } }, 
+			(err, link) => {
+				console.log('err: ' + err);
+				done();
+			}
+		);
+
+	}
+
 	return {
 		url: url,
 		post: post,
 		get: get,
-		del: del
+		del: del,
+		addTag: addTag,
+		removeTag, removeTag
 	};
 };
