@@ -56,13 +56,13 @@ span.tag {
 	cursor: pointer;
 }
 
-span.tag.edit {
+/*span.tag.edit {
 	background: #C5E1A5;
 }
 
 span.tag.delete {
 	background: #EF5350;
-}
+}*/
 
 /*span.tag:hover {
 	background: #78909C;

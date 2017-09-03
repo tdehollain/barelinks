@@ -64,7 +64,7 @@ class LinkTabs extends Component {
 					<span 
 						key={index}
 						id={'tag' + index}
-						className='tag small'
+						className='tag nowrap small'
 						style={tagStyle}
 					>
 						<span className='tagIcon'>
