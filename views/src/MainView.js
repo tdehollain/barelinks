@@ -99,7 +99,7 @@ class MainView extends Component {
 		});
 	}
 
-	handleAddTag(tagName) {
+	handleAddTag(tag) {
 		let linkKey = this.state.currentModal_linkKey;
 		// let linkId = this.state.currentModal_linkId;
 
@@ -108,7 +108,7 @@ class MainView extends Component {
 		let linksArrBefore = currentLinks.slice(0, linkKey);
 		let linksArrAfter = currentLinks.slice(linkKey + 1);
 
-		let newTags = elementToUpdate.tags ? [...elementToUpdate.tags, { "name": tagName }] : [{ "name": tagName }];
+		let newTags = elementToUpdate.tags ? [...elementToUpdate.tags, tag] : [tag];
 
 		let newLink = {
 			"_id": elementToUpdate._id,
@@ -118,6 +118,8 @@ class MainView extends Component {
 			"tags": newTags
 		}
 
+		console.log('newLink: ' + JSON.stringify(newLink));
+
 		let newLinksArr = [...linksArrBefore, newLink, ...linksArrAfter];
 		
 		this.setState({
@@ -125,9 +127,8 @@ class MainView extends Component {
 		});
 
 
-		let tagColor = 'B0BEC5';
-		let addTagUrl = '/api/addTag/Thib/' + elementToUpdate._id + '/' + tagName + '/' + tagColor; 
-
+		let addTagUrl = '/api/addTag/Thib/' + elementToUpdate._id + '/' + tag.name + '/' + tag.color; 
+		console.log('addTagUrl: ' + addTagUrl);
 		fetch(addTagUrl, {
 				"method": "GET",
 				"headers": {

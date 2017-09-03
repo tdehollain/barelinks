@@ -3,14 +3,21 @@ import LinkTags from './LinkTabs';
 
 class LinksList extends Component {
 
-	formatDate(date) {
+	formatDate(date, showYear) {
 		const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 		let day = date.getDate();
 		let dayStr = day < 10 ? '0' + day : day;
 		let month = date.getMonth();
 		let monthStr = monthNames[month];
 		let year = date.getFullYear();
-		return dayStr + ' ' + monthStr + ' ' + year;
+		return showYear ? dayStr + ' ' + monthStr + ' ' + year : dayStr + ' ' + monthStr;
+	}
+
+	showYear(date) {
+		// Shows the year if it is the current on
+		// Question: show year always in search and tags views?
+		let currentDate = new Date();
+		return currentDate.getFullYear() !== date.getFullYear();
 	}
 
 	render() {
@@ -27,7 +34,7 @@ class LinksList extends Component {
 								onClick={this.props.removeLink.bind(this, index, elem._id)}>
 									&times;
 							</button>
-							<span className="small font-italic mx-1 mt-0">{this.formatDate(new Date(elem.date))}</span>
+							<span className="small font-italic mx-1 mt-0">{this.formatDate(new Date(elem.date), this.showYear(new Date(elem.date)))}</span>
 							<a 
 								className='link' 
 								id={'link_' + index}

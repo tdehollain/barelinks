@@ -1,5 +1,6 @@
 
 module.exports = function(mongoose){
+
 	const url = 'mongodb://localhost:9001/barelinksDB';
 
 	const urlListSchema = new mongoose.Schema({
@@ -16,13 +17,11 @@ module.exports = function(mongoose){
 	const urlListModel = mongoose.model('urlListModel', urlListSchema, 'urlListColl')
 
 	const post = function(entry, done) {
-
 		let entryModel = new urlListModel({
 			user: entry.user,
 			url: entry.url,
 			title: entry.title
 		});
-
 		entryModel.save(err => {
 			console.log("New entry saved: (" + entry.date + ") " + entry.url);
 			done(err);
@@ -55,7 +54,6 @@ module.exports = function(mongoose){
 			"name": tagName,
 			"color": tagColor
 		}
-		
 		urlListModel.update(
 			{ _id: mongoose.Types.ObjectId(id) }, 
 			{ $push: { tags: newTag } }, 
@@ -66,16 +64,11 @@ module.exports = function(mongoose){
 	};
 
 	const removeTag = function(user, id, tagName, done) {
-		
 		urlListModel.update(
 			{ _id: mongoose.Types.ObjectId(id) }, 
 			{ $pull: { tags: { name: tagName } } }, 
-			(err, link) => {
-				console.log('err: ' + err);
-				done();
-			}
+			(err, link) => { done(); }
 		);
-
 	}
 
 	return {
@@ -86,4 +79,5 @@ module.exports = function(mongoose){
 		addTag: addTag,
 		removeTag, removeTag
 	};
+	
 };

@@ -55,11 +55,17 @@ class LinkTabs extends Component {
 		let tagsSpan = null;
 		if(tabsCount > 0) {
 			tagsSpan = this.props.tags.map((tag, index) => {
+
+				let tagStyle = {
+					background: '#' + tag.color
+				};
+
 				return (
 					<span 
 						key={index}
 						id={'tag' + index}
 						className='tag small'
+						style={tagStyle}
 					>
 						<span className='tagIcon'>
 							<GoTag />
