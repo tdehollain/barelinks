@@ -20,7 +20,8 @@ module.exports = function(mongoose){
 		let entryModel = new urlListModel({
 			user: entry.user,
 			url: entry.url,
-			title: entry.title
+			title: entry.title,
+			date: entry.date
 		});
 		entryModel.save(err => {
 			console.log("New entry saved: (" + entry.date + ") " + entry.url);
@@ -79,5 +80,5 @@ module.exports = function(mongoose){
 		addTag: addTag,
 		removeTag, removeTag
 	};
-	
+
 };
