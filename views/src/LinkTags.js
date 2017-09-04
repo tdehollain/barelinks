@@ -3,7 +3,7 @@ import GoTag from 'react-icons/lib/go/tag';
 import GoTrashcan from 'react-icons/lib/go/trashcan';
 import $ from 'jquery';
 
-class LinkTabs extends Component {
+class LinkTags extends Component {
 
 	addTagHovers() {
 		$('.tagIcon svg').hover(function() {
@@ -34,10 +34,10 @@ class LinkTabs extends Component {
 
 	render() {
 	
-		let tabsCount = this.props.tags ? this.props.tags.length : 0;
+		let tagsCount = this.props.tags ? this.props.tags.length : 0;
 
 		let addTagButton = null;
-		if(tabsCount < 3) {
+		if(tagsCount < 3) {
 			addTagButton = 
 				<div className='d-inline'>
 					<button
@@ -53,7 +53,7 @@ class LinkTabs extends Component {
 		}
 
 		let tagsSpan = null;
-		if(tabsCount > 0) {
+		if(tagsCount > 0) {
 			tagsSpan = this.props.tags.map((tag, index) => {
 
 				let tagStyle = {
@@ -64,7 +64,7 @@ class LinkTabs extends Component {
 					<span 
 						key={index}
 						id={'tag' + index}
-						className='tag nowrap small'
+						className='tag small'
 						style={tagStyle}
 					>
 						<span className='tagIcon'>
@@ -90,4 +90,4 @@ class LinkTabs extends Component {
 	}
 }
 
-export default LinkTabs;
+export default LinkTags;

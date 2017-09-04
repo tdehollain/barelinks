@@ -54,6 +54,7 @@ span.tag {
 	padding: 3px 6px;
 	margin: 0 2px;
 	cursor: pointer;
+	white-space: nowrap;
 }
 
 /*span.tag.edit {

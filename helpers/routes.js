@@ -65,7 +65,7 @@ function getTitle(url, done) {
 	}
 	request(url, (err, res, body) => {
 		let $ = cheerio.load(body);
-		let title = $('title').text();
+		let title = $('head title').text();
 		done(title);
 	});
 }

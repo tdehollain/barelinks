@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import LinkTags from './LinkTabs';
+import LinkTags from './LinkTags';
 
 class LinksList extends Component {
 
