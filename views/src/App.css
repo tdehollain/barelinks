@@ -49,9 +49,9 @@
 }
 
 span.tag {
-	border-radius: 10px;
-	padding: 3px 6px;
-	margin: 5px;
+	border-radius: 11px;
+	padding: 1px 6px;
+	margin: 0 3px;
 	cursor: pointer;
 	/*white-space: nowrap;*/
 	display: inline-block;
