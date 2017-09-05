@@ -73,7 +73,7 @@ class LinkTags extends Component {
 						<a href={'/tag/' + tag.name}>
 							{tag.name}
 						</a>
-						<span className='trashcanIcon' onClick={this.props.removeTag.bind(this, this.props.linkKey, index, tag.name)}>
+						<span className='trashcanIcon' onClick={this.props.removeTag.bind(this, this.props.linkKey, index, tag.name, tag.color)}>
 							<GoTrashcan />
 						</span>
 					</span>

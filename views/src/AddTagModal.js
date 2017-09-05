@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import GoTag from 'react-icons/lib/go/tag';
 import { rgb2hex } from './Utils'
 import $ from 'jquery';
 
@@ -41,22 +42,59 @@ class AddTagModal extends Component {
 		}
 	}
 
-	componentDidMount() {
-		let that = this;
-		$('#addTagModal').on('shown.bs.modal', () => {
-			$('#addTagInput').focus();
-		});
-
-		$('.colorItem').click(function() {
-			$('.colorItem').removeClass('active');
-			$(this).addClass('active');
-			that.setState({
-				"color": rgb2hex($(this).css('backgroundColor')).slice(1)
+	componentDidUpdate() {
+		// setTimeout(() => {
+			let that = this;
+			$('#addTagModal').on('shown.bs.modal', () => {
+				$('#addTagInput').focus();
 			});
-		});
+
+			$('.colorItem').click(function() {
+				$('.colorItem').removeClass('active');
+				$(this).addClass('active');
+				that.setState({
+					"color": rgb2hex($(this).css('backgroundColor')).slice(1)
+				});
+			});
+
+			$('.commonTag').click(function() {
+				that.setState({
+					"name": $(this).find('.tagName').text(),
+					"color": rgb2hex($(this).css('backgroundColor')).slice(1)
+				});
+				$('#addTagSubmitButton').click();
+			});
+		// }, 1000);
 	}
 
 	render() {
+
+		let commonTagsSpan = null;
+		if(this.props.commonTags.length > 0) {
+			commonTagsSpan = this.props.commonTags.map((tag, index) => {
+
+				let tagStyle = {
+					background: '#' + tag.color
+				};
+
+				return (
+					<span 
+						key={index}
+						id={'tag' + index}
+						className='tag commonTag small'
+						style={tagStyle}
+					>
+						<span className='tagName'>
+							<span className='tagIcon'>
+								<GoTag />
+							</span>
+							{tag.name}
+						</span>
+					</span>
+				)
+			});
+		}
+
 		return(
 			<div 
 				className="modal fade" 
@@ -79,7 +117,10 @@ class AddTagModal extends Component {
 								<span aria-hidden="true">&times;</span>
 							</button>
 						</div>
-						<div className="modal-body">
+						<div className="modal-body pt-1">
+							<div className="tags my-3">
+								{commonTagsSpan}
+							</div>
 							<input
 								type='text'
 								id='addTagInput'

@@ -14,7 +14,17 @@ module.exports = function(mongoose){
 		}]
 	});
 
+	const userSchema = new mongoose.Schema({
+		user: String,
+		tags: [{
+			name: String,
+			color: String,
+			count: Number
+		}]
+	});
+
 	const urlListModel = mongoose.model('urlListModel', urlListSchema, 'urlListColl')
+	const userModel = mongoose.model('userModel', userSchema, 'userColl')
 
 	const post = function(entry, done) {
 		let entryModel = new urlListModel({
@@ -37,11 +47,19 @@ module.exports = function(mongoose){
 			.limit(parseInt(resultsPerPage))
 			.sort('-date')
 			.exec((err, res) => {
-				let count = res.length;
-				let endOfList = (page)*resultsPerPage >= count ? true : false
-				done(res, count, endOfList);
+				let links = res;
+				let linksCount = links.length;
+				let endOfList = (page)*resultsPerPage >= linksCount ? true : false;
+				done(links, linksCount, endOfList);
 			});
 	};
+
+	const getCommonTags = function(user, done) {
+			userModel.find({ user: user }, (err, res) => {
+				let tags = res[0].tags;
+				done(tags);
+			});
+	}
 
 	const del = function(user, id, done) {
 		urlListModel.remove({_id: id}, err => {
@@ -55,20 +73,60 @@ module.exports = function(mongoose){
 			"name": tagName,
 			"color": tagColor
 		}
+
+		// Add tag to the URL list collection
 		urlListModel.update(
 			{ _id: mongoose.Types.ObjectId(id) }, 
 			{ $push: { tags: newTag } }, 
 			(err, link) => {
-				done();
+				// update tags count
+				userModel.findOne(
+					{ user: user },
+					(err, res) => {
+						let userTags = res.tags;
+
+						let tagAlreadyPresent = false;
+						userTags.map((tag, index) => {
+							if(tag.name === tagName & tag.color === tagColor) {
+								tagAlreadyPresent = true;
+								userModel.update(
+									{ user: user, "tags.name": tagName },
+									{ $inc: { "tags.$.count": 1 }},
+									(err, res) => {
+										done();
+									}
+								);
+							}
+						});
+
+						if(!tagAlreadyPresent) {
+							userModel.update(
+								{ user: user },
+								{ $push: { tags: { name: tagName,	color: tagColor, count: 1 } } },
+								(err, user) => {
+									done();
+								}
+							);
+						}
+					}
+				);
 			}
 		);
 	};
 
-	const removeTag = function(user, id, tagName, done) {
+	const removeTag = function(user, id, tagName, tagColor, done) {
 		urlListModel.update(
 			{ _id: mongoose.Types.ObjectId(id) }, 
 			{ $pull: { tags: { name: tagName } } }, 
-			(err, link) => { done(); }
+			(err, link) => { 
+				userModel.update(
+					{ user: user, "tags.name": tagName, "tags.color": tagColor },
+					{ $inc: { "tags.$.count": -1 }},
+					(err, res) => {
+						done();
+					}
+				);
+			}
 		);
 	}
 
@@ -76,6 +134,7 @@ module.exports = function(mongoose){
 		url: url,
 		post: post,
 		get: get,
+		getCommonTags: getCommonTags,
 		del: del,
 		addTag: addTag,
 		removeTag, removeTag

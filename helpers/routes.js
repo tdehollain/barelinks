@@ -4,14 +4,20 @@ const cheerio = require('cheerio');
 module.exports = function(router, db) {
 
 	// server routes ========================================
-	router.get('/api/get/:user/:page/:resultsPerPage', function(req, res) {
-		db.get(req.params.user, req.params.page, req.params.resultsPerPage, function(list, count, endOfList) {
-			var data = { list: list, count: count, endOfList: endOfList };
+	router.get('/api/get/:user/:page/:resultsPerPage', (req, res) => {
+		db.get(req.params.user, req.params.page, req.params.resultsPerPage, (list, count, endOfList) => {
+			let data = { list: list, count: count, endOfList: endOfList };
 			res.json(data);
 		});
 	});
 
-	router.get('/api/add/:user/:url/:date', function(req, res) {
+	router.get('/api/getCommonTags/:user', (req, res) => {
+		db.getCommonTags(req.params.user, tags => {
+			res.json(tags);
+		});
+	});
+
+	router.get('/api/add/:user/:url/:date', (req, res) => {
 
 		getTitle(req.params.url, title => {
 
@@ -29,27 +35,24 @@ module.exports = function(router, db) {
 					success: true
 				});
 			});
-		})
-
-		// console.log("entry: " + JSON.stringify(entry));
-		// console.log('type of date: ' + typeof entry.date);
+		});
 
 	});
 
-	router.delete('/api/delete/:user/:id', function(req, res) {
-		db.del(req.params.user, req.params.id, function(err) {
+	router.delete('/api/delete/:user/:id', (req, res) => {
+		db.del(req.params.user, req.params.id, err => {
 			res.json({success: true});
 		});
 	});
 
-	router.get('/api/addTag/:user/:linkId/:tagName/:tagColor', function(req, res) {
-		db.addTag(req.params.user, req.params.linkId, req.params.tagName, req.params.tagColor, function() {
+	router.get('/api/addTag/:user/:linkId/:tagName/:tagColor', (req, res) => {
+		db.addTag(req.params.user, req.params.linkId, req.params.tagName, req.params.tagColor, () => {
 			res.json({ success: true });
 		});
 	});
 
-	router.delete('/api/removeTag/:user/:linkId/:tagName', function(req, res) {
-		db.removeTag(req.params.user, req.params.linkId, req.params.tagName, function() {
+	router.delete('/api/removeTag/:user/:linkId/:tagName/:tagColor', (req, res) => {
+		db.removeTag(req.params.user, req.params.linkId, req.params.tagName, req.params.tagColor, () => {
 			res.json({ success: true });
 		});
 	});

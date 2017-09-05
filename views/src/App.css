@@ -49,10 +49,9 @@
 }
 
 span.tag {
-	/*background-color: #B0BEC5;*/
 	border-radius: 10px;
 	padding: 3px 6px;
-	margin: 0 2px;
+	margin: 0 3px;
 	cursor: pointer;
 	white-space: nowrap;
 }
@@ -63,16 +62,6 @@ span.tag {
 
 span.tag.delete {
 	background: #EF5350;
-}*/
-
-/*span.tag:hover {
-	background: #78909C;
-	color: #111;
-}*/
-
-/*span.tag:hover > a {
-	text-decoration: none;
-	color: #111;
 }*/
 
 span.tag a {

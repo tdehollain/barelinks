@@ -15,7 +15,8 @@ class MainView extends Component {
 			"enteredURL": "",
 			"currentModal_linkKey": "",
 			"currentModal_linkId": "",
-			"links": []
+			"links": [],
+			"commonTags": []
 		};
 
 		this.handleURLchange = this.handleURLchange.bind(this);
@@ -24,6 +25,7 @@ class MainView extends Component {
 		this.handleShowAddTagModal = this.handleShowAddTagModal.bind(this);
 		this.handleAddTag = this.handleAddTag.bind(this);
 		this.handleRemoveTag = this.handleRemoveTag.bind(this);
+		this.updateCommonTags = this.updateCommonTags.bind(this);
 	}
 
 	handleURLchange(e) {
@@ -105,42 +107,50 @@ class MainView extends Component {
 
 		let currentLinks = this.state.links;
 		let elementToUpdate = this.state.links[linkKey];
-		let linksArrBefore = currentLinks.slice(0, linkKey);
-		let linksArrAfter = currentLinks.slice(linkKey + 1);
 
-		let newTags = elementToUpdate.tags ? [...elementToUpdate.tags, tag] : [tag];
-
-		let newLink = {
-			"_id": elementToUpdate._id,
-			"url": elementToUpdate.url,
-			"title": elementToUpdate.title,
-			"date": elementToUpdate.date,
-			"tags": newTags
-		}
-
-		console.log('newLink: ' + JSON.stringify(newLink));
-
-		let newLinksArr = [...linksArrBefore, newLink, ...linksArrAfter];
-		
-		this.setState({
-			"links": newLinksArr
+		// abort if tag already present
+		let tagAlreadyPresent = false;
+		elementToUpdate.tags.map((item, index) => {
+			if(item.name === tag.name && item.color === tag.color) {
+				tagAlreadyPresent = true;
+			}
 		});
 
+		if(!tagAlreadyPresent) {
+			let linksArrBefore = currentLinks.slice(0, linkKey);
+			let linksArrAfter = currentLinks.slice(linkKey + 1);
 
-		let addTagUrl = '/api/addTag/Thib/' + elementToUpdate._id + '/' + tag.name + '/' + tag.color; 
-		console.log('addTagUrl: ' + addTagUrl);
-		fetch(addTagUrl, {
-				"method": "GET",
-				"headers": {
-					"Accept": "application/json",
-					"Content-Type": "application/json"
-				}
-			})
-		.then((res) => res.json());
+			let newTags = elementToUpdate.tags ? [...elementToUpdate.tags, tag] : [tag];
 
+			let newLink = {
+				"_id": elementToUpdate._id,
+				"url": elementToUpdate.url,
+				"title": elementToUpdate.title,
+				"date": elementToUpdate.date,
+				"tags": newTags
+			}
+
+			let newLinksArr = [...linksArrBefore, newLink, ...linksArrAfter];
+			
+			this.setState({
+				"links": newLinksArr
+			});
+
+
+			let addTagUrl = '/api/addTag/Thib/' + elementToUpdate._id + '/' + encodeURIComponent(tag.name) + '/' + tag.color; 
+			fetch(addTagUrl, {
+					"method": "GET",
+					"headers": {
+						"Accept": "application/json",
+						"Content-Type": "application/json"
+					}
+				})
+			.then((res) => res.json())
+			.then(this.updateCommonTags);
+		}
 	}
 
-	handleRemoveTag (linkKey, tagIndex, tagName) {
+	handleRemoveTag (linkKey, tagIndex, tagName, tagColor) {
 		let currentLinks = this.state.links;
 		let elementToUpdate = this.state.links[linkKey];
 		let linksArrBefore = currentLinks.slice(0, linkKey);
@@ -163,7 +173,7 @@ class MainView extends Component {
 			"links": newLinksArr
 		});
 
-		let removeTagUrl = '/api/removeTag/Thib/' + elementToUpdate._id + '/' + tagName; 
+		let removeTagUrl = '/api/removeTag/Thib/' + elementToUpdate._id + '/' + tagName + '/' + tagColor; 
 
 		fetch(removeTagUrl, {
 				"method": "DELETE",
@@ -172,16 +182,33 @@ class MainView extends Component {
 					"Content-Type": "application/json"
 				}
 			})
-		.then((res) => res.json());
+		.then((res) => res.json())
+		.then(this.updateCommonTags);
+	}
+
+	updateLinks() {
+		fetch('/api/get/Thib/1/50')
+			.then(res => res.json())
+			.then(res => {
+				this.setState({
+					"links": res.list
+				});
+			});
+	}
+
+	updateCommonTags() {
+		fetch('api/getCommonTags/Thib')
+			.then(res => res.json())
+			.then(tags => {
+				this.setState({
+					"commonTags": tags.filter(tag => tag.count > 0).sort((a, b) => b.count - a.count).slice(0,10)
+				});
+			});
 	}
 
 	componentDidMount() {
-		fetch('/api/get/Thib/1/50')
-			.then(res => res.json())
-			.then(links => {
-				this.setState({ "links": links.list });
-			});
-		;
+		this.updateLinks();
+		this.updateCommonTags();
 	}
 
 	render() {
@@ -202,6 +229,7 @@ class MainView extends Component {
 					linkId={this.state.currentModal_linkId}
 					linkKey={this.state.currentModal_linkKey}
 					addTag={this.handleAddTag}
+					commonTags={this.state.commonTags}
 				/>
 			</div>
 		);
