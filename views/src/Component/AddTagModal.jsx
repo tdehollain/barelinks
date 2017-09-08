@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import GoTag from 'react-icons/lib/go/tag';
-import { rgb2hex } from './Utils'
+import CommonTags from './CommonTags';
+import ColorButtons from './ColorButtons'
+import { rgb2hex } from '../helpers/Utils';
 import $ from 'jquery';
 
 class AddTagModal extends Component {
@@ -44,21 +45,18 @@ class AddTagModal extends Component {
 
 	componentDidUpdate() {
 		// setTimeout(() => {
-			let that = this;
-			$('#addTagModal').on('shown.bs.modal', () => {
-				$('#addTagInput').focus();
-			});
+			let self = this;
 
 			$('.colorItem').click(function() {
 				$('.colorItem').removeClass('active');
 				$(this).addClass('active');
-				that.setState({
+				self.setState({
 					"color": rgb2hex($(this).css('backgroundColor')).slice(1)
 				});
 			});
 
 			$('.commonTag').click(function() {
-				that.setState({
+				self.setState({
 					"name": $(this).find('.tagName').text(),
 					"color": rgb2hex($(this).css('backgroundColor')).slice(1)
 				});
@@ -68,32 +66,6 @@ class AddTagModal extends Component {
 	}
 
 	render() {
-
-		let commonTagsSpan = null;
-		if(this.props.commonTags.length > 0) {
-			commonTagsSpan = this.props.commonTags.map((tag, index) => {
-
-				let tagStyle = {
-					background: '#' + tag.color
-				};
-
-				return (
-					<span 
-						key={index}
-						id={'tag' + index}
-						className='tag commonTag small'
-						style={tagStyle}
-					>
-						<span className='tagName'>
-							<span className='tagIcon'>
-								<GoTag />
-							</span>
-							{tag.name}
-						</span>
-					</span>
-				)
-			});
-		}
 
 		return(
 			<div 
@@ -118,9 +90,10 @@ class AddTagModal extends Component {
 							</button>
 						</div>
 						<div className="modal-body pt-1">
-							<div className="tags my-3">
-								{commonTagsSpan}
-							</div>
+							<CommonTags 
+								context='AddTagModal'
+								tags={this.props.commonTags}
+							/>
 							<input
 								type='text'
 								id='addTagInput'
@@ -131,19 +104,11 @@ class AddTagModal extends Component {
 								onChange={this.handleTagChange}
 								onKeyPress={this.handleKeyPress}
 							/>
-							<ul className="list-inline colorItems mt-4 mb-1">
-								<li className="list-inline-item colorItem rounded-circle active" onKeyPress={this.handleKeyPress} style={{background: '#B0BEC5'}}></li>
-								<li className="list-inline-item colorItem rounded-circle" onKeyPress={this.handleKeyPress} style={{background: '#BCAAA4'}}></li>
-								<li className="list-inline-item colorItem rounded-circle" onKeyPress={this.handleKeyPress} style={{background: '#FFCC80'}}></li>
-								<li className="list-inline-item colorItem rounded-circle" onKeyPress={this.handleKeyPress} style={{background: '#FFF59D'}}></li>
-								<li className="list-inline-item colorItem rounded-circle" onKeyPress={this.handleKeyPress} style={{background: '#C5E1A5'}}></li>
-								<li className="list-inline-item colorItem rounded-circle" onKeyPress={this.handleKeyPress} style={{background: '#80CBC4'}}></li>
-								<li className="list-inline-item colorItem rounded-circle" onKeyPress={this.handleKeyPress} style={{background: '#81D4FA'}}></li>
-								<li className="list-inline-item colorItem rounded-circle" onKeyPress={this.handleKeyPress} style={{background: '#9FA8DA'}}></li>
-								<li className="list-inline-item colorItem rounded-circle" onKeyPress={this.handleKeyPress} style={{background: '#CE93D8'}}></li>
-								<li className="list-inline-item colorItem rounded-circle" onKeyPress={this.handleKeyPress} style={{background: '#EF9A9A'}}></li>
-							</ul>
 						</div>
+						<ColorButtons
+							handleKeyPress={this.handleKeyPress}
+							tagColors={this.props.tagColors}
+						/>
 						<div className="modal-footer">
 							<button 
 								type="button" 

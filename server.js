@@ -34,8 +34,4 @@ app.set('view engine', 'pug');
 // Routes =================================================
 require("./helpers/routes")(router, db);
 
-app.get("/", (req, res) => {
-	res.sendFile(path.join(__dirname, 'views/build', 'index.html'));
-})
-
 app.listen(8001);

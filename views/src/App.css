@@ -85,7 +85,7 @@ button.addTagButton {
 .colorItem {
 	width: 20px;
 	height: 20px;
-	margin: 0 13.4px!important;
+	/*margin: 0 13.4px!important;*/
 }
 
 .colorItem:hover {

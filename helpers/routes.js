@@ -4,6 +4,11 @@ const cheerio = require('cheerio');
 module.exports = function(router, db) {
 
 	// server routes ========================================
+
+	router.get("/", (req, res) => {
+		res.sendFile(path.join(__dirname, 'views/build', 'index.html'));
+	});
+
 	router.get('/api/get/:user/:page/:resultsPerPage', (req, res) => {
 		db.get(req.params.user, req.params.page, req.params.resultsPerPage, (list, count, endOfList) => {
 			let data = { list: list, count: count, endOfList: endOfList };
@@ -17,7 +22,7 @@ module.exports = function(router, db) {
 		});
 	});
 
-	router.get('/api/add/:user/:url/:date', (req, res) => {
+	router.put('/api/add/:user/:url/:date', (req, res) => {
 
 		getTitle(req.params.url, title => {
 
@@ -45,7 +50,7 @@ module.exports = function(router, db) {
 		});
 	});
 
-	router.get('/api/addTag/:user/:linkId/:tagName/:tagColor', (req, res) => {
+	router.put('/api/addTag/:user/:linkId/:tagName/:tagColor', (req, res) => {
 		db.addTag(req.params.user, req.params.linkId, req.params.tagName, req.params.tagColor, () => {
 			res.json({ success: true });
 		});

@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-// import $ from 'jquery';
 
 import MainForm from './MainForm';
 import LinksList from './LinksList';
 import AddTagModal from './AddTagModal';
-import { URLisValid, immutableDelete } from './Utils.js';
+import { URLisValid, immutableDelete } from '../helpers/Utils.js';
 
-class MainView extends Component {
+export default class MainView extends Component {
 
 	constructor(props) {
 		super(props);
@@ -53,7 +52,7 @@ class MainView extends Component {
 		});
 
 		fetch("/api/add/Thib/" + encodeURIComponent(this.state.enteredURL) + '/' + new Date(), {
-			"method": "GET",
+			"method": "PUT",
 			"headers": {
 				"Accept": "application/json",
 				"Content-Type": "application/json"
@@ -67,7 +66,8 @@ class MainView extends Component {
 			let newLink = {
 				date: currentLinks[0].date,
 				url: currentLinks[0].url,
-				title: res.title
+				title: res.title,
+				tags: []
 			}
 
 			let newLinks = [newLink, ...currentLinks.slice(1)]
@@ -139,7 +139,7 @@ class MainView extends Component {
 
 			let addTagUrl = '/api/addTag/Thib/' + elementToUpdate._id + '/' + encodeURIComponent(tag.name) + '/' + tag.color; 
 			fetch(addTagUrl, {
-					"method": "GET",
+					"method": "PUT",
 					"headers": {
 						"Accept": "application/json",
 						"Content-Type": "application/json"
@@ -224,16 +224,16 @@ class MainView extends Component {
 					removeLink={this.handleRemove}
 					showAddTagModal={this.handleShowAddTagModal}
 					removeTag={this.handleRemoveTag}
+					maxTags={this.props.maxTags}
 				/>
 				<AddTagModal 
 					linkId={this.state.currentModal_linkId}
 					linkKey={this.state.currentModal_linkKey}
 					addTag={this.handleAddTag}
 					commonTags={this.state.commonTags}
+					tagColors={this.props.tagColors}
 				/>
 			</div>
 		);
 	}
 }
-
-export default MainView;

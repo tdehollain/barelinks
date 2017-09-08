@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 class TopBar extends Component {
 	render() {
 		return (
 			<nav className='TopBar navbar navbar-dark bg-dark'>
-				<a className='navbar-brand ml-3' href='/'>BareLinks</a>
+				<Link className='navbar-brand ml-3' to='/'>BareLinks</Link>
 				<div className='navbar-nav mr-auto ml-3'>
 					<div className='nav-item'>
-						<a className='nav-link' href='/'>Tags</a>
+						<Link className='nav-link' to='/tags'>Tags</Link>
 					</div>
 				</div>
 				<div>

@@ -26,17 +26,17 @@ module.exports = function(mongoose){
 	const urlListModel = mongoose.model('urlListModel', urlListSchema, 'urlListColl')
 	const userModel = mongoose.model('userModel', userSchema, 'userColl')
 
-	const post = function(entry, done) {
+	const post = async (entry, done) => {
 		let entryModel = new urlListModel({
 			user: entry.user,
 			url: entry.url,
 			title: entry.title,
 			date: entry.date
 		});
-		entryModel.save(err => {
-			console.log("New entry saved: (" + entry.date + ") " + entry.url);
-			done(err);
-		});
+
+		await entryModel.save()
+		console.log("New entry saved: (" + entry.date + ") " + entry.url);
+		done();
 	};
 
 	const get = function(user, page, resultsPerPage, done) {
@@ -54,11 +54,10 @@ module.exports = function(mongoose){
 			});
 	};
 
-	const getCommonTags = function(user, done) {
-			userModel.find({ user: user }, (err, res) => {
-				let tags = res[0].tags;
-				done(tags);
-			});
+	const getCommonTags = async (user, done) => {
+			let res = await userModel.find({ user: user });
+			let tags = res[0].tags;
+			done(tags);
 	}
 
 	const del = function(user, id, done) {
