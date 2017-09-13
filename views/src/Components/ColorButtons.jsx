@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 export default class ColorButtons extends Component {
 
@@ -13,7 +14,6 @@ export default class ColorButtons extends Component {
 							<li
 								key={index}
 								className="list-inline-item colorItem rounded-circle"
-								onKeyPress={this.props.handleKeyPress}
 								style={{background: color}}
 							>
 							</li>
@@ -25,3 +25,7 @@ export default class ColorButtons extends Component {
 		)
 	}
 }
+
+ColorButtons.propTypes = {
+	tagColors: PropTypes.arrayOf(PropTypes.string).isRequired
+};

@@ -16,9 +16,16 @@ module.exports = function(router, db) {
 		});
 	});
 
-	router.get('/api/getCommonTags/:user', (req, res) => {
-		db.getCommonTags(req.params.user, tags => {
+	router.get('/api/getTags/:user', (req, res) => {
+		db.getTags(req.params.user, tags => {
 			res.json(tags);
+		});
+	});
+
+	router.get('/api/getLinksByTagName/:user/:tagName/:page/:resultsPerPage', (req, res) => {
+		db.getLinksByTagName(req.params.user, req.params.tagName, req.params.page, req.params.resultsPerPage, (list, count, endOfList) => {
+			let data = { list: list, count: count, endOfList: endOfList };
+			res.json(data);
 		});
 	});
 

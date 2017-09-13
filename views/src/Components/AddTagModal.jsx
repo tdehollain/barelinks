@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import CommonTags from './CommonTags';
 import ColorButtons from './ColorButtons'
 import { rgb2hex } from '../helpers/Utils';
 import $ from 'jquery';
 
-class AddTagModal extends Component {
+export default class AddTagModal extends Component {
 
 	constructor() {
 		super();
@@ -15,8 +16,8 @@ class AddTagModal extends Component {
 		};
 
 		this.handleTagChange = this.handleTagChange.bind(this);
-		this.handleKeyPress = this.handleKeyPress.bind(this);
 		this.handleSubmitClick = this.handleSubmitClick.bind(this);
+		this.handleTagClick = this.handleTagClick.bind(this);
 	}
 
 	handleTagChange(e) {
@@ -25,17 +26,23 @@ class AddTagModal extends Component {
 		});
 	}
 
-	handleKeyPress(e) {
-		if(e.charCode===13 && this.state.name) $('#addTagSubmitButton').click();
+	handleTagClick(tagDetails) {
+		this.setState({
+			"name": tagDetails.name,
+			"color": tagDetails.color
+		}, () => {
+			$('#addTagSubmitButton').click();
+		});
 	}
 
 	handleSubmitClick() {
 		if(this.state.name) {
+
+			this.props.addTag(this.state, this.props.linkKey);
+
 			// reset active color
 			$('.colorItem').removeClass('active');
 			$('.colorItem:first-child').addClass('active');
-
-			this.props.addTag(this.state);
 			this.setState({
 				"name": "",
 				"color": "b0bec5"
@@ -53,14 +60,6 @@ class AddTagModal extends Component {
 				self.setState({
 					"color": rgb2hex($(this).css('backgroundColor')).slice(1)
 				});
-			});
-
-			$('.commonTag').click(function() {
-				self.setState({
-					"name": $(this).find('.tagName').text(),
-					"color": rgb2hex($(this).css('backgroundColor')).slice(1)
-				});
-				$('#addTagSubmitButton').click();
 			});
 		// }, 1000);
 	}
@@ -90,9 +89,11 @@ class AddTagModal extends Component {
 							</button>
 						</div>
 						<div className="modal-body pt-1">
-							<CommonTags 
-								context='AddTagModal'
+							<CommonTags
+								linkKey={this.props.linkKey}
 								tags={this.props.commonTags}
+								tagClick={this.handleTagClick}
+								showTranshcan={false}
 							/>
 							<input
 								type='text'
@@ -106,7 +107,6 @@ class AddTagModal extends Component {
 							/>
 						</div>
 						<ColorButtons
-							handleKeyPress={this.handleKeyPress}
 							tagColors={this.props.tagColors}
 						/>
 						<div className="modal-footer">
@@ -134,4 +134,12 @@ class AddTagModal extends Component {
 	}
 }
 
-export default AddTagModal;
+AddTagModal.propTypes = {
+	addTag: PropTypes.func.isRequired,
+	linkKey: PropTypes.number.isRequired,
+	commonTags: PropTypes.arrayOf(PropTypes.shape({
+		name: PropTypes.string.isRequired,
+		color: PropTypes.string.isRequired
+	})),
+	tagColors: PropTypes.arrayOf(PropTypes.string).isRequired
+}

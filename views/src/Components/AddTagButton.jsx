@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
-class AddTagButton extends Component {
+export default class AddTagButton extends Component {
 	render() {
 		return (
 
@@ -19,4 +20,8 @@ class AddTagButton extends Component {
 	}
 }
 
-export default AddTagButton;
+AddTagButton.propTypes = {
+	showAddTagModal: PropTypes.func.isRequired,
+	linkKey: PropTypes.number.isRequired,
+	linkId: PropTypes.string.isRequired
+};

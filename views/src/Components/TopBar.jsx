@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-class TopBar extends Component {
+export default class TopBar extends Component {
 	render() {
 		return (
 			<nav className='TopBar navbar navbar-dark bg-dark'>
@@ -19,5 +19,3 @@ class TopBar extends Component {
 		);
 	}
 }
-
-export default TopBar;

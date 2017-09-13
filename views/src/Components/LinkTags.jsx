@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import AddTagButton from './AddTagButton';
 import Tag from './Tag';
 
 export default class LinkTags extends Component {
+
+	handleTagClick() {
+		
+	}
 
 	render() {
 
@@ -16,6 +21,8 @@ export default class LinkTags extends Component {
 								linkKey={this.props.linkKey}
 								tagDetails={{ index: index, name: tag.name, color: tag.color }}
 								removeTag={this.props.removeTag}
+								tagClick={this.handleTagClick}
+								showTranshcan={true}
 							/>
 						);
 					})
@@ -32,3 +39,15 @@ export default class LinkTags extends Component {
 		);
 	}
 }
+
+LinkTags.propTypes = {
+	removeTag: PropTypes.func.isRequired,
+	tags: PropTypes.arrayOf(PropTypes.shape({
+		name: PropTypes.string.isRequired,
+		color: PropTypes.string.isRequired
+	})),
+	maxTags: PropTypes.number.isRequired,
+	showAddTagModal: PropTypes.func.isRequired,
+	linkKey: PropTypes.number.isRequired,
+	linkId: PropTypes.string
+};

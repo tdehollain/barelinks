@@ -54,11 +54,26 @@ module.exports = function(mongoose){
 			});
 	};
 
-	const getCommonTags = async (user, done) => {
+	const getTags = async (user, done) => {
 			let res = await userModel.find({ user: user });
 			let tags = res[0].tags;
 			done(tags);
 	}
+
+	const getLinksByTagName = function(user, tagName, page, resultsPerPage, done) {
+		let theList = {};
+		urlListModel
+			.find({user: user, "tags.name": tagName})
+			.skip((page - 1) * resultsPerPage)
+			.limit(parseInt(resultsPerPage))
+			.sort('-date')
+			.exec((err, res) => {
+				let links = res;
+				let linksCount = links.length;
+				let endOfList = (page)*resultsPerPage >= linksCount ? true : false;
+				done(links, linksCount, endOfList);
+			});
+	};
 
 	const del = function(user, id, done) {
 		urlListModel.remove({_id: id}, err => {
@@ -133,7 +148,8 @@ module.exports = function(mongoose){
 		url: url,
 		post: post,
 		get: get,
-		getCommonTags: getCommonTags,
+		getTags: getTags,
+		getLinksByTagName: getLinksByTagName,
 		del: del,
 		addTag: addTag,
 		removeTag, removeTag
