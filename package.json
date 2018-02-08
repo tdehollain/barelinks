@@ -1,0 +1,23 @@
+{
+  "name": "barelinks",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "push": "git add -A && git commit -m 'commit' && git push origin master",
+    "start": "nodemon server.js"
+  },
+  "author": "Thibaut de Hollain",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "cheerio": "^1.0.0-rc.2",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.15.4",
+    "mongoose": "^4.10.8",
+    "nodemon": "^1.12.0",
+    "path": "^0.12.7",
+    "request": "^2.81.0"
+  }
+}
