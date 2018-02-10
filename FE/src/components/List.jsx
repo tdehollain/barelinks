@@ -9,7 +9,7 @@ class List extends Component {
 			<div className='LinksList'>
 				<div className='row align-items-center text-center justify-content-md-center my-4'>
 					<button className='col-2 btn btn-dark'>Previous</button>
-					<span className='col-2'>Page 1 of 6</span>
+					<span className='col-2'>Page 1 of 0.8</span>
 					<button className='col-2 btn btn-dark'>Next</button>
 				</div>
 				<ul className='pl-1'>
