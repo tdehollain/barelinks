@@ -83,7 +83,7 @@ class AddTagModalContainer extends Component {
 
 const mapStateToProps = (store) => {
 	return {
-		commonTags: store.userState.commonTags,
+		commonTags: store.listState.commonTags,
 		tagColors: store.userState.tagColors,
 		linkId: store.modalState.linkId
 	}

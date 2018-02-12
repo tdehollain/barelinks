@@ -10,7 +10,6 @@ const initialUserState = {
 		maxTags: 3,
 		linksPerPage: 50
 	},
-	commonTags: [{name: 'test 1', color: 'B0BEC5'}, {name: 'test 2', color: 'BCAAA4'}, {name: 'test 3', color: '80CBC4'}, {name: 'test 4', color: 'CE93D8'}, {name: 'test 5', color: 'EF9A9A'}],
 	tagColors: ['B0BEC5','BCAAA4','FFCC80','FFF59D','C5E1A5','80CBC4','81D4FA','9FA8DA','CE93D8','EF9A9A']
 };
 
@@ -31,13 +30,20 @@ const initialListState = {
 	visibleList: [],
 	page: 1,
 	maxPages: 1,
-	count: 1
+	count: 1,
+	commonTags: []
 };
 
 const listReducer = (state=initialListState, action) => {
 	switch(action.type) {
 		case 'UPDATE_LIST':
-			return {...state, visibleList: action.list, maxPages: Math.ceil(action.count/initialUserState.userSettings.linksPerPage), count: action.count};
+			return {
+				...state,
+				visibleList: action.list,
+				maxPages: Math.ceil(action.count/initialUserState.userSettings.linksPerPage),
+				count: action.count,
+				commonTags: action.commonTags
+			};
 		case 'NEXT_PAGE':
 			return {...state, page: state.page+1}
 		case 'PREVIOUS_PAGE':

@@ -29,10 +29,12 @@ module.exports = function(mongoose){
 	const get = function(user, page, resultsPerPage, done) {
 		let count=0;
 		// Get number of results
-		urlListModel.count({user: user}, (err, totalCount) => {
+		urlListModel.find({user: user}, (err, docs) => {
 			if(err){
-				console.log('Error getting totalCount of links: ' + err);
+				console.log('Error getting links for user' + user + ': ' + err);
 			} else {
+				let totalCount=docs.length;
+				let commonTags = getCommonTags(docs);
 				urlListModel
 				.find({user: user})
 				.skip((page - 1) * resultsPerPage)
@@ -41,7 +43,7 @@ module.exports = function(mongoose){
 				.exec((err, res) => {
 					let links = res;
 					let endOfList = page*resultsPerPage >= totalCount ? true : false;
-					done(links, totalCount, endOfList);
+					done(links, totalCount, endOfList, commonTags);
 				});
 			}
 		})
@@ -162,3 +164,26 @@ module.exports = function(mongoose){
 	};
 
 };
+
+const getCommonTags = function(links) {
+	let commonTags=[]
+	for(let link of links) {
+		for(let tag of link.tags) {
+			let found = false;
+			for(let [index, commonTag] of commonTags.entries()) {
+				if(tag.name === commonTag.name && tag.color===commonTag.color) {
+					found = true;
+					commonTags = [
+						...commonTags.slice(0, index),
+						{ name: tag.name, color: tag.color, occurences: commonTag.occurences + 1 },
+						...commonTags.slice(index + 1)
+					];
+				}
+			}
+			if(!found) {
+				commonTags.push({ name: tag.name, color: tag.color, occurences: 1 });
+			}
+		}
+	}
+	return commonTags.sort((a,b) => b.occurences - a.occurences);
+}

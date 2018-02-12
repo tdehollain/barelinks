@@ -6,8 +6,8 @@ module.exports = function(router, db) {
 	// server routes ========================================
 
 	router.get('/api/get/:user/:page/:resultsPerPage', (req, res) => {
-		db.get(req.params.user, req.params.page, req.params.resultsPerPage, (list, totalCount, endOfList) => {
-			let data = { list: list, totalCount: totalCount, endOfList: endOfList };
+		db.get(req.params.user, req.params.page, req.params.resultsPerPage, (list, totalCount, endOfList, commonTags) => {
+			let data = { list, totalCount, endOfList, commonTags };
 			res.json(data);
 		});
 	});

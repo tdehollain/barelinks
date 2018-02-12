@@ -22,7 +22,8 @@ class ListContainer extends Component {
 				store.dispatch({
 					"type": 'UPDATE_LIST',
 					"list": res.list,
-					"count": res.totalCount
+					"count": res.totalCount,
+					"commonTags": res.commonTags
 				});
 			});
 	}
