@@ -9,10 +9,6 @@ class ListContainer extends Component {
 		this.API_updateList(this.props.list.page);
 	}
 
-	componentDidUpdate() {
-		console.log("UPDATED: " + JSON.stringify(this.props.list.page));
-	}
-
 	componentWillReceiveProps(nextProps) {
 		if(nextProps.list.page !== this.props.list.page) {
 			this.API_updateList(nextProps.list.page);
@@ -20,7 +16,6 @@ class ListContainer extends Component {
 	}
 
 	API_updateList(page){
-		console.log('fetching list - page = ' + page);
 		fetch('/api/get/Thib/' + page + '/' + this.props.userSettings.linksPerPage)
 			.then(res => res.json())
 			.then(res => {
