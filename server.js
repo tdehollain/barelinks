@@ -34,7 +34,7 @@ app.set('view engine', 'pug');
 // Routes =================================================
 // Base route
 router.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, 'views/build', 'index.html'));
+  res.sendFile(path.join(__dirname, 'FE/views/build', 'index.html'));
 });
 
 // API routes
