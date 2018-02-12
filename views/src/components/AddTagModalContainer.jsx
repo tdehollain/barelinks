@@ -37,7 +37,7 @@ class AddTagModalContainer extends Component {
 	handleTagClick(name, color) {
 		this.setState({
 			"enteredTagName": name,
-			"activeColor": this.props.tagColors.indexOf(color)
+			"activeColor": this.props.tagColors.indexOf(color.toUpperCase())
 		}, () => { $('#addTagSubmitButton').click(); });
 	}
 
