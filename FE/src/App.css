@@ -42,6 +42,14 @@
   padding: 2px 3px;
 }
 
+.LinksList .pageButton {
+  width: 120px;
+}
+
+.LinksList .pageButton:disabled {
+  cursor: not-allowed;
+}
+
 .tagIcon svg {
   width: 14px;
   height: 14px;
@@ -87,10 +95,6 @@ button.addTagButton {
   padding: 0 3px 3px;
   border-radius: 12px;
   margin-left: 3px;
-}
-
-.colorItems {
-
 }
 
 .colorItem {

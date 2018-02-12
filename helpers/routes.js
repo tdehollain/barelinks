@@ -10,8 +10,8 @@ module.exports = function(router, db) {
 	});
 
 	router.get('/api/get/:user/:page/:resultsPerPage', (req, res) => {
-		db.get(req.params.user, req.params.page, req.params.resultsPerPage, (list, count, endOfList) => {
-			let data = { list: list, count: count, endOfList: endOfList };
+		db.get(req.params.user, req.params.page, req.params.resultsPerPage, (list, totalCount, endOfList) => {
+			let data = { list: list, totalCount: totalCount, endOfList: endOfList };
 			res.json(data);
 		});
 	});

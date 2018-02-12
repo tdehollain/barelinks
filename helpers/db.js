@@ -27,18 +27,24 @@ module.exports = function(mongoose){
 	const userModel = mongoose.model('userModel', userSchema, 'userColl')
 
 	const get = function(user, page, resultsPerPage, done) {
-		let theList = {};
-		urlListModel
-			.find({user: user})
-			.skip((page - 1) * resultsPerPage)
-			.limit(parseInt(resultsPerPage))
-			.sort('-date')
-			.exec((err, res) => {
-				let links = res;
-				let linksCount = links.length;
-				let endOfList = (page)*resultsPerPage >= linksCount ? true : false;
-				done(links, linksCount, endOfList);
-			});
+		let count=0;
+		// Get number of results
+		urlListModel.count({user: user}, (err, totalCount) => {
+			if(err){
+				console.log('Error getting totalCount of links: ' + err);
+			} else {
+				urlListModel
+				.find({user: user})
+				.skip((page - 1) * resultsPerPage)
+				.limit(parseInt(resultsPerPage))
+				.sort('-date')
+				.exec((err, res) => {
+					let links = res;
+					let endOfList = page*resultsPerPage >= totalCount ? true : false;
+					done(links, totalCount, endOfList);
+				});
+			}
+		})
 	};
 
 	const getLinksByTagName = function(user, tagName, page, resultsPerPage, done) {

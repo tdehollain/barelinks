@@ -1,5 +1,5 @@
 import { createStore, combineReducers } from 'redux';
-import { immutableDelete } from './helpers/Utils';
+// import { immutableDelete } from './helpers/Utils';
 
 /*===================
 ===     User     ====
@@ -7,7 +7,8 @@ import { immutableDelete } from './helpers/Utils';
 
 const initialUserState = {
 	userSettings: {
-		maxTags: 3
+		maxTags: 3,
+		linksPerPage: 2
 	},
 	commonTags: [{name: 'test 1', color: 'B0BEC5'}, {name: 'test 2', color: 'BCAAA4'}, {name: 'test 3', color: '80CBC4'}, {name: 'test 4', color: 'CE93D8'}, {name: 'test 5', color: 'EF9A9A'}],
 	tagColors: ['B0BEC5','BCAAA4','FFCC80','FFF59D','C5E1A5','80CBC4','81D4FA','9FA8DA','CE93D8','EF9A9A']
@@ -18,7 +19,7 @@ const userReducer = (state=initialUserState, action) => {
 		case 'CHANGE_USERNAME':
 			return {...state, username: action.username };
 		default: return state;
-	};
+	}
 };
 
 
@@ -27,13 +28,20 @@ const userReducer = (state=initialUserState, action) => {
 ===================*/
 
 const initialListState = { 
-	visibleList: []
+	visibleList: [],
+	page: 1,
+	maxPages: 1,
+	count: 1
 };
 
 const listReducer = (state=initialListState, action) => {
 	switch(action.type) {
 		case 'UPDATE_LIST':
-			return {...state, visibleList: action.list};
+			return {...state, visibleList: action.list, maxPages: Math.ceil(action.count/initialUserState.userSettings.linksPerPage), count: action.count};
+		case 'NEXT_PAGE':
+			return {...state, page: state.page+1}
+		case 'PREVIOUS_PAGE':
+			return {...state, page: state.page-1}
 		case 'ADD_LINK':
 			return {...state, visibleList: [action.newLink,...state.visibleList]};
 		case 'UPDATE_LINK':
@@ -43,9 +51,7 @@ const listReducer = (state=initialListState, action) => {
 				return item._id !== action.id;
 			});
 			return {...state, visibleList: newList1};
-
 		case 'ADD_TAG':
-
 			let newList2 = [];
 			state.visibleList.forEach(item => {
 				if(item._id === action.linkId) {
@@ -60,9 +66,7 @@ const listReducer = (state=initialListState, action) => {
 				}
 			});
 			return {...state, visibleList: newList2};
-
 		case 'REMOVE_TAG':
-
 			let newList3 = [];
 			state.visibleList.forEach(item2 => {
 				if(item2._id===action.linkId) {
@@ -75,9 +79,8 @@ const listReducer = (state=initialListState, action) => {
 				}
 			});
 			return {...state, visibleList: newList3};
-
 		default: return state;
-	};
+	}
 };
 
 

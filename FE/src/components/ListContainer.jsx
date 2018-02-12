@@ -6,21 +6,53 @@ import List from './List';
 class ListContainer extends Component {
 
 	componentDidMount() {
-		fetch('/api/get/Thib/1/50')
+		this.API_updateList(this.props.list.page);
+	}
+
+	componentDidUpdate() {
+		console.log("UPDATED: " + JSON.stringify(this.props.list.page));
+	}
+
+	componentWillReceiveProps(nextProps) {
+		if(nextProps.list.page !== this.props.list.page) {
+			this.API_updateList(nextProps.list.page);
+		}
+	}
+
+	API_updateList(page){
+		console.log('fetching list - page = ' + page);
+		fetch('/api/get/Thib/' + page + '/' + this.props.userSettings.linksPerPage)
 			.then(res => res.json())
 			.then(res => {
 				store.dispatch({
 					"type": 'UPDATE_LIST',
-					"list": res.list
+					"list": res.list,
+					"count": res.totalCount
 				});
 			});
+	}
+
+	handleNextPage() {
+		store.dispatch({
+			"type": 'NEXT_PAGE'
+		});
+	}
+
+	handlePreviousPage() {
+		store.dispatch({
+			"type": 'PREVIOUS_PAGE'
+		});
 	}
 
 	render() {
 		return (
 			<List 
-				list={this.props.list}
+				list={this.props.list.visibleList}
 				maxTags={this.props.userSettings.maxTags}
+				currentPage={this.props.list.page}
+				maxPages={this.props.list.maxPages}
+				handleNextPage={this.handleNextPage}
+				handlePreviousPage={this.handlePreviousPage}
 			/>
 		);
 	}
@@ -29,7 +61,7 @@ class ListContainer extends Component {
 
 const mapStateToProps = (store) => {
 	return {
-		list: store.listState.visibleList,
+		list: store.listState,
 		userSettings: store.userState.userSettings
 	}
 }
