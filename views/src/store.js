@@ -8,7 +8,7 @@ import { createStore, combineReducers } from 'redux';
 const initialUserState = {
 	userSettings: {
 		maxTags: 3,
-		linksPerPage: 2
+		linksPerPage: 50
 	},
 	commonTags: [{name: 'test 1', color: 'B0BEC5'}, {name: 'test 2', color: 'BCAAA4'}, {name: 'test 3', color: '80CBC4'}, {name: 'test 4', color: 'CE93D8'}, {name: 'test 5', color: 'EF9A9A'}],
 	tagColors: ['B0BEC5','BCAAA4','FFCC80','FFF59D','C5E1A5','80CBC4','81D4FA','9FA8DA','CE93D8','EF9A9A']
