@@ -32,6 +32,12 @@ app.use('/', router);
 app.set('view engine', 'pug');
 
 // Routes =================================================
+// Base route
+router.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, 'views/build', 'index.html'));
+});
+
+// API routes
 require("./helpers/routes")(router, db);
 
 app.listen(8001);

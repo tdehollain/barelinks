@@ -1,14 +1,9 @@
 const request = require('request');
-const path = require('path');
 const cheerio = require('cheerio');
 
 module.exports = function(router, db) {
 
 	// server routes ========================================
-
-	router.get("/", (req, res) => {
-		res.sendFile(path.join(__dirname, 'views/build', 'index.html'));
-	});
 
 	router.get('/api/get/:user/:page/:resultsPerPage', (req, res) => {
 		db.get(req.params.user, req.params.page, req.params.resultsPerPage, (list, totalCount, endOfList) => {
