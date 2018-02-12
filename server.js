@@ -20,7 +20,7 @@ mongoose.connect(db.url);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'FE/views/build')));
+app.use(express.static(path.join(__dirname, 'views/build')));
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -34,7 +34,7 @@ app.set('view engine', 'pug');
 // Routes =================================================
 // Base route
 router.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, 'FE/views/build', 'index.html'));
+  res.sendFile(path.join(__dirname, 'views/build', 'index.html'));
 });
 
 // API routes

@@ -2,7 +2,7 @@
 
 # dependencies
 /node_modules
-/FE/node_modules
+/views/node_modules
 
 # testing
 /coverage
