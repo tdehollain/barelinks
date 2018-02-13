@@ -5,13 +5,19 @@ import PropTypes from 'prop-types';
 class List extends Component {
 
 	render() {
+
+		let pagination = null;
+		if(this.props.maxPages > 1) {
+			pagination =  <div className='row align-items-center text-center justify-content-md-center my-4'>
+											<button disabled={this.props.currentPage===1} className='pageButton btn btn-dark' onClick={this.props.handlePreviousPage}>Previous</button>
+											<span className='col-3'>Page {this.props.currentPage} of {this.props.maxPages}</span>
+											<button disabled={this.props.currentPage===this.props.maxPages} className='pageButton btn btn-dark' onClick={this.props.handleNextPage}>Next</button>
+										</div>
+		}
+
 		return (
 			<div className='LinksList'>
-				<div className='row align-items-center text-center justify-content-md-center my-4'>
-					<button disabled={this.props.currentPage===1} className='pageButton btn btn-dark' onClick={this.props.handlePreviousPage}>Previous</button>
-					<span className='col-3'>Page {this.props.currentPage} of {this.props.maxPages}</span>
-					<button disabled={this.props.currentPage===this.props.maxPages} className='pageButton btn btn-dark' onClick={this.props.handleNextPage}>Next</button>
-				</div>
+				{pagination}
 				<ul className='pl-1'>
 					{
 						this.props.list.map((link, index) => {

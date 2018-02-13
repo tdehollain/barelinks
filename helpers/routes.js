@@ -14,13 +14,14 @@ module.exports = function(router, db) {
 
 	router.get('/api/getTags/:user', (req, res) => {
 		db.getTags(req.params.user, tags => {
-			res.json(tags);
+			let data = { tags }
+			res.json(data);
 		});
 	});
 
-	router.get('/api/getLinksByTagName/:user/:tagName/:page/:resultsPerPage', (req, res) => {
-		db.getLinksByTagName(req.params.user, req.params.tagName, req.params.page, req.params.resultsPerPage, (list, count, endOfList) => {
-			let data = { list: list, count: count, endOfList: endOfList };
+	router.get('/api/getLinksByTagName/:user/:tagName/:tagColor/:page/:resultsPerPage', (req, res) => {
+		db.getLinksByTagName(req.params.user, req.params.tagName, req.params.page, req.params.resultsPerPage, (list, totalCount, endOfList) => {
+			let data = { list: list, totalCount: totalCount, endOfList: endOfList };
 			res.json(data);
 		});
 	});
@@ -73,8 +74,10 @@ function getTitle(url, done) {
 		}
 	}
 	request(url, (err, res, body) => {
+		if(err) console.log(err);
 		let $ = cheerio.load(body);
 		let title = $('head title').text();
+		if(title==='') title = url;
 		done(title);
 	});
 }

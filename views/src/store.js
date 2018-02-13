@@ -8,7 +8,7 @@ import { createStore, combineReducers } from 'redux';
 const initialUserState = {
 	userSettings: {
 		maxTags: 3,
-		linksPerPage: 50
+		linksPerPage: 2
 	},
 	tagColors: ['B0BEC5','BCAAA4','FFCC80','FFF59D','C5E1A5','80CBC4','81D4FA','9FA8DA','CE93D8','EF9A9A']
 };
@@ -41,13 +41,14 @@ const listReducer = (state=initialListState, action) => {
 				...state,
 				visibleList: action.list,
 				maxPages: Math.ceil(action.count/initialUserState.userSettings.linksPerPage),
-				count: action.count,
-				commonTags: action.commonTags
+				count: action.count
 			};
 		case 'NEXT_PAGE':
 			return {...state, page: state.page+1}
 		case 'PREVIOUS_PAGE':
 			return {...state, page: state.page-1}
+		case 'RESET_PAGE':
+			return {...state, page: 1}
 		case 'ADD_LINK':
 			return {...state, visibleList: [action.newLink,...state.visibleList]};
 		case 'UPDATE_LINK':
@@ -57,6 +58,8 @@ const listReducer = (state=initialListState, action) => {
 				return item._id !== action.id;
 			});
 			return {...state, visibleList: newList1};
+		case 'UPDATE_TAGS':
+			return {...state, commonTags: action.tags};
 		case 'ADD_TAG':
 			let newList2 = [];
 			state.visibleList.forEach(item => {
@@ -96,9 +99,7 @@ const listReducer = (state=initialListState, action) => {
 
 const initialModalState = {
 	linkKey: -1,
-	linkId: '',
-	enteredTagName: '',
-	activeColor: 0
+	linkId: ''
 }
 
 const modalReducer = (state=initialModalState, action) => {

@@ -27,7 +27,6 @@ module.exports = function(mongoose){
 	const userModel = mongoose.model('userModel', userSchema, 'userColl')
 
 	const get = function(user, page, resultsPerPage, done) {
-		let count=0;
 		// Get number of results
 		urlListModel.find({user: user}, (err, docs) => {
 			if(err){
@@ -50,18 +49,24 @@ module.exports = function(mongoose){
 	};
 
 	const getLinksByTagName = function(user, tagName, page, resultsPerPage, done) {
-		let theList = {};
-		urlListModel
-			.find({user: user, "tags.name": tagName})
-			.skip((page - 1) * resultsPerPage)
-			.limit(parseInt(resultsPerPage))
-			.sort('-date')
-			.exec((err, res) => {
-				let links = res;
-				let linksCount = links.length;
-				let endOfList = (page)*resultsPerPage >= linksCount ? true : false;
-				done(links, linksCount, endOfList);
-			});
+		// Get number of results
+		urlListModel.find({user: user, "tags.name": tagName}, (err, docs) => {
+			if(err){
+				console.log('Error getting links for user ' + user + ' and tag ' + tagName + ': ' + err);
+			} else {
+				let totalCount=docs.length;
+				urlListModel
+					.find({user: user, "tags.name": tagName})
+					.skip((page - 1) * resultsPerPage)
+					.limit(parseInt(resultsPerPage))
+					.sort('-date')
+					.exec((err, res) => {
+						let links = res;
+						let endOfList = (page)*resultsPerPage >= totalCount ? true : false;
+						done(links, totalCount, endOfList);
+					});
+			}
+		});
 	};
 
 	const post = async (entry, done) => {
@@ -84,10 +89,15 @@ module.exports = function(mongoose){
 		});
 	};
 
-	const getTags = async (user, done) => {
-			let res = await userModel.find({ user: user });
-			let tags = res[0].tags;
-			done(tags);
+	const getTags = function(user, done) {
+		urlListModel.find({user: user}, (err, docs) => {
+			if(err){
+				console.log('Error getting links for user' + user + ': ' + err);
+			} else {
+				let tags = getCommonTags(docs);
+				done(tags);
+			}
+		});
 	}
 
 	const addTag = function(user, id, tagName, tagColor, done) {
@@ -171,7 +181,7 @@ const getCommonTags = function(links) {
 		for(let tag of link.tags) {
 			let found = false;
 			for(let [index, commonTag] of commonTags.entries()) {
-				if(tag.name === commonTag.name && tag.color===commonTag.color) {
+				if(tag.name === commonTag.name && tag.color.toLowerCase() === commonTag.color.toLowerCase()) {
 					found = true;
 					commonTags = [
 						...commonTags.slice(0, index),
@@ -185,5 +195,6 @@ const getCommonTags = function(links) {
 			}
 		}
 	}
+	
 	return commonTags.sort((a,b) => b.occurences - a.occurences);
 }

@@ -3,7 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 import './App.css';
 import TopBarContainer from './components/TopBarContainer';
 import HomeView from './components/HomeView';
-// import TagsView from './components/TagsView';
+import TagsViewContainer from './components/TagsViewContainer';
 // import SearchView from './components/SearchView';
 import AddTagModalContainer from './components/AddTagModalContainer'
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -17,6 +17,7 @@ export default class App extends Component {
         <TopBarContainer />
         <Switch>
           <Route exact path='/' component={HomeView} />
+          <Route path='/tags/' component={TagsViewContainer} />
         </Switch>
         <AddTagModalContainer />
       </div>
