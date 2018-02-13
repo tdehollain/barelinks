@@ -41,7 +41,7 @@ class TagsViewContainer extends Component {
 				});
 
 				// start with full list of tags
-				this.setState({ tags: res.tags.slice(0,20) });
+				this.setState({ tags: res.tags.slice(0,this.props.userSettings.maxTagsToShow) });
 			});
 	}
 
@@ -66,7 +66,7 @@ class TagsViewContainer extends Component {
 		let newTags = this.props.list.commonTags.filter(tag => {
 			return tag.name.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1;
 		});
-		this.setState({ "tags": newTags.slice(0,20)});
+		this.setState({ "tags": newTags.slice(0,this.props.userSettings.maxTagsToShow)});
 	}
 
 	handleTagClick(name, color) {
