@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { store } from '../store';
+import { Route } from 'react-router-dom';
 import TagsViewForm from './TagsViewForm';
 import TagsViewTags from './TagsViewTags';
-import ListContainer from './ListContainer';
-import CommonTag from './CommonTag';
+import TagsViewListContainer from './TagsViewListContainer';
 
 class TagsViewContainer extends Component {
 	constructor() {
@@ -24,12 +24,6 @@ class TagsViewContainer extends Component {
 			"type": 'RESET_PAGE',
 		});
 	}
-
-	componentWillReceiveProps(nextProps) {
-		if(nextProps.list.page !== this.props.list.page) {
-			this.API_updateList(nextProps.list.page);
-		}
-	}	
 	
 	API_getTags() {
 		fetch('/api/getTags/Thib')
@@ -45,19 +39,6 @@ class TagsViewContainer extends Component {
 			});
 	}
 
-	API_updateList(page){
-		fetch('/api/getLinksByTagName/Thib/' + this.state.selectedTag.name + '/' + this.state.selectedTag.color + '/' + page + '/' + this.props.userSettings.linksPerPage)
-			.then(res => res.json())
-			.then(res => {
-				// update list of links
-				store.dispatch({
-					"type": 'UPDATE_LIST',
-					"list": res.list,
-					"count": res.totalCount
-				});
-			});
-	}
-
 	handleChange(e) {
 		// update search string
 		this.setState({ "enteredValue": e.target.value });
@@ -70,36 +51,10 @@ class TagsViewContainer extends Component {
 	}
 
 	handleTagClick(name, color) {
-		this.setState({
-			"selectedTag": {
-				"name": name,
-				"color": color
-			}
-		}, () => {
-			this.API_updateList(1);
-		});
+		console.log(name);
 	}
 
 	render() {
-
-		let tagList = null;
-		if(this.state.selectedTag) {
-			tagList = <div className='mt-5'>
-									<div className='mb-3'>
-										<span><u>Showing results for tag</u> </span>
-										<CommonTag 
-												key={1} 
-												name={this.state.selectedTag.name} 
-												color={this.state.selectedTag.color} 
-												tagClick={this.handleTagClick} 
-											/>
-										</div>
-									<ListContainer
-										userSettings={this.props.userSettings}
-										list={this.props.list}
-									/>
-								</div>
-		}
 
 		return (
 			<div className='TagsViewContainer container'>
@@ -111,7 +66,7 @@ class TagsViewContainer extends Component {
 					tags={this.state.tags}
 					tagClick = {this.handleTagClick}
 				/>
-				{tagList}
+				<Route path='/tags/:tagName/' component={TagsViewListContainer} />
 			</div>
 		)
 	}

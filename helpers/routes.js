@@ -19,7 +19,7 @@ module.exports = function(router, db) {
 		});
 	});
 
-	router.get('/api/getLinksByTagName/:user/:tagName/:tagColor/:page/:resultsPerPage', (req, res) => {
+	router.get('/api/getLinksByTagName/:user/:tagName/:page/:resultsPerPage', (req, res) => {
 		db.getLinksByTagName(req.params.user, req.params.tagName, req.params.page, req.params.resultsPerPage, (list, totalCount, endOfList) => {
 			let data = { list: list, totalCount: totalCount, endOfList: endOfList };
 			res.json(data);
