@@ -15,17 +15,17 @@ class TagsViewListContainer extends Component {
 	}
 
 	componentWillMount() {
-		console.log('componentWillMount');
+		// console.log('componentWillMount');
 		store.dispatch({ "type": 'RESET_LIST' });
 	}
 
 	componentDidMount() {
-		console.log('componentDidMount');
+		// console.log('componentDidMount');
 		this.resetList(this.props.match.params.tagName);
 	}
 
 	componentWillReceiveProps(nextProps) {
-		console.log('componentWillReceiveProps');
+		// console.log('componentWillReceiveProps');
 		if(nextProps.list.page !== this.props.list.page) {
 			this.API_updateList(nextProps.match.params.tagName, nextProps.list.page);
 		}
@@ -38,10 +38,6 @@ class TagsViewListContainer extends Component {
 	resetList(tagName) {
 		// get list
 		this.API_updateList(tagName, 1);
-		// reset active page to 1
-		// store.dispatch({
-		// 	"type": 'RESET_PAGE',
-		// });
 		this.setState({ "tagName": tagName });
 	}
 

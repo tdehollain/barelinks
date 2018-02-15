@@ -6,6 +6,10 @@ import ListContainer from './ListContainer';
 
 class HomeView extends Component {
 
+	componentWillMount() {
+		store.dispatch({ "type": 'RESET_LIST' });
+	}
+
 	componentDidMount() {
 		this.API_updateList(this.props.list.page);
 		this.API_getTags();
