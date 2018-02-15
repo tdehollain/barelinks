@@ -9,6 +9,7 @@ import TagsViewListContainer from './TagsViewListContainer';
 class TagsViewContainer extends Component {
 	constructor() {
 		super();
+		
 		this.state = {
 			enteredValue: '',
 			tags:[]
@@ -18,6 +19,7 @@ class TagsViewContainer extends Component {
 	}
 
 	componentDidMount() {
+		
 		this.API_getTags();
 		// reset active page to 1
 		store.dispatch({
@@ -51,7 +53,7 @@ class TagsViewContainer extends Component {
 	}
 
 	handleTagClick(name, color) {
-		console.log(name);
+		this.props.history.push('/tags/' + name);
 	}
 
 	render() {

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 class TagsViewForm extends Component {
 	render() {
 		return (
-			<div className='TagsViewForm mt-5'>
+			<div className='TagsViewForm mt-5 ml-1'>
 				<form className='form form-row'>
 					<input
 						className='form-control'

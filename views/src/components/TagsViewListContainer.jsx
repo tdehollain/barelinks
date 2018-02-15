@@ -15,28 +15,38 @@ class TagsViewListContainer extends Component {
 	}
 
 	componentWillMount() {
+		console.log('componentWillMount');
 		store.dispatch({ "type": 'RESET_LIST' });
 	}
 
 	componentDidMount() {
-		// get list
-		this.API_updateList(1);
-		// reset active page to 1
-		store.dispatch({
-			"type": 'RESET_PAGE',
-		});
-
-		this.setState({ "tagName": this.props.match.params.tagName });
+		console.log('componentDidMount');
+		this.resetList(this.props.match.params.tagName);
 	}
 
 	componentWillReceiveProps(nextProps) {
+		console.log('componentWillReceiveProps');
 		if(nextProps.list.page !== this.props.list.page) {
-			this.API_updateList(nextProps.list.page);
+			this.API_updateList(nextProps.match.params.tagName, nextProps.list.page);
 		}
-	}	
 
-	API_updateList(page){
-		fetch('/api/getLinksByTagName/Thib/' + this.props.match.params.tagName + '/' + page + '/' + this.props.userSettings.linksPerPage)
+		if(nextProps.match.params.tagName !== this.props.match.params.tagName) {
+			this.resetList(nextProps.match.params.tagName);
+		}
+	}
+
+	resetList(tagName) {
+		// get list
+		this.API_updateList(tagName, 1);
+		// reset active page to 1
+		// store.dispatch({
+		// 	"type": 'RESET_PAGE',
+		// });
+		this.setState({ "tagName": tagName });
+	}
+
+	API_updateList(tagName, page){
+		fetch('/api/getLinksByTagName/Thib/' + tagName + '/' + page + '/' + this.props.userSettings.linksPerPage)
 			.then(res => res.json())
 			.then(res => {
 				// update list of links
@@ -48,7 +58,7 @@ class TagsViewListContainer extends Component {
 				// get color of the current tag
 				for(let link of res.list) {
 					for(let tag of link.tags) {
-						if(tag.name === this.props.match.params.tagName) this.setState({ "tagColor": tag.color});
+						if(tag.name === tagName) this.setState({ "tagColor": tag.color});
 					}
 				}
 			});

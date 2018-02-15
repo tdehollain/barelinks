@@ -51,7 +51,7 @@ const listReducer = (state=initialListState, action) => {
 		case 'RESET_PAGE':
 			return {...state, page: 1}
 		case 'RESET_LIST':
-			return {...state, visibleList: []}
+			return {...state, page: 1, visibleList: []}
 		case 'ADD_LINK':
 			return {...state, visibleList: [action.newLink,...state.visibleList]};
 		case 'UPDATE_LINK':
