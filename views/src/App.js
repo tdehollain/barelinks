@@ -4,7 +4,7 @@ import './App.css';
 import TopBarContainer from './components/TopBarContainer';
 import HomeView from './components/HomeView';
 import TagsViewContainer from './components/TagsViewContainer';
-// import SearchView from './components/SearchView';
+import SearchViewContainer from './components/SearchViewContainer';
 import AddTagModalContainer from './components/AddTagModalContainer'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.js';
@@ -18,6 +18,7 @@ export default class App extends Component {
         <Switch>
           <Route exact path='/' component={HomeView} />
           <Route path='/tags/' component={TagsViewContainer} />
+          <Route path='/search/' component={SearchViewContainer} />
         </Switch>
         <AddTagModalContainer />
       </div>

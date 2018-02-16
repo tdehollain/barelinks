@@ -26,6 +26,13 @@ module.exports = function(router, db) {
 		});
 	});
 
+	router.get('/api/getLinksBySearchTerm/:user/:searchTerm/:page/:resultsPerPage', (req, res) => {
+		db.getLinksBySearchTerm(req.params.user, req.params.searchTerm, req.params.page, req.params.resultsPerPage, (list, totalCount, endOfList) => {
+			let data = { list: list, totalCount: totalCount, endOfList: endOfList };
+			res.json(data);
+		});
+	});
+
 	router.put('/api/add/:user/:url/:date', (req, res) => {
 
 		getTitle(req.params.url, title => {

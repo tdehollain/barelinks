@@ -63,6 +63,7 @@ class TagsViewContainer extends Component {
 				<TagsViewForm
 					handleChange={this.handleChange}
 					enteredValue={this.state.enteredValue}
+					placeholder={'Enter a tag name'}
 				/>
 				<TagsViewTags 
 					tags={this.state.tags}

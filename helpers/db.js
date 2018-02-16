@@ -69,6 +69,36 @@ module.exports = function(mongoose){
 		});
 	};
 
+	const getLinksBySearchTerm = function(user, searchTerm, page, resultsPerPage, done) {
+		// Get number of results
+		urlListModel.find({user: user, $or: [
+				{ "tags.name": { "$regex": searchTerm, "$options": 'i' } },
+				{ "title": { "$regex": searchTerm, "$options": 'i' } },
+				{ "url": { "$regex": searchTerm, "$options": 'i' } } ]}
+				, (err, docs) => {
+			if(err){
+				console.log('Error getting links for user ' + user + ' and search term ' + searchTerm + ': ' + err);
+			} else {
+				console.log()
+				let totalCount=docs.length;
+				urlListModel
+					.find({user: user, $or: [
+						{ "tags.name": { "$regex": searchTerm, "$options": 'i' } },
+						{ "title": { "$regex": searchTerm, "$options": 'i' } },
+						{ "url": { "$regex": searchTerm, "$options": 'i' } }
+						]})
+					.skip((page - 1) * resultsPerPage)
+					.limit(parseInt(resultsPerPage))
+					.sort('-date')
+					.exec((err, res) => {
+						let links = res;
+						let endOfList = (page)*resultsPerPage >= totalCount ? true : false;
+						done(links, totalCount, endOfList);
+					});
+			}
+		});
+	};
+
 	const post = async (entry, done) => {
 		let entryModel = new urlListModel({
 			user: entry.user,
@@ -168,6 +198,7 @@ module.exports = function(mongoose){
 		get: get,
 		getTags: getTags,
 		getLinksByTagName: getLinksByTagName,
+		getLinksBySearchTerm: getLinksBySearchTerm,
 		del: del,
 		addTag: addTag,
 		removeTag, removeTag
