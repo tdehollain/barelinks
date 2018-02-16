@@ -39,6 +39,10 @@ class TagsViewListContainer extends Component {
 		// get list
 		this.API_updateList(tagName, 1);
 		this.setState({ "tagName": tagName });
+		// get color of the current tag
+		for(let tag of this.props.tagList) {
+			if(tag.name === tagName) this.setState({ "tagColor": tag.color});
+		}
 	}
 
 	API_updateList(tagName, page){
@@ -51,12 +55,6 @@ class TagsViewListContainer extends Component {
 					"list": res.list,
 					"count": res.totalCount
 				});
-				// get color of the current tag
-				for(let link of res.list) {
-					for(let tag of link.tags) {
-						if(tag.name === tagName) this.setState({ "tagColor": tag.color});
-					}
-				}
 			});
 	}
 

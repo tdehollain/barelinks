@@ -59,7 +59,7 @@ class SearchViewListContainer extends Component {
 		return (
 			<div className='mt-5'>
 				<div className='mb-3'>
-					<span><u>Showing results for term</u> {this.state.searchTerm}</span>
+					<span><u>Showing results for term</u> <i>{this.state.searchTerm}</i></span>
 					</div>
 				<ListContainer
 					userSettings={this.props.userSettings}

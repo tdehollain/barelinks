@@ -69,7 +69,8 @@ class TagsViewContainer extends Component {
 					tags={this.state.tags}
 					tagClick = {this.handleTagClick}
 				/>
-				<Route path='/tags/:tagName/' component={TagsViewListContainer} />
+				{/* <Route path='/tags/:tagName/' component={TagsViewListContainer} /> */}
+				<Route path='/tags/:tagName/' render={ (props) => <TagsViewListContainer tagList={this.state.tags} {...props} /> } />
 			</div>
 		)
 	}

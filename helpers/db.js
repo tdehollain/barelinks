@@ -79,7 +79,6 @@ module.exports = function(mongoose){
 			if(err){
 				console.log('Error getting links for user ' + user + ' and search term ' + searchTerm + ': ' + err);
 			} else {
-				console.log()
 				let totalCount=docs.length;
 				urlListModel
 					.find({user: user, $or: [
