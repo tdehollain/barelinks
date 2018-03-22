@@ -36,7 +36,7 @@ class TagsViewContainer extends Component {
 					"tags": res.tags
 				});
 
-				// start with full list of tags
+				// start with full list of tags, limited to 'maxTagsToShow'
 				this.setState({ tags: res.tags.slice(0,this.props.userSettings.maxTagsToShow) });
 			});
 	}
@@ -45,7 +45,7 @@ class TagsViewContainer extends Component {
 		// update search string
 		this.setState({ "enteredValue": e.target.value });
 
-		// update list of tags
+		// update list of displayed tags
 		let newTags = this.props.list.commonTags.filter(tag => {
 			return tag.name.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1;
 		});

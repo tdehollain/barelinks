@@ -12,7 +12,8 @@ class AddTagModalContainer extends Component {
 
 		this.state = {
 			enteredTagName: '',
-			activeColor: 0
+			activeColor: 0,
+			commonTags: []
 		}
 
 		this.handleChangeEnteredTagName = this.handleChangeEnteredTagName.bind(this);
@@ -21,11 +22,20 @@ class AddTagModalContainer extends Component {
 		this.handleAddTag = this.handleAddTag.bind(this);
 	}
 
+	componentWillReceiveProps(nextProps) {
+		this.setState({ commonTags: nextProps.commonTags.slice(0, nextProps.maxTagsToShowInModal) });
+	}
 
 	handleChangeEnteredTagName(e) {
 		this.setState({
 			"enteredTagName": e.target.value
 		});
+
+		// update list of displayed tags
+		let newTags = this.props.commonTags.filter(tag => {
+			return tag.name.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1;
+		});
+		this.setState({ commonTags: newTags.slice(0, this.props.maxTagsToShowInModal) });
 	}
 
 	handleSelectTagColor(key) {
@@ -69,7 +79,7 @@ class AddTagModalContainer extends Component {
 		return(
 			<AddTagModal
 				tagClick={this.handleTagClick}
-				commonTags={this.props.commonTags}
+				commonTags={this.state.commonTags}
 				enteredTagName={this.state.enteredTagName}
 				changeEnteredTagName={this.handleChangeEnteredTagName}
 				tagColors={this.props.tagColors}
@@ -84,6 +94,7 @@ class AddTagModalContainer extends Component {
 const mapStateToProps = (store) => {
 	return {
 		commonTags: store.listState.commonTags,
+		maxTagsToShowInModal: store.userState.userSettings.maxTagsToShowInModal,
 		tagColors: store.userState.tagColors,
 		linkId: store.modalState.linkId
 	}

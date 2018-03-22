@@ -7,7 +7,7 @@ class ColorButtons extends Component {
 
 		return (
 			<div className='px-2'>
-				<ul className="list-inline d-flex justify-content-around colorItems my-3">
+				<ul className="list-inline d-flex justify-content-around colorItems">
 				{
 					this.props.tagColors.map((color, index) => {
 						return (

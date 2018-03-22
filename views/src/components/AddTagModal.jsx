@@ -40,6 +40,18 @@ class AddTagModal extends Component {
 								<span aria-hidden="true">&times;</span>
 							</button>
 						</div>
+						<div className='container'>
+							<input
+								type='text'
+								id='addTagInput'
+								className='form-control mt-3'
+								placeholder='Search existing tags, or enter new tag name'
+								autoFocus
+								value={this.props.enteredTagName}
+								onChange={this.props.changeEnteredTagName}
+								onKeyPress={this.handleKeyPress}
+							/>
+						</div>
 						<div className="modal-body mt-2 pt-1 pb-0">
 							{this.props.commonTags.map((tag, index) => {
 								return (
@@ -52,17 +64,8 @@ class AddTagModal extends Component {
 								)
 							})}
 						</div>
-						<div className='container'>
-							<input
-								type='text'
-								id='addTagInput'
-								className='form-control mt-3'
-								placeholder='Tag name'
-								autoFocus
-								value={this.props.enteredTagName}
-								onChange={this.props.changeEnteredTagName}
-								onKeyPress={this.handleKeyPress}
-							/>
+						<div>
+							<p className='newTagColorText'>New tag color:</p>
 						</div>
 						<ColorButtons
 							tagColors={this.props.tagColors}
@@ -85,7 +88,7 @@ class AddTagModal extends Component {
 								data-dismiss="modal"
 								onClick={this.props.addTag}
 							>
-								Add tag
+								Create new tag
 							</button>
 						</div>
 					</div>

@@ -89,6 +89,16 @@ span.tag a:hover {
   text-decoration: none;
 }
 
+.modal span.tag {
+  margin: 1px 3px;
+}
+
+.modal .newTagColorText {
+  margin: 20px 0 10px 18px;
+  color: #666;
+  font-size: 0.9rem;
+}
+
 button.addTagButton {
   font-size: 1.4rem;
   font-weight: 200;
