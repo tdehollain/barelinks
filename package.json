@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "push": "git add -A && git commit -m 'commit' && git push origin master",
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "build": "cd views && npm run build"
   },
   "author": "Thibaut de Hollain",
   "license": "ISC",
