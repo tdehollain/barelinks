@@ -6,19 +6,21 @@ import { createStore, combineReducers } from 'redux';
 ===================*/
 
 const initialUserState = {
+	isAuthenticated: false,
+	username: '',
 	userSettings: {
 		maxTags: 3,
 		linksPerPage: 50,
 		maxTagsToShow: 200,
 		maxTagsToShowInModal: 15
 	},
-	tagColors: ['B0BEC5','BCAAA4','FFCC80','FFF59D','C5E1A5','80CBC4','81D4FA','9FA8DA','CE93D8','EF9A9A']
+	tagColors: ['B0BEC5', 'BCAAA4', 'FFCC80', 'FFF59D', 'C5E1A5', '80CBC4', '81D4FA', '9FA8DA', 'CE93D8', 'EF9A9A']
 };
 
-const userReducer = (state=initialUserState, action) => {
-	switch(action.type) {
-		case 'CHANGE_USERNAME':
-			return {...state, username: action.username };
+const userReducer = (state = initialUserState, action) => {
+	switch (action.type) {
+		case 'UPDATE_USER':
+			return { ...state, isAuthenticated: action.isAuthenticated, username: action.username };
 		default: return state;
 	}
 };
@@ -28,7 +30,7 @@ const userReducer = (state=initialUserState, action) => {
 ===     List     ====
 ===================*/
 
-const initialListState = { 
+const initialListState = {
 	visibleList: [],
 	page: 1,
 	maxPages: 1,
@@ -36,62 +38,62 @@ const initialListState = {
 	commonTags: []
 };
 
-const listReducer = (state=initialListState, action) => {
-	switch(action.type) {
+const listReducer = (state = initialListState, action) => {
+	switch (action.type) {
 		case 'UPDATE_LIST':
 			return {
 				...state,
 				visibleList: action.list,
-				maxPages: Math.ceil(action.count/initialUserState.userSettings.linksPerPage),
+				maxPages: Math.ceil(action.count / initialUserState.userSettings.linksPerPage),
 				count: action.count
 			};
 		case 'NEXT_PAGE':
-			return {...state, page: state.page+1}
+			return { ...state, page: state.page + 1 }
 		case 'PREVIOUS_PAGE':
-			return {...state, page: state.page-1}
+			return { ...state, page: state.page - 1 }
 		case 'RESET_PAGE':
-			return {...state, page: 1}
+			return { ...state, page: 1 }
 		case 'RESET_LIST':
-			return {...state, page: 1, visibleList: []}
+			return { ...state, page: 1, visibleList: [] }
 		case 'ADD_LINK':
-			return {...state, visibleList: [action.newLink,...state.visibleList]};
+			return { ...state, visibleList: [action.newLink, ...state.visibleList] };
 		case 'UPDATE_LINK':
-			return {...state, visibleList: [action.newLink,...state.visibleList.slice(1)]};
+			return { ...state, visibleList: [action.newLink, ...state.visibleList.slice(1)] };
 		case 'REMOVE_LINK':
 			let newList1 = state.visibleList.filter(item => {
 				return item._id !== action.id;
 			});
-			return {...state, visibleList: newList1};
+			return { ...state, visibleList: newList1 };
 		case 'UPDATE_TAGS':
-			return {...state, commonTags: action.tags};
+			return { ...state, commonTags: action.tags };
 		case 'ADD_TAG':
 			let newList2 = [];
 			state.visibleList.forEach(item => {
-				if(item._id === action.linkId) {
+				if (item._id === action.linkId) {
 					// filter to avoid having 2 identical tags
 					let newTags = item.tags.filter(tagItem => {
-						return tagItem.name!==action.name || tagItem.color!==action.color;
+						return tagItem.name !== action.name || tagItem.color !== action.color;
 					});
 					newTags.push({ "name": action.name, "color": action.color });
-					newList2.push({...item, tags: newTags});
+					newList2.push({ ...item, tags: newTags });
 				} else {
 					newList2.push(item);
 				}
 			});
-			return {...state, visibleList: newList2};
+			return { ...state, visibleList: newList2 };
 		case 'REMOVE_TAG':
 			let newList3 = [];
 			state.visibleList.forEach(item2 => {
-				if(item2._id===action.linkId) {
+				if (item2._id === action.linkId) {
 					let newTags2 = item2.tags.filter(tagItem2 => {
-						return tagItem2.name!==action.name || tagItem2.color!==action.color;
+						return tagItem2.name !== action.name || tagItem2.color !== action.color;
 					});
-					newList3.push({...item2, tags: newTags2});
+					newList3.push({ ...item2, tags: newTags2 });
 				} else {
 					newList3.push(item2);
 				}
 			});
-			return {...state, visibleList: newList3};
+			return { ...state, visibleList: newList3 };
 		default: return state;
 	}
 };
@@ -106,10 +108,10 @@ const initialModalState = {
 	linkId: ''
 }
 
-const modalReducer = (state=initialModalState, action) => {
-	switch(action.type) {
+const modalReducer = (state = initialModalState, action) => {
+	switch (action.type) {
 		case 'SHOW_MODAL':
-			return {...state, linkKey: action.linkKey, linkId: action.linkId };
+			return { ...state, linkKey: action.linkKey, linkId: action.linkId };
 		default: return state;
 	}
 };

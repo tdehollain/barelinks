@@ -3,6 +3,8 @@
   "version": "0.7.0",
   "private": true,
   "dependencies": {
+    "aws-amplify": "^0.4.8",
+    "aws-amplify-react": "^0.1.54",
     "bootstrap": "^4.0.0-beta",
     "jquery": "^3.2.1",
     "popper.js": "^1.12.3",
