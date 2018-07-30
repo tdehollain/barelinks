@@ -7,12 +7,12 @@ class List extends Component {
 	render() {
 
 		let pagination = null;
-		if(this.props.maxPages > 1) {
-			pagination =  <div className='row align-items-center text-center justify-content-md-center my-4'>
-											<button disabled={this.props.currentPage===1} className='pageButton btn btn-dark' onClick={this.props.handlePreviousPage}>Previous</button>
-											<span className='col-3'>Page {this.props.currentPage} of {this.props.maxPages}</span>
-											<button disabled={this.props.currentPage===this.props.maxPages} className='pageButton btn btn-dark' onClick={this.props.handleNextPage}>Next</button>
-										</div>
+		if (this.props.maxPages > 1) {
+			pagination = <div className='row align-items-center text-center justify-content-md-center my-4'>
+				<button disabled={this.props.currentPage === 1} className='pageButton btn btn-dark' onClick={this.props.handlePreviousPage}>Previous</button>
+				<span className='col-3'>Page {this.props.currentPage} of {this.props.maxPages}</span>
+				<button disabled={this.props.currentPage === this.props.maxPages} className='pageButton btn btn-dark' onClick={this.props.handleNextPage}>Next</button>
+			</div>
 		}
 
 		return (
@@ -25,7 +25,7 @@ class List extends Component {
 								<LinkContainer
 									key={index}
 									linkKey={index}
-									linkId={link._id}
+									linkId={link.linkId}
 									url={link.url}
 									title={link.title}
 									date={link.date}

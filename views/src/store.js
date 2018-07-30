@@ -43,7 +43,7 @@ const listReducer = (state = initialListState, action) => {
 		case 'UPDATE_LIST':
 			return {
 				...state,
-				visibleList: action.list,
+				visibleList: action.list.sort((a, b) => (new Date(b.date) - new Date(a.date))), // sort by date
 				maxPages: Math.ceil(action.count / initialUserState.userSettings.linksPerPage),
 				count: action.count
 			};
@@ -61,7 +61,7 @@ const listReducer = (state = initialListState, action) => {
 			return { ...state, visibleList: [action.newLink, ...state.visibleList.slice(1)] };
 		case 'REMOVE_LINK':
 			let newList1 = state.visibleList.filter(item => {
-				return item._id !== action.id;
+				return item.linkId !== action.id;
 			});
 			return { ...state, visibleList: newList1 };
 		case 'UPDATE_TAGS':
@@ -69,7 +69,7 @@ const listReducer = (state = initialListState, action) => {
 		case 'ADD_TAG':
 			let newList2 = [];
 			state.visibleList.forEach(item => {
-				if (item._id === action.linkId) {
+				if (item.linkId === action.linkId) {
 					// filter to avoid having 2 identical tags
 					let newTags = item.tags.filter(tagItem => {
 						return tagItem.name !== action.name || tagItem.color !== action.color;
@@ -84,7 +84,7 @@ const listReducer = (state = initialListState, action) => {
 		case 'REMOVE_TAG':
 			let newList3 = [];
 			state.visibleList.forEach(item2 => {
-				if (item2._id === action.linkId) {
+				if (item2.linkId === action.linkId) {
 					let newTags2 = item2.tags.filter(tagItem2 => {
 						return tagItem2.name !== action.name || tagItem2.color !== action.color;
 					});

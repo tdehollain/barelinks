@@ -8,9 +8,9 @@ class Tag extends Component {
 
 	render() {
 		return (
-			<span 
+			<span
 				className='tag small'
-				style={{background: '#' + this.props.color}}
+				style={{ background: this.props.color }}
 			>
 				<Link to={'/tags/' + this.props.name}>
 					<span className='tagIcon'>

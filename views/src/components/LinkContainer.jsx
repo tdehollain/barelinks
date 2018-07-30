@@ -1,25 +1,24 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { store } from '../store';
 import Link from './Link';
+import API from '../helpers/API';
 import PropTypes from 'prop-types';
 
 class LinkContainer extends Component {
 
-	handleRemoveLink(key, id) {
+	constructor() {
+		super();
+
+		this.handleRemoveLink = this.handleRemoveLink.bind(this);
+	}
+
+	async handleRemoveLink(key, id) {
 		store.dispatch({
 			"type": "REMOVE_LINK",
 			id
 		});
-
-		fetch('/api/delete/Thib/' + id, {
-				"method": "DELETE",
-				"headers": {
-					"Accept": "application/json",
-					"Content-Type": "application/json"
-				}
-			})
-			.then(res => res.json())
-			.then(res => {});
+		let res = await API.deleteLink(this.props.userState.username, id);
 	}
 
 	handleShowAddTagModal(linkKey, linkId) {
@@ -48,7 +47,9 @@ class LinkContainer extends Component {
 
 }
 
-export default LinkContainer;
+const mapStateToProps = (store) => { return { userState: store.userState } };
+
+export default connect(mapStateToProps)(LinkContainer);
 
 LinkContainer.propTypes = {
 	linkKey: PropTypes.number,

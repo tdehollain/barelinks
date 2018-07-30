@@ -56,7 +56,7 @@ class App extends Component {
         <TopBarContainer
         />
         <Switch>
-          <PrivateRoute exact path='/' component={HomeView} />
+          {this.state.isAuthenticated ? <PrivateRoute exact path='/' component={HomeView} /> : null}
           <PrivateRoute path='/tags/' component={TagsViewContainer} />
           <PrivateRoute path='/search/' component={SearchViewContainer} />
           <Route path='/login/' component={AuthContainer} />

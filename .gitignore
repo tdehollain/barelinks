@@ -3,6 +3,7 @@
 # dependencies
 /node_modules
 /views/node_modules
+/lambda/Barelinks-PutLink/node_modules
 
 # testing
 /coverage

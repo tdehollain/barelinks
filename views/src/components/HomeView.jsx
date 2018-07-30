@@ -1,36 +1,40 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { store } from '../store';
+import API from '../helpers/API';
 import HomeFormContainer from './HomeFormContainer';
 import ListContainer from './ListContainer';
 
 class HomeView extends Component {
 
-	componentWillMount() {
-		store.dispatch({ "type": 'RESET_LIST' });
-	}
+	// componentWillMount() {
+	// 	store.dispatch({ "type": 'RESET_LIST' });
+	// }
 
 	componentDidMount() {
 		this.API_updateList(this.props.list.page);
 		this.API_getTags();
 	}
 
-	componentWillReceiveProps(nextProps) {
-		if(nextProps.list.page !== this.props.list.page) {
-			this.API_updateList(nextProps.list.page);
-		}
-	}
+	// shouldComponentUpdate(nextProps, nextState) {
+	// 	let pageChanged = nextProps.list.page !== this.props.list.page;
+	// 	let userAuthenticationChanged = nextProps.userState.isAuthenticated !== this.props.userState.isAuthenticated;
+	// 	// console.log(`old length: ${this.props.list.visibleList.length}, new length: ${nextProps.list.visibleList.length}`)
+	// 	let listChanged = nextProps.list.visibleList.length !== this.props.list.visibleList.length;
+	// 	return pageChanged || userAuthenticationChanged || listChanged;
+	// }
 
-	API_updateList(page){
-		fetch('/api/get/Thib/' + page + '/' + this.props.userSettings.linksPerPage)
-			.then(res => res.json())
-			.then(res => {
-				store.dispatch({
-					"type": 'UPDATE_LIST',
-					"list": res.list,
-					"count": res.totalCount
-				});
-			});
+	// componentDidUpdate() {
+	// 	this.API_updateList();
+	// }
+
+	async API_updateList() {
+		let linksList = await API.getLinks(this.props.userState.username, this.props.userState.userSettings.linksPerPage, this.props.list.page);
+		store.dispatch({
+			"type": 'UPDATE_LIST',
+			"list": linksList.list,
+			"count": linksList.totalCount
+		});
 	}
 
 	API_getTags() {
@@ -48,9 +52,9 @@ class HomeView extends Component {
 		return (
 			<div className='HomeView container'>
 				<HomeFormContainer />
-				<ListContainer 
+				<ListContainer
 					list={this.props.list}
-					userSettings={this.props.userSettings}
+					userSettings={this.props.userState.userSettings}
 				/>
 			</div>
 		);
@@ -61,7 +65,7 @@ class HomeView extends Component {
 const mapStateToProps = (store) => {
 	return {
 		list: store.listState,
-		userSettings: store.userState.userSettings
+		userState: store.userState
 	}
 }
 
