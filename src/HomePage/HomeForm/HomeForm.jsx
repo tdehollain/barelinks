@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-const HomeForm = (addLink, enteredURL, handleURLchange) => {
+const HomeForm = ({ enteredURL, handleChange, handleSubmit }) =>
 	<div className='HomeForm'>
-		<form className='form form-row' onSubmit={addLink}>
+		<form className='form form-row' onSubmit={handleSubmit}>
 			<div className='col'>
 				<input
 					className='form-control'
@@ -11,7 +11,7 @@ const HomeForm = (addLink, enteredURL, handleURLchange) => {
 					type='url'
 					placeholder='Enter URL (incl. http)'
 					value={enteredURL}
-					onChange={handleURLchange}
+					onChange={handleChange}
 				/>
 			</div>
 
@@ -22,12 +22,11 @@ const HomeForm = (addLink, enteredURL, handleURLchange) => {
 					</button>
 		</form>
 	</div>
-}
 
 HomeForm.propTypes = {
 	enteredURL: PropTypes.string.isRequired,
-	handleURLchange: PropTypes.func.isRequired,
-	addLink: PropTypes.func.isRequired
+	handleChange: PropTypes.func.isRequired,
+	handleSubmit: PropTypes.func.isRequired
 };
 
 export default HomeForm;

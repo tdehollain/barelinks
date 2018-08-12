@@ -4,11 +4,13 @@ import thunkMiddleware from 'redux-thunk';
 
 import userReducer from '../reducers/userReducer';
 import authReducer from '../reducers/authReducer';
+import listReducer from '../reducers/listReducer';
 
 
 const reducers = combineReducers({
 	userReducer,
-	authReducer
+	authReducer,
+	listReducer
 });
 
 export const store = createStore(reducers, composeWithDevTools(applyMiddleware(thunkMiddleware)));

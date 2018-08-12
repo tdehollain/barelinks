@@ -1,13 +1,12 @@
 import React from 'react';
-import HomeFormContainer from './HomeFormContainer';
-import ListContainer from './ListContainer';
+import HomeFormContainer from './HomeForm/HomeFormContainer';
+// import ListContainer from './List/ListContainer';
 
-const HomePage = () => {
-	<div className='HomePage container'>
+const HomePage = () =>
+	<div className='HomePage container mt-5'>
 		<HomeFormContainer />
-		<ListContainer
-		/>
+		{/* <ListContainer
+		/> */}
 	</div>
-}
 
 export default HomePage;
