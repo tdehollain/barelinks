@@ -6,6 +6,7 @@ import { Switch, Route } from 'react-router-dom';
 import NavBarContainer from './NavBar/NavBarContainer';
 import HomePage from './HomePage/HomePage';
 import AuthContainer from './Auth/AuthContainer.jsx';
+import AddTagModalContainer from "./HomePage/AddTagModal/AddTagModalContainer";
 import { PrivateRoute } from './Components/PrivateRoute';
 
 import Amplify from 'aws-amplify';
@@ -30,6 +31,7 @@ class App extends Component {
           <Route path='/resetpassword/' component={AuthContainer} />
           <Route path='/verificationsent/' component={AuthContainer} />
         </Switch>
+        <AddTagModalContainer />
       </div>
     );
   }

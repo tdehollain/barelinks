@@ -5,12 +5,14 @@ import thunkMiddleware from 'redux-thunk';
 import userReducer from '../reducers/userReducer';
 import authReducer from '../reducers/authReducer';
 import listReducer from '../reducers/listReducer';
+import addTagModalReducer from '../reducers/addTagModalReducer';
 
 
 const reducers = combineReducers({
 	userReducer,
 	authReducer,
-	listReducer
+	listReducer,
+	addTagModalReducer
 });
 
 export const store = createStore(reducers, composeWithDevTools(applyMiddleware(thunkMiddleware)));

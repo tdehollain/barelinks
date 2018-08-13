@@ -6,7 +6,7 @@ const validatePassword = (password) => {
 			message: 'The password must contain at least 6 characters'
 		};
 	}
-	let allowedCharacters = '!#$%&()*+,-./23456789:;<=>?@ABCDEFGHJKLMNOPRSTUVWXYZ[\\]^_abcdefghijkmnopqrstuvwxyz{|}~';
+	let allowedCharacters = '!#$%&()*+,-./0123456789:;<=>?@ABCDEFGHJKLMNOPRSTUVWXYZ[\\]^_abcdefghijkmnopqrstuvwxyz{|}~';
 	for (let character of password) {
 		if (allowedCharacters.indexOf(character) === -1) {
 			return {

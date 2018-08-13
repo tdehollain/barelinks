@@ -12,10 +12,10 @@ const cognitoConfig = {
 	region: 'eu-west-1',
 
 	// OPTIONAL - Amazon Cognito User Pool ID
-	userPoolId: 'eu-west-1_grZjgNjcO',
+	userPoolId: 'eu-west-1_nSOhyhEe7',
 
 	// OPTIONAL - Amazon Cognito Web Client ID (26-char alphanumeric string)
-	userPoolWebClientId: '20ave2ad7is4shanu4l5icb62m',
+	userPoolWebClientId: 'susb2de0hit9otq2h1aphbl4h',
 
 	// OPTIONAL - Enforce user authentication prior to accessing AWS resources or not
 	mandatorySignIn: false,

@@ -14,12 +14,10 @@ const addLink = (username, url) => {
 };
 
 const addLinkLocally = (newLink) => {
-	return async (dispatch) => {
-		dispatch({
-			type: homeFormActionTypes.ADD_LINK,
-			newLink
-		});
-	}
+	return {
+		type: homeFormActionTypes.ADD_LINK,
+		newLink
+	};
 }
 
 const addLinkToRemote = (username, url) => {

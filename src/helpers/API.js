@@ -49,7 +49,7 @@ const getTags = async (user) => {
 	let options = { method: 'GET' };
 	let raw_response = await fetch(URL, options);
 	let res = await raw_response.json();
-	// console.log(list);
+	// console.log(res);
 	return res.tags;
 }
 

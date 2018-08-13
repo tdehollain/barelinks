@@ -6,7 +6,7 @@ let username = isAuthenticated ? JSON.parse(localStorage.getItem('user')).userna
 const initialState = {
 	isAuthenticated,
 	username,
-	userSettings: {
+	settings: {
 		maxTags: 3,
 		linksPerPage: 50,
 		maxTagsToShow: 200,

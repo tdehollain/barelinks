@@ -1,0 +1,4 @@
+export default {
+	SHOW_MODAL: "SHOW_MODAL",
+	UPDATE_TAGS: "UPDATE_TAGS"
+}

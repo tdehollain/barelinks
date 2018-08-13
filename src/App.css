@@ -1,3 +1,8 @@
+
+
+/*=====================
+=====   GENERAL   =====
+=====================*/
 .App button {
   cursor: pointer;
 }
@@ -10,6 +15,11 @@
   margin-top: 1px;
   font-weight: bold;
 }
+
+
+/*====================
+=====   NAVBAR   =====
+====================*/
 
 .NavBar button {
   color: #ECEFF1;
@@ -24,4 +34,120 @@
 .NavBar .loginButton svg {
   top: -2px;
   position: relative;
+}
+
+
+/*======================
+=====   HOMEFORM   =====
+======================*/
+
+.HomeForm {
+  margin-top: 40px;
+  margin-bottom: 50px;
+}
+
+
+/*==================
+=====   LIST   =====
+==================*/
+
+.LinksList ul {
+  list-style-type: none;
+  margin-bottom: 50px;
+}
+
+.LinksList a.link {
+  color: #37474F;
+  font-size: 0.9rem;
+  padding: 2px 3px;
+}
+
+.LinksList .pageButton {
+  width: 120px;
+}
+
+.LinksList .pageButton:disabled {
+  cursor: not-allowed;
+}
+
+
+/*==================
+=====   TAGS   =====
+==================*/
+
+.tagIcon svg {
+  width: 14px;
+  height: 14px;
+  margin: -2px 3px 0 0;
+}
+
+.trashcanIcon svg {
+  width: 14px;
+  height: 14px;
+  margin: -4px 0 0 2px;
+}
+
+.hidden {
+  display: none;
+}
+
+span.tag {
+  border-radius: 11px;
+  padding: 1px 6px;
+  margin: 0 3px;
+  cursor: pointer;
+  /*white-space: nowrap;*/
+  display: inline-block;
+}
+
+span.tag {
+  color: #37474F;
+}
+
+span.tag a {
+  cursor: pointer;
+  color: #37474F;
+}
+
+span.tag a:hover {
+  text-decoration: none;
+}
+
+.modal span.tag {
+  margin: 1px 3px;
+}
+
+.modal .newTagColorText {
+  margin: 20px 0 10px 18px;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+button.addTagButton {
+  font-size: 1.4rem;
+  font-weight: 200;
+  line-height: 1rem;
+  padding: 0 3px 3px;
+  border-radius: 12px;
+  margin-left: 3px;
+}
+
+
+/*=========================
+=====   ADDTAGMODAL   =====
+=========================*/
+
+.colorItem {
+  width: 20px;
+  height: 20px;
+  outline: none;
+}
+
+.colorItem:hover {
+  border: 2px solid #666;
+  cursor: pointer;
+}
+
+.colorItem.active {
+  border: 2px solid #666;
 }

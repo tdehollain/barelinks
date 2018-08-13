@@ -1,28 +1,36 @@
+import listActionTypes from '../HomePage/List/listActionTypes';
+import linkActionTypes from '../HomePage/List/Link/linkActionTypes';
+import tagActionTypes from '../HomePage/List/Link/Tag/tagActionTypes';
+import addTagModalActionTypes from '../HomePage/AddTagModal/addTagModalActionTypes';
 
 const initialState = {
 	visibleList: [],
 	page: 1,
 	maxPages: 1,
 	count: 1,
-	commonTags: []
+	commonTags: [],
+	loadingList: false
 };
 
 const listReducer = (state = initialState, payload) => {
 	switch (payload.type) {
-		case 'UPDATE_LIST':
+		case listActionTypes.LOADING_LIST:
+			return { ...state, loadingList: true };
+		case listActionTypes.UPDATE_LIST:
 			if (payload.list) {
 				return {
 					...state,
 					visibleList: payload.list.sort((a, b) => (new Date(b.date) - new Date(a.date))), // sort by date
-					maxPages: Math.ceil(payload.count / state.userSettings.linksPerPage),
-					count: payload.count
+					maxPages: Math.ceil(payload.count / payload.linksPerPage),
+					count: payload.count,
+					loadingList: false
 				};
 			} else {
 				return state;
 			}
-		case 'NEXT_PAGE':
+		case listActionTypes.LOAD_NEXT_PAGE:
 			return { ...state, page: state.page + 1 }
-		case 'PREVIOUS_PAGE':
+		case listActionTypes.LOAD_PREVIOUS_PAGE:
 			return { ...state, page: state.page - 1 }
 		case 'RESET_PAGE':
 			return { ...state, page: 1 }
@@ -32,14 +40,14 @@ const listReducer = (state = initialState, payload) => {
 			return { ...state, visibleList: [payload.newLink, ...state.visibleList] };
 		case 'UPDATE_LINK':
 			return { ...state, visibleList: [payload.newLink, ...state.visibleList.slice(1)] };
-		case 'REMOVE_LINK':
+		case linkActionTypes.REMOVE_LINK:
 			let newList1 = state.visibleList.filter(item => {
 				return item.linkId !== payload.id;
 			});
 			return { ...state, visibleList: newList1 };
-		case 'UPDATE_TAGS':
-			return { ...state, comfmonTags: payload.tags };
-		case 'ADD_TAG':
+		case addTagModalActionTypes.UPDATE_TAGS:
+			return { ...state, commonTags: payload.tags };
+		case tagActionTypes.ADD_TAG:
 			let newList2 = [];
 			state.visibleList.forEach(item => {
 				if (item.linkId === payload.linkId) {
@@ -56,7 +64,7 @@ const listReducer = (state = initialState, payload) => {
 				}
 			});
 			return { ...state, visibleList: newList2 };
-		case 'REMOVE_TAG':
+		case tagActionTypes.REMOVE_TAG:
 			let newList3 = [];
 			state.visibleList.forEach(item2 => {
 				if (item2.linkId === payload.linkId) {
