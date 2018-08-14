@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 // import PropTypes from 'prop-types';
 import AddTagModal from './AddTagModal';
-import tagActions from '../List/Link/Tag/tagActions';
+import tagActions from '../HomePage/List/Link/Tag/tagActions';
 import $ from 'jquery';
 import addTagModalActions from './addTagModalActions';
 
@@ -13,8 +13,7 @@ class AddTagModalContainer extends Component {
 
 		this.state = {
 			enteredTagName: '',
-			activeColor: 0,
-			commonTags: []
+			activeColor: 0
 		}
 
 		this.handleChangeEnteredTagName = this.handleChangeEnteredTagName.bind(this);
@@ -31,12 +30,6 @@ class AddTagModalContainer extends Component {
 		this.setState({
 			"enteredTagName": e.target.value
 		});
-
-		// update list of displayed tags
-		let newTags = this.props.commonTags.filter(tag => {
-			return tag.name.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1;
-		});
-		this.setState({ commonTags: newTags.slice(0, this.props.maxTagsToShowInModal) });
 	}
 
 	handleSelectTagColor(key) {
@@ -75,10 +68,17 @@ class AddTagModalContainer extends Component {
 
 	render() {
 
+		let commonTagsFiltered = this.props.commonTags.filter(tag => {
+			return tag.name.toLowerCase().indexOf(this.state.enteredTagName.toLowerCase()) > -1;
+		});
+		let commonTagsToShow = this.state.enteredTagName
+			? commonTagsFiltered.slice(0, this.props.maxTagsToShowInModal)
+			: this.props.commonTags.slice(0, this.props.maxTagsToShowInModal)
+
 		return (
 			<AddTagModal
 				tagClick={this.handleTagClick}
-				commonTags={this.state.enteredTagName ? this.state.commonTags.slice(0, this.props.maxTagsToShowInModal) : this.props.commonTags.slice(0, this.props.maxTagsToShowInModal)}
+				commonTags={commonTagsToShow}
 				enteredTagName={this.state.enteredTagName}
 				changeEnteredTagName={this.handleChangeEnteredTagName}
 				tagColors={this.props.tagColors}

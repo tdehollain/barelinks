@@ -1,4 +1,4 @@
-import addTagModalActionTypes from '../HomePage/AddTagModal/addTagModalActionTypes';
+import addTagModalActionTypes from '../AddTagModal/addTagModalActionTypes';
 
 const initialState = {
 	linkKey: -1,

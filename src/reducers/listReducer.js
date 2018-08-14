@@ -2,7 +2,7 @@ import listActionTypes from '../HomePage/List/listActionTypes';
 import linkActionTypes from '../HomePage/List/Link/linkActionTypes';
 import homeFormActionTypes from '../HomePage/HomeForm/homeFormActionTypes';
 import tagActionTypes from '../HomePage/List/Link/Tag/tagActionTypes';
-import addTagModalActionTypes from '../HomePage/AddTagModal/addTagModalActionTypes';
+import addTagModalActionTypes from '../AddTagModal/addTagModalActionTypes';
 
 const initialState = {
 	visibleList: [],

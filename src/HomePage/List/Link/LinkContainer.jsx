@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Link from './Link';
 import linkActions from './linkActions';
-import addTagModalActions from '../../AddTagModal/addTagModalActions';
+import addTagModalActions from '../../../AddTagModal/addTagModalActions';
 
 class LinkContainer extends Component {
 
