@@ -1,5 +1,6 @@
 import listActionTypes from '../HomePage/List/listActionTypes';
 import linkActionTypes from '../HomePage/List/Link/linkActionTypes';
+import homeFormActionTypes from '../HomePage/HomeForm/homeFormActionTypes';
 import tagActionTypes from '../HomePage/List/Link/Tag/tagActionTypes';
 import addTagModalActionTypes from '../HomePage/AddTagModal/addTagModalActionTypes';
 
@@ -9,13 +10,13 @@ const initialState = {
 	maxPages: 1,
 	count: 1,
 	commonTags: [],
-	loadingList: false
+	loading: false
 };
 
 const listReducer = (state = initialState, payload) => {
 	switch (payload.type) {
 		case listActionTypes.LOADING_LIST:
-			return { ...state, loadingList: true };
+			return { ...state, loading: true, visibleList: [] };
 		case listActionTypes.UPDATE_LIST:
 			if (payload.list) {
 				return {
@@ -23,7 +24,7 @@ const listReducer = (state = initialState, payload) => {
 					visibleList: payload.list.sort((a, b) => (new Date(b.date) - new Date(a.date))), // sort by date
 					maxPages: Math.ceil(payload.count / payload.linksPerPage),
 					count: payload.count,
-					loadingList: false
+					loading: false
 				};
 			} else {
 				return state;
@@ -34,11 +35,11 @@ const listReducer = (state = initialState, payload) => {
 			return { ...state, page: state.page - 1 }
 		case 'RESET_PAGE':
 			return { ...state, page: 1 }
-		case 'RESET_LIST':
+		case listActionTypes.RESET_LIST:
 			return { ...state, page: 1, visibleList: [] }
-		case 'ADD_LINK':
+		case homeFormActionTypes.ADD_LINK:
 			return { ...state, visibleList: [payload.newLink, ...state.visibleList] };
-		case 'UPDATE_LINK':
+		case homeFormActionTypes.UPDATE_LINK:
 			return { ...state, visibleList: [payload.newLink, ...state.visibleList.slice(1)] };
 		case linkActionTypes.REMOVE_LINK:
 			let newList1 = state.visibleList.filter(item => {

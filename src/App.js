@@ -21,8 +21,8 @@ class App extends Component {
         <NavBarContainer />
         <Switch>
           <PrivateRoute exact path='/' component={HomePage} />
-          <PrivateRoute path='/link1/' component={HomePage} />
-          <PrivateRoute path='/link2/' component={HomePage} />
+          {/* <PrivateRoute path='/tags/' component={TagsPage} /> */}
+          <PrivateRoute path='/search/' component={HomePage} />
           <Route path='/login/' component={AuthContainer} />
           <Route path='/signup/' component={AuthContainer} />
           <PrivateRoute path='/changepassword/' component={AuthContainer} />

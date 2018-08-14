@@ -1,6 +1,12 @@
 import listActionTypes from './listActionTypes';
 import API from '../../helpers/API';
 
+const resetList = () => {
+	return {
+		type: listActionTypes.RESET_LIST
+	}
+}
+
 const loadList = (username, linksPerPage, page) => {
 	return async (dispatch) => {
 		dispatch(loadingList());
@@ -20,20 +26,21 @@ const loadingList = () => {
 	}
 }
 
-const loadNextPage = () => {
+const nextPage = () => {
 	return {
 		type: listActionTypes.LOAD_NEXT_PAGE
 	}
 }
 
-const loadPreviousPage = () => {
+const previousPage = () => {
 	return {
 		type: listActionTypes.LOAD_PREVIOUS_PAGE
 	}
 }
 
 export default {
+	resetList,
 	loadList,
-	loadNextPage,
-	loadPreviousPage
+	nextPage,
+	previousPage
 }
