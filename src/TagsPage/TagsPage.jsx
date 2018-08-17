@@ -1,58 +1,25 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { store } from '../store';
 import { Route } from 'react-router-dom';
-import tagsPageActions from './tagsPageActions';
-import TagsViewForm from './TagsViewForm';
-import TagsViewTags from './TagsViewTags';
-import TagsViewListContainer from './TagsViewListContainer';
+import { connect } from 'react-redux';
+import TagsFormContainer from './TagsForm/TagsFormContainer';
+import TagsViewContainer from './TagsView/TagsViewContainer';
+import AddTagModalContainer from "../AddTagModal/AddTagModalContainer";
+import listActions from '../HomePage/List/listActions';
 
-class TagsViewContainer extends Component {
-	constructor() {
-		super();
-
-		this.state = {
-			enteredValue: '',
-			tags: []
-		}
-		this.handleChange = this.handleChange.bind(this);
-		this.handleTagClick = this.handleTagClick.bind(this);
-	}
+class TagsPage extends Component {
 
 	componentDidMount() {
-		this.props.resetList(this.props.username);
-	}
-
-	handleChange(e) {
-		// update search string
-		this.setState({ "enteredValue": e.target.value });
-
-		// update list of displayed tags
-		let newTags = this.props.list.commonTags.filter(tag => {
-			return tag.name.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1;
-		});
-		this.setState({ "tags": newTags.slice(0, this.props.userSettings.maxTagsToShow) });
-	}
-
-	handleTagClick(name, color) {
-		this.props.history.push('/tags/' + name);
+		this.props.loadCommonTags(this.props.username);
 	}
 
 	render() {
-
 		return (
-			<div className='TagsPage container'>
-				<TagsViewForm
-					handleChange={this.handleChange}
-					enteredValue={this.state.enteredValue}
-					placeholder={'Enter a tag name'}
+			<div className='TagsPage container mt-5'>
+				<TagsFormContainer />
+				<Route path='/tags/:tagName/:tagColor' component={TagsViewContainer} />
+				<AddTagModalContainer
+					commonTags={this.props.commonTags}
 				/>
-				<TagsViewTags
-					tags={this.state.tags}
-					tagClick={this.handleTagClick}
-				/>
-				{/* <Route path='/tags/:tagName/' component={TagsViewListContainer} /> */}
-				<Route path='/tags/:tagName/' render={(props) => <TagsViewListContainer tagList={this.state.tags} {...props} />} />
 			</div>
 		)
 	}
@@ -60,16 +27,15 @@ class TagsViewContainer extends Component {
 
 const mapStateToProps = (store) => {
 	return {
-		list: store.listReducer,
 		username: store.userReducer.username,
-		userSettings: store.userReducer.settings
+		commonTags: store.listReducer.commonTags
 	}
 }
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		resetList: (username) => dispatch(tagsPageActions.resetList(username))
+		loadCommonTags: (username) => dispatch(listActions.loadCommonTags(username))
 	}
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TagsViewContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(TagsPage);

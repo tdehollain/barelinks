@@ -46,7 +46,7 @@ const listReducer = (state = initialState, payload) => {
 				return item.linkId !== payload.id;
 			});
 			return { ...state, visibleList: newList1 };
-		case addTagModalActionTypes.UPDATE_TAGS:
+		case listActionTypes.UPDATE_TAGS:
 			return { ...state, commonTags: payload.tags };
 		case tagActionTypes.ADD_TAG:
 			let newList2 = [];

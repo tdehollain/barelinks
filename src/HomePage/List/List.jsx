@@ -1,24 +1,55 @@
-import React from 'react';
+import React, { Component } from 'react';
+import ListPagination from './ListPagination/ListPagination';
+import { css } from 'react-emotion';
+import { RingLoader } from 'react-spinners';
 import LinkContainer from './Link/LinkContainer';
 
-const List = (props) =>
-	<ul className='pl-1'>
-		{
-			props.list.map((link, index) => {
-				return (
-					<LinkContainer
-						key={index}
-						linkKey={index}
-						linkId={link.linkId}
-						url={link.url}
-						title={link.title}
-						date={link.date}
-						tags={link.tags || []}
-						maxTags={props.maxTags}
+class List extends Component {
+	render() {
+		let spinnerCss = css`
+			margin: 50px auto;
+			`;
+
+		return (
+			<div className='LinksList'>
+				{this.props.maxPages > 1 &&
+					<ListPagination
+						currentPage={this.props.currentPage}
+						maxPages={this.props.maxPages}
+						handleNextPage={this.props.handleNextPage}
+						handlePreviousPage={this.props.handlePreviousPage}
+					/>}
+				{this.props.loading
+					?
+					<RingLoader
+						className={spinnerCss}
+						sizeUnit={"px"}
+						size={50}
+						color={'#343a40'}
+						loading={this.props.loading}
 					/>
-				)
-			})
-		}
-	</ul>
+					:
+					<ul className='pl-1'>
+						{
+							this.props.list.map((link, index) => {
+								return (
+									<LinkContainer
+										key={index}
+										linkKey={index}
+										linkId={link.linkId}
+										url={link.url}
+										title={link.title}
+										date={link.date}
+										tags={link.tags || []}
+										maxTags={this.props.maxTags}
+									/>
+								)
+							})
+						}
+					</ul>}
+			</div>
+		)
+	}
+}
 
 export default List;

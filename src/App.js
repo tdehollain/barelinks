@@ -5,6 +5,8 @@ import './App.css';
 import { Switch, Route } from 'react-router-dom';
 import NavBarContainer from './NavBar/NavBarContainer';
 import HomePage from './HomePage/HomePage';
+import TagsPage from './TagsPage/TagsPage';
+import SearchPage from './SearchPage/SearchPage';
 import AuthContainer from './Auth/AuthContainer.jsx';
 import { PrivateRoute } from './Components/PrivateRoute';
 
@@ -20,8 +22,8 @@ class App extends Component {
         <NavBarContainer />
         <Switch>
           <PrivateRoute exact path='/' component={HomePage} />
-          {/* <PrivateRoute path='/tags/' component={TagsPage} /> */}
-          <PrivateRoute path='/search/' component={HomePage} />
+          <PrivateRoute path='/tags/' component={TagsPage} />
+          <PrivateRoute path='/search/' component={SearchPage} />
           <Route path='/login/' component={AuthContainer} />
           <Route path='/signup/' component={AuthContainer} />
           <PrivateRoute path='/changepassword/' component={AuthContainer} />

@@ -1,0 +1,2 @@
+- change API from 'search' to 'linksbysearchterm' with querystring params
+- adapt getLinks API calls to new params required

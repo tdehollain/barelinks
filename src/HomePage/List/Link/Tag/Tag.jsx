@@ -12,7 +12,7 @@ class Tag extends Component {
 				className='tag small'
 				style={{ background: this.props.color }}
 			>
-				<Link to={'/tags/' + this.props.name}>
+				<Link to={'/tags/' + this.props.name + '/' + this.props.color.slice(-6)}>
 					<span className='tagIcon'>
 						<GoTag />
 					</span>

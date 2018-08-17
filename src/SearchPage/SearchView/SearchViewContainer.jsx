@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import HomeFormContainer from './HomeForm/HomeFormContainer';
-import List from './List/List';
-import AddTagModalContainer from "../AddTagModal/AddTagModalContainer";
-import listActions from './List/listActions';
+import List from '../../HomePage/List/List';
+import listActions from '../../HomePage/List/listActions';
 
-class HomePage extends Component {
+class SearchViewContainer extends Component {
 
 	constructor() {
 		super();
@@ -18,20 +16,20 @@ class HomePage extends Component {
 		// this.props.resetList(); // if we want the list to be back to page 1 if user goes to different route and back
 		let params = {
 			linksPerPage: this.props.linksPerPage,
-			page: this.props.page
+			page: this.props.page,
+			searchTerm: this.props.match.params.searchTerm
 		}
-		this.props.loadList(this.props.username, 'homepage', params);
-
-		this.props.loadCommonTags(this.props.username);
+		this.props.loadList(this.props.username, 'searchpage', params);
 	}
 
 	handleNextPage() {
 		if (this.props.page < this.props.maxPages) {
 			let params = {
 				linksPerPage: this.props.linksPerPage,
-				page: this.props.page + 1
+				page: this.props.page + 1,
+				searchTerm: this.props.match.params.searchTerm
 			}
-			this.props.loadList(this.props.username, 'homepage', params);
+			this.props.loadList(this.props.username, 'searchpage', params);
 			this.props.nextPage();
 		}
 	}
@@ -40,17 +38,20 @@ class HomePage extends Component {
 		if (this.props.page > 1) {
 			let params = {
 				linksPerPage: this.props.linksPerPage,
-				page: this.props.page - 1
+				page: this.props.page - 1,
+				searchTerm: this.props.match.params.searchTerm
 			}
-			this.props.loadList(this.props.username, 'homepage', params);
+			this.props.loadList(this.props.username, 'searchpage', params);
 			this.props.previousPage();
 		}
 	}
 
 	render() {
 		return (
-			<div className='HomePage container mt-5'>
-				<HomeFormContainer />
+			<div>
+				<div className='mt-3 mb-3'>
+					<span><u>Showing results for term</u> {this.props.match.params.searchTerm}</span>
+				</div>
 				<List
 					list={this.props.list}
 					maxTags={this.props.maxTags}
@@ -60,11 +61,8 @@ class HomePage extends Component {
 					handlePreviousPage={this.handlePreviousPage}
 					loading={this.props.loading}
 				/>
-				<AddTagModalContainer
-					commonTags={this.props.commonTags}
-				/>
 			</div>
-		)
+		);
 	}
 }
 
@@ -91,4 +89,4 @@ const mapDispatchToProps = (dispatch) => {
 	}
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomePage);
+export default connect(mapStateToProps, mapDispatchToProps)(SearchViewContainer);

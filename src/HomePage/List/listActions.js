@@ -7,15 +7,15 @@ const resetList = () => {
 	}
 }
 
-const loadList = (username, linksPerPage, page) => {
+const loadList = (username, type, params) => {
 	return async (dispatch) => {
 		dispatch(loadingList());
-		let list = await API.getLinks(username, linksPerPage, page);
+		let list = await API.getLinks(username, type, params);
 		dispatch({
 			type: listActionTypes.UPDATE_LIST,
 			list: list.list,
 			count: list.totalCount,
-			linksPerPage
+			linksPerPage: params.linksPerPage
 		})
 	}
 }
@@ -38,9 +38,20 @@ const previousPage = () => {
 	}
 }
 
+const loadCommonTags = (username) => {
+	return async (dispatch) => {
+		let tags = username ? await API.getTags(username) : []; // !username if user not authenticated
+		dispatch({
+			type: listActionTypes.UPDATE_TAGS,
+			tags
+		});
+	}
+}
+
 export default {
 	resetList,
 	loadList,
 	nextPage,
-	previousPage
+	previousPage,
+	loadCommonTags
 }

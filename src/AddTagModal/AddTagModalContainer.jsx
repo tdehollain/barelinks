@@ -22,10 +22,6 @@ class AddTagModalContainer extends Component {
 		this.handleAddTag = this.handleAddTag.bind(this);
 	}
 
-	componentDidMount() {
-		this.props.loadCommonTags(this.props.username);
-	}
-
 	handleChangeEnteredTagName(e) {
 		this.setState({
 			"enteredTagName": e.target.value
@@ -93,7 +89,6 @@ class AddTagModalContainer extends Component {
 const mapStateToProps = (store) => {
 	return {
 		username: store.userReducer.username,
-		commonTags: store.listReducer.commonTags,
 		maxTagsToShowInModal: store.userReducer.settings.maxTagsToShowInModal,
 		tagColors: store.userReducer.tagColors,
 		linkId: store.addTagModalReducer.linkId

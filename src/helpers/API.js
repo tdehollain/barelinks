@@ -1,10 +1,25 @@
 import awsConfig from '../utils/awsConfig';
 import { Auth } from 'aws-amplify';
 
-const getLinks = async (user, linksPerPage, page) => {
-	let URL = awsConfig.APIbaseURL + '/link?user=' + user + '&linksPerPage=' + linksPerPage + '&page=' + page;
-	let options = { method: 'GET' };
-	let raw_response = await fetch(URL, options);
+const getLinks = async (user, type, params) => {
+	let URL = '';
+	let userPart = 'user=' + user;
+	let pagePart = '&linksPerPage=' + params.linksPerPage + '&page=' + params.page;
+	switch (type) {
+		case 'homepage':
+			URL = awsConfig.APIbaseURL + '/link?' + userPart + pagePart;
+			break;
+		case 'tagspage':
+			URL = awsConfig.APIbaseURL + '/linksbytag?' + userPart + pagePart + '&tagName=' + params.tagName + '&tagColor=' + params.tagColor;
+			break;
+		case 'searchpage':
+			URL = awsConfig.APIbaseURL + '/linksbysearchterm?' + userPart + pagePart + '&searchterm=' + params.searchTerm;
+			break;
+		default:
+			break;
+	}
+
+	let raw_response = await fetch(URL, { method: 'GET' });
 	let list = await raw_response.json();
 	// console.log(list);
 	return list;
