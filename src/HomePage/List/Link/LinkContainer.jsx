@@ -14,7 +14,6 @@ class LinkContainer extends Component {
 
 	handleRemoveLink(linkId) {
 		this.props.removeLink(this.props.username, linkId);
-
 	}
 
 	handleShowAddTagModal(linkKey, linkId) {

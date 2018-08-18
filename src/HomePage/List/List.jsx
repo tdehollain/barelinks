@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import ListPagination from './ListPagination/ListPagination';
 import { css } from 'react-emotion';
-import { RingLoader } from 'react-spinners';
+import { PulseLoader } from 'react-spinners';
 import LinkContainer from './Link/LinkContainer';
 
 class List extends Component {
 	render() {
 		let spinnerCss = css`
+			size: 10px;
 			margin: 50px auto;
 			`;
 
@@ -21,10 +22,10 @@ class List extends Component {
 					/>}
 				{this.props.loading
 					?
-					<RingLoader
+					<PulseLoader
 						className={spinnerCss}
 						sizeUnit={"px"}
-						size={50}
+						size={10}
 						color={'#343a40'}
 						loading={this.props.loading}
 					/>

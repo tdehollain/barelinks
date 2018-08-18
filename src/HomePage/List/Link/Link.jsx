@@ -11,7 +11,7 @@ class Link extends Component {
 				<button
 					type='button'
 					className='delBtn btn btn-danger'
-					onClick={this.props.removeLink.bind(this, this.props.linkKey, this.props.linkId)}>
+					onClick={this.props.removeLink.bind(this, this.props.linkId)}>
 					&times;
 				</button>
 				<span className="small font-italic mx-1 mt-0">{formatDate(new Date(this.props.date), showYear(new Date(this.props.date)))}</span>
