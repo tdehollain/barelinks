@@ -14,7 +14,7 @@ class TagsViewContainer extends Component {
 	}
 
 	componentDidMount() {
-		// this.props.resetList(); // if we want the list to be back to page 1 if user goes to different route and back
+		this.props.resetList(); // if we want the list to be back to page 1 if user goes to different route and back
 		let params = {
 			linksPerPage: this.props.linksPerPage,
 			page: this.props.page,
@@ -22,6 +22,29 @@ class TagsViewContainer extends Component {
 			tagColor: this.props.match.params.tagColor
 		}
 		this.props.loadList(this.props.username, 'tagspage', params);
+	}
+
+	componentWillReceiveProps(nextProps) {
+		// console.log('componentWillReceiveProps');
+		if (nextProps.page !== this.props.page) {
+			let params = {
+				linksPerPage: nextProps.linksPerPage,
+				page: nextProps.page,
+				tagName: nextProps.match.params.tagName,
+				tagColor: nextProps.match.params.tagColor
+			}
+			this.props.loadList(nextProps.username, 'tagspage', params);
+		}
+
+		if (nextProps.match.params.tagName !== this.props.match.params.tagName) {
+			let params = {
+				linksPerPage: nextProps.linksPerPage,
+				page: nextProps.page,
+				tagName: nextProps.match.params.tagName,
+				tagColor: nextProps.match.params.tagColor
+			}
+			this.props.loadList(nextProps.username, 'tagspage', params);
+		}
 	}
 
 	handleNextPage() {
