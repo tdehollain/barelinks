@@ -13,7 +13,7 @@ class SearchViewContainer extends Component {
 	}
 
 	componentDidMount() {
-		// this.props.resetList(); // if we want the list to be back to page 1 if user goes to different route and back
+		this.props.resetList(); // if we want the list to be back to page 1 if user goes to different route and back
 		let params = {
 			linksPerPage: this.props.linksPerPage,
 			page: this.props.page,
@@ -22,18 +22,9 @@ class SearchViewContainer extends Component {
 		this.props.loadList(this.props.username, 'searchpage', params);
 	}
 
-	componentWillReceiveProps(nextProps) {
-		// console.log('componentWillReceiveProps');
-		if (nextProps.page !== this.props.page) {
-			let params = {
-				linksPerPage: this.props.linksPerPage,
-				page: this.props.page,
-				searchTerm: this.props.match.params.searchTerm
-			}
-			this.props.loadList(this.props.username, 'searchpage', params);
-		}
-
-		if (nextProps.match.params.searchTerm !== this.props.match.params.searchTerm) {
+	componentDidUpdate(prevProps, prevState) {
+		if (prevProps.page !== this.props.page || prevProps.match.params.searchTerm !== this.props.match.params.searchTerm) {
+			this.props.resetList();
 			let params = {
 				linksPerPage: this.props.linksPerPage,
 				page: this.props.page,
@@ -42,6 +33,27 @@ class SearchViewContainer extends Component {
 			this.props.loadList(this.props.username, 'searchpage', params);
 		}
 	}
+
+	// componentWillReceiveProps(nextProps) {
+	// 	// console.log('componentWillReceiveProps');
+	// 	if (nextProps.page !== this.props.page) {
+	// 		let params = {
+	// 			linksPerPage: this.props.linksPerPage,
+	// 			page: this.props.page,
+	// 			searchTerm: this.props.match.params.searchTerm
+	// 		}
+	// 		this.props.loadList(this.props.username, 'searchpage', params);
+	// 	}
+
+	// 	if (nextProps.match.params.searchTerm !== this.props.match.params.searchTerm) {
+	// 		let params = {
+	// 			linksPerPage: this.props.linksPerPage,
+	// 			page: this.props.page,
+	// 			searchTerm: this.props.match.params.searchTerm
+	// 		}
+	// 		this.props.loadList(this.props.username, 'searchpage', params);
+	// 	}
+	// }
 
 	handleNextPage() {
 		if (this.props.page < this.props.maxPages) {
