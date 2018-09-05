@@ -24,28 +24,30 @@ class TagsViewContainer extends Component {
 		this.props.loadList(this.props.username, 'tagspage', params);
 	}
 
-	componentWillReceiveProps(nextProps) {
-		// console.log('componentWillReceiveProps');
-		if (nextProps.page !== this.props.page) {
+	componentDidUpdate(prevProps, prevState) {
+		if (prevProps.page !== this.props.page || prevProps.match.params.tagName !== this.props.match.params.tagName) {
 			let params = {
-				linksPerPage: nextProps.linksPerPage,
-				page: nextProps.page,
-				tagName: nextProps.match.params.tagName,
-				tagColor: nextProps.match.params.tagColor
+				linksPerPage: this.props.linksPerPage,
+				page: this.props.page,
+				tagName: this.props.match.params.tagName,
+				tagColor: this.props.match.params.tagColor
 			}
-			this.props.loadList(nextProps.username, 'tagspage', params);
-		}
-
-		if (nextProps.match.params.tagName !== this.props.match.params.tagName) {
-			let params = {
-				linksPerPage: nextProps.linksPerPage,
-				page: nextProps.page,
-				tagName: nextProps.match.params.tagName,
-				tagColor: nextProps.match.params.tagColor
-			}
-			this.props.loadList(nextProps.username, 'tagspage', params);
+			this.props.loadList(this.props.username, 'tagspage', params);
 		}
 	}
+
+	// componentWillReceiveProps(nextProps) {
+	// 	// console.log('componentWillReceiveProps');
+	// 	if (nextProps.page !== this.props.page || nextProps.match.params.tagName !== this.props.match.params.tagName) {
+	// 		let params = {
+	// 			linksPerPage: nextProps.linksPerPage,
+	// 			page: nextProps.page,
+	// 			tagName: nextProps.match.params.tagName,
+	// 			tagColor: nextProps.match.params.tagColor
+	// 		}
+	// 		this.props.loadList(nextProps.username, 'tagspage', params);
+	// 	}
+	// }
 
 	handleNextPage() {
 		if (this.props.page < this.props.maxPages) {
@@ -82,7 +84,7 @@ class TagsViewContainer extends Component {
 						key={1}
 						name={this.props.match.params.tagName}
 						color={'#' + this.props.match.params.tagColor}
-						tagClick={() => { }}
+					// tagClick={() => { }}
 					/>
 				</div>
 				<List
