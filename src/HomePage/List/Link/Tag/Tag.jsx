@@ -20,9 +20,11 @@ class Tag extends Component {
 						{this.props.name}
 					</span>
 				</Link>
-				<span className='trashcanIcon' onClick={this.props.removeTag.bind(this, this.props.name, this.props.color)}>
-					<GoTrashcan />
-				</span>
+				{this.props.showDeleteButton &&
+					<span className='trashcanIcon' onClick={this.props.removeTag.bind(this, this.props.name, this.props.color)}>
+						<GoTrashcan />
+					</span>
+				}
 			</span>
 		);
 	}

@@ -26,6 +26,7 @@ class Link extends Component {
 							linkId={this.props.linkId}
 							name={tag.name}
 							color={tag.color}
+							showDeleteButton={true}
 						/>
 					)
 				})}

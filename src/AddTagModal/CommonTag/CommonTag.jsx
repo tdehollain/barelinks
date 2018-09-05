@@ -7,18 +7,16 @@ import GoTag from 'react-icons/lib/go/tag';
 class CommonTag extends Component {
 	render() {
 		return (
-			<Link to={'/tags/' + this.props.name + '/' + this.props.color.slice(-6)}>
-				<span
-					className='tag small'
-					style={{ background: this.props.color }}
-				// onClick={this.props.tagClick.bind(this, this.props.name, this.props.color)}
-				>
-					<span className='tagIcon'>
-						<GoTag />
-					</span>
-					<span>{this.props.name}</span>
-				</span >
-			</Link>
+			<span
+				className='tag small'
+				style={{ background: this.props.color }}
+				onClick={this.props.tagClick.bind(this, this.props.name, this.props.color)}
+			>
+				<span className='tagIcon'>
+					<GoTag />
+				</span>
+				<span>{this.props.name}</span>
+			</span >
 		)
 	}
 }

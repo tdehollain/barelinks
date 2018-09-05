@@ -21,9 +21,22 @@ const getLinks = async (user, type, params) => {
 
 	let raw_response = await fetch(URL, { method: 'GET' });
 	let list = await raw_response.json();
+	// Decode potential HTML entities in title (already done in Lambda function but doesn't work on all entities)
+	list.list = list.list.map(el => {
+		return {
+			...el,
+			title: decodeHtml(el.title)
+		}
+	});
 	// console.log(list);
 	return list;
 };
+
+const decodeHtml = function (html) {
+	var txt = document.createElement("textarea");
+	txt.innerHTML = html;
+	return txt.value;
+}
 
 const putLink = async (user, linkURL) => {
 	let URL = awsConfig.APIbaseURL + '/link';

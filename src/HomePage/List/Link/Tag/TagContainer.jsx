@@ -26,6 +26,7 @@ class TagContainer extends Component {
 				name={this.props.name}
 				color={this.props.color}
 				removeTag={this.removeTag}
+				showDeleteButton={this.props.showDeleteButton}
 			/>
 		);
 	}

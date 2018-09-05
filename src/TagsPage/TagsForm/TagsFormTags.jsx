@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import CommonTag from '../../AddTagModal/CommonTag/CommonTag';
+import TagContainer from '../../HomePage/List/Link/Tag/TagContainer';
 
 class TagsFormTags extends Component {
 
@@ -8,11 +8,11 @@ class TagsFormTags extends Component {
 			<div className='mt-3'>
 				{this.props.tags.map((tag, index) => {
 					return (
-						<CommonTag
+						<TagContainer
 							key={index}
 							name={tag.name}
 							color={tag.color}
-							tagClick={this.props.tagClick}
+							showDeleteButton={false}
 						/>
 					)
 				})}

@@ -84,7 +84,7 @@ class TagsViewContainer extends Component {
 						key={1}
 						name={this.props.match.params.tagName}
 						color={'#' + this.props.match.params.tagColor}
-					// tagClick={() => { }}
+						tagClick={() => { }}
 					/>
 				</div>
 				<List
