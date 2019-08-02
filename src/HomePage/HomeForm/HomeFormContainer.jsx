@@ -1,59 +1,72 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import HomeForm from './HomeForm';
 import { homeFormActions } from './homeFormActions';
 import { URLisValid } from '../../utils/util';
 
-class HomeFormContainer extends Component {
+const HomeFormContainer = ({ username, addLink }) => {
+  const [enteredURL, setEnteredURL] = React.useState('');
 
-	constructor() {
-		super();
+  const handleChange = e => {
+    setEnteredURL(e.target.value);
+  };
 
-		this.state = {
-			enteredURL: ""
-		}
+  const handleSubmit = async e => {
+    e.preventDefault();
+    if (URLisValid(enteredURL)) {
+      await addLink(username, enteredURL);
+      setEnteredURL('');
+    }
+  };
 
-		this.handleChange = this.handleChange.bind(this);
-		this.handleSubmit = this.handleSubmit.bind(this);
-	}
+  return <HomeForm handleChange={handleChange} enteredURL={enteredURL} handleSubmit={handleSubmit} />;
+};
 
-	handleChange(e) {
-		this.setState({
-			"enteredURL": e.target.value
-		});
-	}
+// class HomeFormContainer extends Component {
+//   constructor() {
+//     super();
 
-	async handleSubmit(e) {
-		e.preventDefault();
-		let url = this.state.enteredURL;
-		if (URLisValid(url)) {
-			await this.props.addLink(this.props.username, url);
-			this.setState({ enteredURL: "" });
-		}
-	}
+//     this.state = {
+//       enteredURL: ''
+//     };
 
-	render() {
-		return (
-			<HomeForm
-				handleChange={this.handleChange}
-				enteredURL={this.state.enteredURL}
-				handleSubmit={this.handleSubmit}
-			/>
-		)
-	}
+//     this.handleChange = this.handleChange.bind(this);
+//     this.handleSubmit = this.handleSubmit.bind(this);
+//   }
 
-}
+//   handleChange(e) {
+//     this.setState({
+//       enteredURL: e.target.value
+//     });
+//   }
 
-const mapStateToProps = (store) => {
-	return {
-		username: store.userReducer.username
-	}
-}
+//   async handleSubmit(e) {
+//     e.preventDefault();
+//     let url = this.state.enteredURL;
+//     if (URLisValid(url)) {
+//       await this.props.addLink(this.props.username, url);
+//       this.setState({ enteredURL: '' });
+//     }
+//   }
 
-const mapDispatchToProps = (dispatch) => {
-	return {
-		addLink: (username, url) => dispatch(homeFormActions.addLink(username, url))
-	}
-}
+//   render() {
+//     return <HomeForm handleChange={this.handleChange} enteredURL={this.state.enteredURL} handleSubmit={this.handleSubmit} />;
+//   }
+// }
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomeFormContainer);
+const mapStateToProps = store => {
+  return {
+    username: store.userReducer.username
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    addLink: (username, url) => dispatch(homeFormActions.addLink(username, url))
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(HomeFormContainer);
