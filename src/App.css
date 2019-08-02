@@ -21,9 +21,35 @@
 =====   NAVBAR   =====
 ====================*/
 
+nav.NavBar {
+  height: 56px;
+}
+
 .NavBar button {
   color: #ECEFF1;
   border-color: #ECEFF1;
+}
+
+.NavBar .userMenu {
+  position: relative;
+  top: 58px;
+}
+
+.NavBar .userMenu .userButton {
+  z-index: 1;
+}
+
+.NavBar .userMenuDropDown {
+  background-color: #343a40;
+  position: relative;
+  padding: 15px 0px 10px;
+  z-index: -1;
+}
+
+.NavBar .userMenuDropDown button {
+  border-radius: 0;
+  border: none;
+  margin: 3px 0;
 }
 
 .NavBar .searchButton svg {

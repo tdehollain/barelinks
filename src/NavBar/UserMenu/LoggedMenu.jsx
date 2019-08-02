@@ -8,28 +8,30 @@ import { Link } from 'react-router-dom';
 class LoggedMenu extends Component {
 	render() {
 		return (
-			<div className='form-inline userMenu'>
+			<div className='userMenu'>
 				<div className='userButton'>
 					<button className='btn btn-outline-secondary mr-3'>
 						<IoPerson style={{ fontSize: '1.2rem' }} className='mr-2' />
 						{this.props.username}
 					</button>
 				</div>
-				<div className='changePasswordButton'>
-					<Link to='/changepassword'>
-						<button className='btn btn-outline-secondary mr-3'>
-							<GoKey style={{ fontSize: '1.2rem' }} className='mr-2' />
-							Change Password
+				<div className='userMenuDropDown'>
+					<div className='changePasswordButton'>
+						<Link to='/changepassword'>
+							<button className='btn btn-outline-secondary mr-3'>
+								<GoKey style={{ fontSize: '1.2rem' }} className='mr-2' />
+								Change Password
 						</button>
-					</Link>
-				</div>
-				<div className='logoutButton'>
-					<Link to='/login'>
-						<button className='btn btn-outline-secondary mr-3'>
-							<GoSignOut className='mr-2' />
-							Log out
+						</Link>
+					</div>
+					<div className='logoutButton'>
+						<Link to='/login'>
+							<button className='btn btn-outline-secondary mr-3'>
+								<GoSignOut className='mr-2' />
+								Log out
 						</button>
-					</Link>
+						</Link>
+					</div>
 				</div>
 			</div>
 		)
