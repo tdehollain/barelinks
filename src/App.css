@@ -1,8 +1,7 @@
-
-
 /*=====================
 =====   GENERAL   =====
 =====================*/
+
 .App button {
   cursor: pointer;
 }
@@ -16,7 +15,6 @@
   font-weight: bold;
 }
 
-
 /*====================
 =====   NAVBAR   =====
 ====================*/
@@ -26,8 +24,8 @@ nav.NavBar {
 }
 
 .NavBar button {
-  color: #ECEFF1;
-  border-color: #ECEFF1;
+  color: #eceff1;
+  border-color: #eceff1;
 }
 
 .NavBar .userMenu {
@@ -62,7 +60,6 @@ nav.NavBar {
   position: relative;
 }
 
-
 /*======================
 =====   HOMEFORM   =====
 ======================*/
@@ -71,7 +68,6 @@ nav.NavBar {
   margin-top: 40px;
   margin-bottom: 50px;
 }
-
 
 /*==================
 =====   LIST   =====
@@ -83,7 +79,7 @@ nav.NavBar {
 }
 
 .LinksList a.link {
-  color: #37474F;
+  color: #37474f;
   font-size: 0.9rem;
   padding: 2px 3px;
 }
@@ -95,7 +91,6 @@ nav.NavBar {
 .LinksList .pageButton:disabled {
   cursor: not-allowed;
 }
-
 
 /*==================
 =====   TAGS   =====
@@ -127,12 +122,12 @@ span.tag {
 }
 
 span.tag {
-  color: #37474F;
+  color: #37474f;
 }
 
 span.tag a {
   cursor: pointer;
-  color: #37474F;
+  color: #37474f;
 }
 
 span.tag a:hover {
@@ -157,7 +152,6 @@ button.addTagButton {
   border-radius: 12px;
   margin-left: 3px;
 }
-
 
 /*=========================
 =====   ADDTAGMODAL   =====
