@@ -16,7 +16,7 @@ phases:
       - npm run build
   post_build:
     commands:
-      - aws cloudfront create-invalidation --distribution-id E2WAL8O6O28TIF --paths "/*"
+      # - aws cloudfront create-invalidation --distribution-id E2WAL8O6O28TIF --paths "/*"
 artifacts:
   files:
     - '**/*'
