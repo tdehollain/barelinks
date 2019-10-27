@@ -28,11 +28,6 @@ nav.NavBar {
   border-color: #eceff1;
 }
 
-.NavBar .userMenu {
-  position: relative;
-  top: 58px;
-}
-
 .NavBar .userMenu .userButton {
   z-index: 1;
 }

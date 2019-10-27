@@ -1,6 +1,6 @@
 // API Gateway
 const env = 'dev';
-const APIbaseURL = 'https://3u2so4i6m0.execute-api.eu-west-1.amazonaws.com/dev' + env;
+const APIbaseURL = 'https://3u2so4i6m0.execute-api.eu-west-1.amazonaws.com/' + env;
 
 // Cognito
 const cognitoConfig = {
