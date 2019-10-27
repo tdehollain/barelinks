@@ -1,0 +1,102 @@
+service: barelinks-api-service
+# app and org for use with dashboard.serverless.com
+app: barelinks
+org: tdehollain
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+# frameworkVersion: "=X.X.X"
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  stage: dev
+  region: eu-west-1
+  environment:
+    BARELINKS_TABLE: Barelinks
+
+  # IAM statements
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - arn:aws:dynamodb:eu-west-1:072129581133:table/Barelinks
+
+# you can add packaging information here
+#package:
+#  include:
+#    - include-me.js
+#    - include-me-dir/**
+#  exclude:
+#    - exclude-me.js
+#    - exclude-me-dir/**
+
+functions:
+  getLinks:
+    handler: functions/getLinks.handler
+    timeout: 30
+    memorySize: 256
+    events:
+      - http:
+          path: /link
+          method: GET
+          cors: true
+  putLink:
+    handler: functions/putLink.handler
+    timeout: 30
+    memorySize: 256
+    events:
+      - http:
+          path: /link
+          method: PUT
+          cors: true
+  deleteLink:
+    handler: functions/deleteLink.handler
+    timeout: 30
+    memorySize: 256
+    events:
+      - http:
+          path: /link
+          method: DELETE
+          cors: true
+  getLinksByTag:
+    handler: functions/getLinksByTag.handler
+    timeout: 30
+    memorySize: 256
+    events:
+      - http:
+          path: /linksbytag
+          method: GET
+          cors: true
+  getLinksBySearchTerm:
+    handler: functions/getLinksBySearchTerm.handler
+    timeout: 30
+    memorySize: 256
+    events:
+      - http:
+          path: /linksbysearchterm
+          method: GET
+          cors: true
+  getTags:
+    handler: functions/getTags.handler
+    timeout: 30
+    memorySize: 256
+    events:
+      - http:
+          path: /tags
+          method: GET
+          cors: true
+  updateLink:
+    handler: functions/updateLink.handler
+    timeout: 30
+    memorySize: 256
+    events:
+      - http:
+          path: /link/tag
+          method: POST
+          cors: true
