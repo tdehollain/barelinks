@@ -1,6 +1,8 @@
 const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB.DocumentClient({ region: 'eu-west-1', apiVersion: '2012-08-10' });
 
+const TableName = process.env.BARELINKS_TABLE;
+
 exports.handler = async (event, context, callback) => {
   // if (!event.requestContext.authorizer) {
   // 	errorResponse('Authorization not configured', context.awsRequestId, callback);
@@ -37,7 +39,7 @@ exports.handler = async (event, context, callback) => {
 
 async function getLinksBySearchTerm(user, linksPerPage, page, searchTerm) {
   let tableParams = {
-    TableName: 'Barelinks',
+    TableName,
     ExpressionAttributeValues: {
       ':userId': user
     },
