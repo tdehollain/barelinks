@@ -60,7 +60,7 @@ class HomePage extends Component {
           loading={this.props.loading}
         />
         <AddTagModalContainer commonTags={this.props.commonTags} />
-        <footer>Barelinks - stage: {process.env.REACT_APP_STAGE}</footer>
+        {process.env.REACT_APP_STAGE !== 'production' && <footer>Barelinks - stage: {process.env.REACT_APP_STAGE}</footer>}
       </div>
     );
   }
