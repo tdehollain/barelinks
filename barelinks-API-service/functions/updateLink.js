@@ -69,7 +69,7 @@ async function updateLink(linkId, user, action, tagName, tagColor) {
 
   // 3. replace item with updated one
   let tableParamsUpdate = {
-    TableName: 'Barelinks',
+    TableName,
     Key: {
       userId: user,
       linkId: linkId
