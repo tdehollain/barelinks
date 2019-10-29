@@ -1,6 +1,9 @@
 // API Gateway
-const env = 'dev';
-const APIbaseURL = 'https://3u2so4i6m0.execute-api.eu-west-1.amazonaws.com/' + env;
+const stage = process.env.STAGE;
+const APIbaseURL =
+  stage === 'production'
+    ? 'https://3u2so4i6m0.execute-api.eu-west-1.amazonaws.com/production'
+    : 'https://uakubie5e8.execute-api.eu-west-1.amazonaws.com/dev';
 
 // Cognito
 const cognitoConfig = {

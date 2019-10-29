@@ -1,6 +1,6 @@
 {
-  "name": "generic-app",
-  "version": "0.1.0",
+  "name": "barelinks",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "ajv": "^6.0.0",
@@ -22,6 +22,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build:dev": "STAGE=dev npm run build",
+    "build:production": "STAGE=production npm run build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   }
