@@ -6,6 +6,7 @@ phases:
       nodejs: 10
     commands:
       - npm i npm@latest -g
+      - npm i serverless@latest -g
       # - pip install --upgrade pip
       # - pip install --upgrade awscli
   pre_build:
@@ -16,6 +17,7 @@ phases:
       - npm run build
   post_build:
     commands:
+      - sls deploy --stage $STAGE
       - aws cloudfront create-invalidation --distribution-id E2WAL8O6O28TIF --paths "/*"
 artifacts:
   files:

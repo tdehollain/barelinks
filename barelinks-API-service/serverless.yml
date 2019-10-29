@@ -10,6 +10,7 @@ provider:
   region: eu-west-1
   environment:
     BARELINKS_TABLE: ${self:app}-${self:provider.stage}
+    # BARELINKS_TABLE: barelinks-${self:provider.stage}
     STAGE: ${self:provider.stage}
 
   # IAM statements
