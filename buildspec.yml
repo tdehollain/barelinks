@@ -17,9 +17,11 @@ phases:
       - npm run build
   post_build:
     commands:
-      # - cd barelinks-API-service
-      # - sls deploy --stage $STAGE
-      - aws cloudfront create-invalidation --distribution-id E2WAL8O6O28TIF --paths "/*"
+      - cd barelinks-API-service
+      - npm install
+      - sls deploy --stage $STAGE
+      - cd ..
+      - aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths "/*"
 artifacts:
   files:
     - '**/*'

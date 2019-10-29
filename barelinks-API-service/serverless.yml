@@ -1,6 +1,6 @@
 service: barelinks-api-service
 # app and org for use with dashboard.serverless.com
-app: barelinks
+# app: barelinks
 org: tdehollain
 
 provider:
@@ -9,8 +9,8 @@ provider:
   stage: ${opt:stage, 'dev'}
   region: eu-west-1
   environment:
-    BARELINKS_TABLE: ${self:app}-${self:provider.stage}
-    # BARELINKS_TABLE: barelinks-${self:provider.stage}
+    # BARELINKS_TABLE: ${self:app}-${self:provider.stage}
+    BARELINKS_TABLE: barelinks-${self:provider.stage}
     STAGE: ${self:provider.stage}
 
   # IAM statements
