@@ -1,5 +1,5 @@
 // API Gateway
-const stage = process.env.STAGE;
+const stage = process.env.REACT_APP_STAGE;
 const APIbaseURL =
   stage === 'production'
     ? 'https://uakubie5e8.execute-api.eu-west-1.amazonaws.com/production'

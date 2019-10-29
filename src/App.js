@@ -21,16 +21,16 @@ class App extends Component {
       <div className="App">
         <NavBarContainer />
         <Switch>
-          <PrivateRoute exact path='/' component={HomePage} />
-          <PrivateRoute path='/tags/' component={TagsPage} />
-          <PrivateRoute path='/search/' component={SearchPage} />
-          <Route path='/login/' component={AuthContainer} />
-          <Route path='/signup/' component={AuthContainer} />
-          <PrivateRoute path='/changepassword/' component={AuthContainer} />
-          <PrivateRoute path='/passwordchanged/' component={AuthContainer} />
-          <Route path='/forgotpassword/' component={AuthContainer} />
-          <Route path='/resetpassword/' component={AuthContainer} />
-          <Route path='/verificationsent/' component={AuthContainer} />
+          <PrivateRoute exact path="/" component={HomePage} />
+          <PrivateRoute path="/tags/" component={TagsPage} />
+          <PrivateRoute path="/search/" component={SearchPage} />
+          <Route path="/login/" component={AuthContainer} />
+          <Route path="/signup/" component={AuthContainer} />
+          <PrivateRoute path="/changepassword/" component={AuthContainer} />
+          <PrivateRoute path="/passwordchanged/" component={AuthContainer} />
+          <Route path="/forgotpassword/" component={AuthContainer} />
+          <Route path="/resetpassword/" component={AuthContainer} />
+          <Route path="/verificationsent/" component={AuthContainer} />
         </Switch>
       </div>
     );
