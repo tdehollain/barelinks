@@ -25,24 +25,22 @@ nav.NavBar {
 
 .NavBar button {
   color: #eceff1;
-  border-color: #eceff1;
-}
-
-.NavBar .userMenu .userButton {
-  z-index: 1;
-}
-
-.NavBar .userMenuDropDown {
-  background-color: #343a40;
-  position: relative;
-  padding: 15px 0px 10px;
-  z-index: -1;
-}
-
-.NavBar .userMenuDropDown button {
-  border-radius: 0;
   border: none;
-  margin: 3px 0;
+  border-radius: 0;
+  padding: 0;
+  border-bottom: 1px solid #eceff1;
+}
+
+.NavBar button:hover {
+  color: #999da0;
+  background: inherit;
+  border-bottom: 1px solid #999da0;
+}
+
+.NavBar button.waiting {
+  color: #eceff1;
+  font-size: 0.9rem;
+  border-bottom: none;
 }
 
 .NavBar .searchButton svg {

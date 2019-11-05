@@ -9,9 +9,13 @@ const UserButton = props => {
         <button className="btn btn-outline-secondary mr-3" onClick={() => logout({ returnTo: window.location.origin })}>
           Log out
         </button>
+      ) : isAuthenticated === undefined || loading ? (
+        <button disabled className="btn btn-outline-secondary mr-3 waiting">
+          Loading...
+        </button>
       ) : (
         <button className="btn btn-outline-secondary mr-3" onClick={() => loginWithRedirect()}>
-          {isAuthenticated === undefined || loading ? 'Wait...' : 'Log in'}
+          Log in
         </button>
       )}
     </div>
