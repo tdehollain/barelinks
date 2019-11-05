@@ -6,11 +6,11 @@ const UserButton = props => {
   return (
     <div>
       {isAuthenticated ? (
-        <button className="btn btn-outline-secondary mr-3" onClick={() => logout({ redirect_uri: 'http://localhost:3000/' })}>
+        <button className="btn btn-outline-secondary mr-3" onClick={() => logout()}>
           Log out
         </button>
       ) : (
-        <button className="btn btn-outline-secondary mr-3" onClick={() => loginWithRedirect({ redirect_uri: 'http://localhost:3000/' })}>
+        <button className="btn btn-outline-secondary mr-3" onClick={() => loginWithRedirect()}>
           {isAuthenticated === undefined || loading ? 'Wait...' : 'Log in'}
         </button>
       )}
