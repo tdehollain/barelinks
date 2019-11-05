@@ -6,7 +6,7 @@ const UserButton = props => {
   return (
     <div>
       {isAuthenticated ? (
-        <button className="btn btn-outline-secondary mr-3" onClick={() => logout({ redirect_uri: window.location.origin })}>
+        <button className="btn btn-outline-secondary mr-3" onClick={() => logout({ returnTo: window.location.origin })}>
           Log out
         </button>
       ) : (
