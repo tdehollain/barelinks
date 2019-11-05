@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.js';
 import './App.css';
@@ -7,34 +7,25 @@ import NavBarContainer from './NavBar/NavBarContainer';
 import HomePage from './HomePage/HomePage';
 import TagsPage from './TagsPage/TagsPage';
 import SearchPage from './SearchPage/SearchPage';
-import AuthContainer from './Auth/AuthContainer.jsx';
-import { PrivateRoute } from './Components/PrivateRoute';
 
-import Amplify from 'aws-amplify';
-import awsConfig from './utils/awsConfig';
+import { useAuth0 } from './Auth/react-auth0-spa';
 
-Amplify.configure(awsConfig.cognitoConfig);
-
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <NavBarContainer />
+const App = () => {
+  const { isAuthenticated, user } = useAuth0();
+  return (
+    <div className="App">
+      <NavBarContainer isAuthenticated={isAuthenticated} user={user} />
+      {isAuthenticated && user && (
         <Switch>
-          <PrivateRoute exact path="/" component={HomePage} />
-          <PrivateRoute path="/tags/" component={TagsPage} />
-          <PrivateRoute path="/search/" component={SearchPage} />
-          <Route path="/login/" component={AuthContainer} />
-          <Route path="/signup/" component={AuthContainer} />
-          <PrivateRoute path="/changepassword/" component={AuthContainer} />
-          <PrivateRoute path="/passwordchanged/" component={AuthContainer} />
-          <Route path="/forgotpassword/" component={AuthContainer} />
-          <Route path="/resetpassword/" component={AuthContainer} />
-          <Route path="/verificationsent/" component={AuthContainer} />
+          <Route exact path="/">
+            <HomePage username={user.email} />
+          </Route>
+          <Route path="/tags/" render={props => <TagsPage {...props} username={user.email} />} />
+          <Route path="/search/" render={props => <SearchPage {...props} username={user.email} />} />
         </Switch>
-      </div>
-    );
-  }
-}
+      )}
+    </div>
+  );
+};
 
 export default App;

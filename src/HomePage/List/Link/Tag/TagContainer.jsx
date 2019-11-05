@@ -1,37 +1,25 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import Tag from './Tag';
 import tagActions from './tagActions';
+import { useAuth0 } from '../../../../Auth/react-auth0-spa';
 // import PropTypes from 'prop-types';
 
-class TagContainer extends Component {
+const TagContainer = props => {
+  const { getTokenSilently } = useAuth0();
 
-	constructor() {
-		super();
-		this.removeTag = this.removeTag.bind(this);
-	}
+  const removeTag = async () => {
+    const token = await getTokenSilently();
+    let tagDetails = {
+      linkId: props.linkId,
+      tagName: props.name,
+      tagColor: props.color
+    };
+    props.removeTag(props.username, token, tagDetails);
+  };
 
-	async removeTag() {
-		let tagDetails = {
-			"linkId": this.props.linkId,
-			"tagName": this.props.name,
-			"tagColor": this.props.color
-		}
-		this.props.removeTag(this.props.username, tagDetails);
-	}
-
-	render() {
-		return (
-			<Tag
-				name={this.props.name}
-				color={this.props.color}
-				removeTag={this.removeTag}
-				showDeleteButton={this.props.showDeleteButton}
-			/>
-		);
-	}
-
-}
+  return <Tag name={props.name} color={props.color} removeTag={removeTag} showDeleteButton={props.showDeleteButton} />;
+};
 
 // TagContainer.propTypes = {
 // 	linkId: PropTypes.string.isRequired,
@@ -39,16 +27,13 @@ class TagContainer extends Component {
 // 	color: PropTypes.string.isRequired
 // }
 
-const mapStateToProps = (store) => {
-	return {
-		username: store.userReducer.username
-	}
+const mapDispatchToProps = dispatch => {
+  return {
+    removeTag: (username, token, tagDetails) => dispatch(tagActions.removeTag(username, token, tagDetails))
+  };
 };
 
-const mapDispatchToProps = (dispatch) => {
-	return {
-		removeTag: (username, tagDetails) => dispatch(tagActions.removeTag(username, tagDetails))
-	}
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(TagContainer);
+export default connect(
+  null,
+  mapDispatchToProps
+)(TagContainer);

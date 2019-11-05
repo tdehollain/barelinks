@@ -1,22 +1,8 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
 import NavBar from './NavBar';
 
-class NavBarContainer extends Component {
+const NavBarContainer = props => {
+  return <NavBar isAuthenticated={props.isAuthenticated} username={props.username} />;
+};
 
-	render() {
-		return (
-			<NavBar
-				isAuthenticated={this.props.isAuthenticated}
-				username={this.props.username}
-			/>
-		)
-	}
-}
-
-function mapStateToProps(store) {
-	const { username, isAuthenticated } = store.userReducer;
-	return { username, isAuthenticated }
-}
-
-export default connect(mapStateToProps)(NavBarContainer);
+export default NavBarContainer;

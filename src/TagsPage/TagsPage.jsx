@@ -1,41 +1,46 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import TagsFormContainer from './TagsForm/TagsFormContainer';
 import TagsViewContainer from './TagsView/TagsViewContainer';
-import AddTagModalContainer from "../AddTagModal/AddTagModalContainer";
+import AddTagModalContainer from '../AddTagModal/AddTagModalContainer';
 import listActions from '../HomePage/List/listActions';
+import { useAuth0 } from '../Auth/react-auth0-spa';
 
-class TagsPage extends Component {
+const TagsPage = props => {
+  const { getTokenSilently } = useAuth0();
 
-	componentDidMount() {
-		this.props.loadCommonTags(this.props.username);
-	}
+  // When mounting: load list of tags
+  React.useEffect(() => {
+    const loadTags = async () => {
+      const token = await getTokenSilently();
+      props.loadCommonTags(props.username, token);
+    };
+    loadTags();
+  }, []);
 
-	render() {
-		return (
-			<div className='TagsPage container mt-5'>
-				<TagsFormContainer />
-				<Route path='/tags/:tagName/:tagColor' component={TagsViewContainer} />
-				<AddTagModalContainer
-					commonTags={this.props.commonTags}
-				/>
-			</div>
-		)
-	}
-}
+  return (
+    <div className="TagsPage container mt-5">
+      <TagsFormContainer />
+      <Route path="/tags/:tagName/:tagColor" render={routeProps => <TagsViewContainer {...routeProps} username={props.username} />} />
+      <AddTagModalContainer username={props.username} commonTags={props.commonTags} />
+    </div>
+  );
+};
 
-const mapStateToProps = (store) => {
-	return {
-		username: store.userReducer.username,
-		commonTags: store.listReducer.commonTags
-	}
-}
+const mapStateToProps = store => {
+  return {
+    commonTags: store.listReducer.commonTags
+  };
+};
 
-const mapDispatchToProps = (dispatch) => {
-	return {
-		loadCommonTags: (username) => dispatch(listActions.loadCommonTags(username))
-	}
-}
+const mapDispatchToProps = dispatch => {
+  return {
+    loadCommonTags: (username, token) => dispatch(listActions.loadCommonTags(username, token))
+  };
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(TagsPage);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TagsPage);

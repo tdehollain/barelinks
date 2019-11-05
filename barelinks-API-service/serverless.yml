@@ -12,7 +12,6 @@ provider:
     # BARELINKS_TABLE: ${self:app}-${self:provider.stage}
     BARELINKS_TABLE: barelinks-${self:provider.stage}
     STAGE: ${self:provider.stage}
-
   # IAM statements
   iamRoleStatements:
     - Effect: Allow
@@ -26,6 +25,11 @@ provider:
       Resource:
         - 'Fn::GetAtt': ['BarelinksTable', 'Arn']
 
+custom:
+  auth0audience:
+    dev: https://3u2so4i6m0.execute-api.eu-west-1.amazonaws.com/dev
+    production: https://tjhe8rann5.execute-api.eu-west-1.amazonaws.com/production
+
 functions:
   getLinks:
     handler: functions/getLinks.handler
@@ -35,6 +39,7 @@ functions:
       - http:
           path: /link
           method: GET
+          authorizer: barelinks-authorizer
           cors: true
   putLink:
     handler: functions/putLink.handler
@@ -43,7 +48,8 @@ functions:
     events:
       - http:
           path: /link
-          method: PUT
+          method: put
+          authorizer: barelinks-authorizer
           cors: true
   deleteLink:
     handler: functions/deleteLink.handler
@@ -53,6 +59,7 @@ functions:
       - http:
           path: /link
           method: DELETE
+          authorizer: barelinks-authorizer
           cors: true
   getLinksByTag:
     handler: functions/getLinksByTag.handler
@@ -62,6 +69,7 @@ functions:
       - http:
           path: /linksbytag
           method: GET
+          authorizer: barelinks-authorizer
           cors: true
   getLinksBySearchTerm:
     handler: functions/getLinksBySearchTerm.handler
@@ -71,6 +79,7 @@ functions:
       - http:
           path: /linksbysearchterm
           method: GET
+          authorizer: barelinks-authorizer
           cors: true
   getTags:
     handler: functions/getTags.handler
@@ -80,6 +89,7 @@ functions:
       - http:
           path: /tags
           method: GET
+          authorizer: barelinks-authorizer
           cors: true
   updateLink:
     handler: functions/updateLink.handler
@@ -89,7 +99,15 @@ functions:
       - http:
           path: /link/tag
           method: POST
+          authorizer: barelinks-authorizer
           cors: true
+  barelinks-authorizer:
+    handler: auth/index.handler
+    environment:
+      TOKEN_ISSUER: https://barelinks.auth0.com/
+      JWKS_URI: https://barelinks.auth0.com/.well-known/jwks.json
+      AUDIENCE: ${self:custom.auth0audience.${self:provider.stage}}
+    cors: true
 
 resources:
   Resources:
@@ -110,3 +128,25 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.environment.BARELINKS_TABLE}
+
+    # This response is needed for custom authorizer failures cors support ¯\_(ツ)_/¯
+    GatewayResponse:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: EXPIRED_TOKEN
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        StatusCode: '401'
+    AuthFailureGatewayResponse:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: UNAUTHORIZED
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        StatusCode: '401'

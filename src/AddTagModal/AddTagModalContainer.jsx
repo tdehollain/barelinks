@@ -1,106 +1,90 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 // import PropTypes from 'prop-types';
 import AddTagModal from './AddTagModal';
 import tagActions from '../HomePage/List/Link/Tag/tagActions';
-import $ from 'jquery';
 import addTagModalActions from './addTagModalActions';
+import { useAuth0 } from '../Auth/react-auth0-spa';
 
-class AddTagModalContainer extends Component {
+const AddTagModalContainer = props => {
+  const { getTokenSilently } = useAuth0();
 
-	constructor() {
-		super();
+  const [currentTag, setCurrentTag] = React.useState({ name: '', colorKey: 0 });
 
-		this.state = {
-			enteredTagName: '',
-			activeColor: 0
-		}
+  const handleChangeEnteredTagName = e => {
+    setCurrentTag({ ...currentTag, name: e.target.value });
+  };
 
-		this.handleChangeEnteredTagName = this.handleChangeEnteredTagName.bind(this);
-		this.handleSelectTagColor = this.handleSelectTagColor.bind(this);
-		this.handleTagClick = this.handleTagClick.bind(this);
-		this.handleAddTag = this.handleAddTag.bind(this);
-	}
+  const handleSelectTagColor = key => {
+    setCurrentTag({ ...currentTag, colorKey: key });
+  };
 
-	handleChangeEnteredTagName(e) {
-		this.setState({
-			"enteredTagName": e.target.value
-		});
-	}
+  const handleTagClick = tag => {
+    // find the color key from the color
+    let colorKey = 0;
+    props.tagColors.forEach((v, i) => {
+      if (v === tag.color) colorKey = i;
+    });
 
-	handleSelectTagColor(key) {
-		this.setState({
-			"activeColor": key
-		});
-	}
+    setCurrentTag({ name: tag.name, colorKey });
+    handleAddTag(tag.name, colorKey);
+    document.querySelector('#addTagCancelButton').click();
+  };
 
-	handleTagClick(name, color) {
-		this.setState({
-			"enteredTagName": name,
-			"activeColor": this.props.tagColors.indexOf(color.toUpperCase())
-		}, () => {
-			this.handleAddTag();
-			$('#addTagSubmitButton').click();
-		});
-	}
+  const handleAddTag = async (name, colorKey) => {
+    // name & color are only defined if function is called from handleTagClick (i.e. user clicks on a tag)
+    if (name === undefined) name = currentTag.name;
+    if (colorKey === undefined) colorKey = currentTag.colorKey;
+    if (name) {
+      let tagDetails = {
+        linkId: props.linkId,
+        tagName: name,
+        tagColor: props.tagColors[colorKey]
+      };
+      const token = await getTokenSilently();
+      props.addTag(props.username, token, tagDetails);
 
-	async handleAddTag() {
-		if (this.state.enteredTagName) {
-			let tagDetails = {
-				"linkId": this.props.linkId,
-				"tagName": this.state.enteredTagName,
-				"tagColor": this.props.tagColors[this.state.activeColor]
-			};
+      setCurrentTag({ name: '', color: 0 });
+    }
+  };
 
-			this.props.addTag(this.props.username, tagDetails);
+  let commonTagsFiltered = props.commonTags.filter(tag => {
+    return tag.name.toLowerCase().indexOf(currentTag.name.toLowerCase()) > -1;
+  });
+  let commonTagsToShow = currentTag.name
+    ? commonTagsFiltered.slice(0, props.maxTagsToShowInModal)
+    : props.commonTags.slice(0, props.maxTagsToShowInModal);
 
-			this.setState({
-				"enteredTagName": '',
-				"activeColor": 0,
-				"commonTags": this.props.commonTags.slice(0, this.props.maxTagsToShowInModal)
-			});
-		}
-	}
-
-	render() {
-
-		let commonTagsFiltered = this.props.commonTags.filter(tag => {
-			return tag.name.toLowerCase().indexOf(this.state.enteredTagName.toLowerCase()) > -1;
-		});
-		let commonTagsToShow = this.state.enteredTagName
-			? commonTagsFiltered.slice(0, this.props.maxTagsToShowInModal)
-			: this.props.commonTags.slice(0, this.props.maxTagsToShowInModal)
-
-		return (
-			<AddTagModal
-				tagClick={this.handleTagClick}
-				commonTags={commonTagsToShow}
-				enteredTagName={this.state.enteredTagName}
-				changeEnteredTagName={this.handleChangeEnteredTagName}
-				tagColors={this.props.tagColors}
-				addTag={this.handleAddTag}
-				activeColor={this.state.activeColor}
-				selectTagColor={this.handleSelectTagColor}
-			/>
-		)
-	}
-}
-
-const mapStateToProps = (store) => {
-	return {
-		username: store.userReducer.username,
-		maxTagsToShowInModal: store.userReducer.settings.maxTagsToShowInModal,
-		tagColors: store.userReducer.tagColors,
-		linkId: store.addTagModalReducer.linkId
-	}
+  return (
+    <AddTagModal
+      tagClick={handleTagClick}
+      commonTags={commonTagsToShow}
+      enteredTagName={currentTag.name}
+      changeEnteredTagName={handleChangeEnteredTagName}
+      tagColors={props.tagColors}
+      addTag={handleAddTag}
+      activeColor={currentTag.colorKey}
+      selectTagColor={handleSelectTagColor}
+    />
+  );
 };
 
-const mapDispatchToProps = (dispatch) => {
-	return {
-		addTag: (username, tagDetails) => dispatch(tagActions.addTag(username, tagDetails)),
-		loadCommonTags: (username) => dispatch(addTagModalActions.loadCommonTags(username))
-	}
-}
+const mapStateToProps = store => {
+  return {
+    maxTagsToShowInModal: store.userReducer.settings.maxTagsToShowInModal,
+    tagColors: store.userReducer.tagColors,
+    linkId: store.addTagModalReducer.linkId
+  };
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddTagModalContainer);
+const mapDispatchToProps = dispatch => {
+  return {
+    addTag: (username, token, tagDetails) => dispatch(tagActions.addTag(username, token, tagDetails)),
+    loadCommonTags: username => dispatch(addTagModalActions.loadCommonTags(username))
+  };
+};
 
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AddTagModalContainer);

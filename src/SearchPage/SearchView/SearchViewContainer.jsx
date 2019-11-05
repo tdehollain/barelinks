@@ -1,112 +1,72 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import List from '../../HomePage/List/List';
 import listActions from '../../HomePage/List/listActions';
+import { useAuth0 } from '../../Auth/react-auth0-spa';
 
-class SearchViewContainer extends Component {
-  constructor() {
-    super();
+const SearchViewContainer = props => {
+  const { getTokenSilently } = useAuth0();
 
-    this.handleNextPage = this.handleNextPage.bind(this);
-    this.handlePreviousPage = this.handlePreviousPage.bind(this);
-  }
+  // when mounting: reset the list and load the list
+  React.useEffect(() => {
+    props.resetList(); // if we want the list to be back to page 1 if user goes to different route and back
+    updateList({ page: props.page });
+  }, []);
 
-  componentDidMount() {
-    this.props.resetList(); // if we want the list to be back to page 1 if user goes to different route and back
+  // when page or search term changes: update the list
+  React.useEffect(() => {
+    props.resetList();
+    updateList({ page: props.page });
+  }, [props.page, props.match.params.searchTerm]);
+
+  const updateList = async ({ page }) => {
     let params = {
-      linksPerPage: this.props.linksPerPage,
-      page: this.props.page,
-      searchTerm: decodeURIComponent(this.props.match.params.searchTerm)
+      linksPerPage: props.linksPerPage,
+      page,
+      searchTerm: decodeURIComponent(props.match.params.searchTerm)
     };
-    this.props.loadList(this.props.username, 'searchpage', params);
-  }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      prevProps.page !== this.props.page ||
-      decodeURIComponent(prevProps.match.params.searchTerm) !== decodeURIComponent(this.props.match.params.searchTerm)
-    ) {
-      this.props.resetList();
-      let params = {
-        linksPerPage: this.props.linksPerPage,
-        page: this.props.page,
-        searchTerm: decodeURIComponent(this.props.match.params.searchTerm)
-      };
-      this.props.loadList(this.props.username, 'searchpage', params);
+    const token = await getTokenSilently();
+    props.loadList(props.username, token, 'searchpage', params);
+  };
+
+  const handleNextPage = () => {
+    if (props.page < props.maxPages) {
+      updateList({ page: props.page + 1 });
+      props.nextPage();
     }
-  }
+  };
 
-  // componentWillReceiveProps(nextProps) {
-  // 	// console.log('componentWillReceiveProps');
-  // 	if (nextProps.page !== this.props.page) {
-  // 		let params = {
-  // 			linksPerPage: this.props.linksPerPage,
-  // 			page: this.props.page,
-  // 			searchTerm: decodeURIComponent(this.props.match.params.searchTerm)
-  // 		}
-  // 		this.props.loadList(this.props.username, 'searchpage', params);
-  // 	}
-
-  // 	if (decodeURIComponent(nextProps.match.params.searchTerm) !== decodeURIComponent(this.props.match.params.searchTerm)) {
-  // 		let params = {
-  // 			linksPerPage: this.props.linksPerPage,
-  // 			page: this.props.page,
-  // 			searchTerm: decodeURIComponent(this.props.match.params.searchTerm)
-  // 		}
-  // 		this.props.loadList(this.props.username, 'searchpage', params);
-  // 	}
-  // }
-
-  handleNextPage() {
-    if (this.props.page < this.props.maxPages) {
-      let params = {
-        linksPerPage: this.props.linksPerPage,
-        page: this.props.page + 1,
-        searchTerm: decodeURIComponent(this.props.match.params.searchTerm)
-      };
-      this.props.loadList(this.props.username, 'searchpage', params);
-      this.props.nextPage();
+  const handlePreviousPage = () => {
+    if (props.page > 1) {
+      updateList({ page: props.page - 1 });
+      props.previousPage();
     }
-  }
+  };
 
-  handlePreviousPage() {
-    if (this.props.page > 1) {
-      let params = {
-        linksPerPage: this.props.linksPerPage,
-        page: this.props.page - 1,
-        searchTerm: decodeURIComponent(this.props.match.params.searchTerm)
-      };
-      this.props.loadList(this.props.username, 'searchpage', params);
-      this.props.previousPage();
-    }
-  }
-
-  render() {
-    return (
-      <div>
-        <div className="mt-3 mb-3">
-          <span>
-            <i>Showing results for term: </i>
-            <u>{decodeURIComponent(this.props.match.params.searchTerm)}</u>
-          </span>
-        </div>
-        <List
-          list={this.props.list}
-          maxTags={this.props.maxTags}
-          currentPage={this.props.page}
-          maxPages={this.props.maxPages}
-          handleNextPage={this.handleNextPage}
-          handlePreviousPage={this.handlePreviousPage}
-          loading={this.props.loading}
-        />
+  return (
+    <div>
+      <div className="mt-3 mb-3">
+        <span>
+          <i>Showing results for term: </i>
+          <u>{decodeURIComponent(props.match.params.searchTerm)}</u>
+        </span>
       </div>
-    );
-  }
-}
+      <List
+        list={props.list}
+        maxTags={props.maxTags}
+        currentPage={props.page}
+        maxPages={props.maxPages}
+        handleNextPage={handleNextPage}
+        handlePreviousPage={handlePreviousPage}
+        loading={props.loading}
+      />
+    </div>
+  );
+};
 
 const mapStateToProps = store => {
   return {
-    username: store.userReducer.username,
     maxTags: store.userReducer.settings.maxTags,
     linksPerPage: store.userReducer.settings.linksPerPage,
     list: store.listReducer.visibleList,
@@ -120,7 +80,7 @@ const mapStateToProps = store => {
 const mapDispatchToProps = dispatch => {
   return {
     resetList: () => dispatch(listActions.resetList()),
-    loadList: (username, type, params) => dispatch(listActions.loadList(username, type, params)),
+    loadList: (username, token, type, params) => dispatch(listActions.loadList(username, token, type, params)),
     nextPage: () => dispatch(listActions.nextPage()),
     previousPage: () => dispatch(listActions.previousPage()),
     loadCommonTags: username => dispatch(listActions.loadCommonTags(username))

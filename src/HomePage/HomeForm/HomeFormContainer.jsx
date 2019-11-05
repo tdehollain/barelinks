@@ -1,11 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { useAuth0 } from '../../Auth/react-auth0-spa';
 import HomeForm from './HomeForm';
 import { homeFormActions } from './homeFormActions';
 import { URLisValid } from '../../utils/util';
 
 const HomeFormContainer = ({ username, addLink }) => {
   const [enteredURL, setEnteredURL] = React.useState('');
+  const { getTokenSilently } = useAuth0();
 
   const handleChange = e => {
     setEnteredURL(e.target.value);
@@ -13,8 +15,10 @@ const HomeFormContainer = ({ username, addLink }) => {
 
   const handleSubmit = async e => {
     e.preventDefault();
+
     if (URLisValid(enteredURL)) {
-      await addLink(username, enteredURL);
+      const token = await getTokenSilently();
+      await addLink(username, token, enteredURL);
       setEnteredURL('');
     }
   };
@@ -22,19 +26,13 @@ const HomeFormContainer = ({ username, addLink }) => {
   return <HomeForm handleChange={handleChange} enteredURL={enteredURL} handleSubmit={handleSubmit} />;
 };
 
-const mapStateToProps = store => {
-  return {
-    username: store.userReducer.username
-  };
-};
-
 const mapDispatchToProps = dispatch => {
   return {
-    addLink: (username, url) => dispatch(homeFormActions.addLink(username, url))
+    addLink: (username, token, url) => dispatch(homeFormActions.addLink(username, token, url))
   };
 };
 
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps
 )(HomeFormContainer);

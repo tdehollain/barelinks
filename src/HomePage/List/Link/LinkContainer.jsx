@@ -1,52 +1,49 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import Link from './Link';
 import linkActions from './linkActions';
 import addTagModalActions from '../../../AddTagModal/addTagModalActions';
+import { useAuth0 } from '../../../Auth/react-auth0-spa';
 
-class LinkContainer extends Component {
+const LinkContainer = props => {
+  const { getTokenSilently } = useAuth0();
 
-	constructor() {
-		super();
-		this.handleRemoveLink = this.handleRemoveLink.bind(this);
-		this.handleShowAddTagModal = this.handleShowAddTagModal.bind(this);
-	}
+  const handleRemoveLink = async linkId => {
+    const token = await getTokenSilently();
+    props.removeLink(props.username, token, linkId);
+  };
 
-	handleRemoveLink(linkId) {
-		this.props.removeLink(this.props.username, linkId);
-	}
+  const handleShowAddTagModal = (linkKey, linkId) => {
+    props.showAddTagModal(linkKey, linkId);
+  };
 
-	handleShowAddTagModal(linkKey, linkId) {
-		this.props.showAddTagModal(linkKey, linkId)
-	};
+  return (
+    <Link
+      username={props.username}
+      linkKey={props.linkKey}
+      linkId={props.linkId}
+      url={props.url}
+      title={props.title}
+      date={props.date}
+      tags={props.tags}
+      removeLink={handleRemoveLink}
+      maxTags={props.maxTags}
+      showAddTagModal={handleShowAddTagModal}
+    />
+  );
+};
 
-	render() {
-		return (
-			<Link
-				linkKey={this.props.linkKey}
-				linkId={this.props.linkId}
-				url={this.props.url}
-				title={this.props.title}
-				date={this.props.date}
-				tags={this.props.tags}
-				removeLink={this.handleRemoveLink}
-				maxTags={this.props.maxTags}
-				showAddTagModal={this.handleShowAddTagModal}
-			/>
-		)
-	}
-}
+const mapDispatchToProps = dispatch => {
+  return {
+    removeLink: (username, token, linkId) => dispatch(linkActions.removeLink(username, token, linkId)),
+    showAddTagModal: (linkKey, linkId) => dispatch(addTagModalActions.showAddTagModal(linkKey, linkId))
+  };
+};
 
-const mapDispatchToProps = (dispatch) => {
-	return {
-		removeLink: (username, linkId) => dispatch(linkActions.removeLink(username, linkId)),
-		showAddTagModal: (linkKey, linkId) => dispatch(addTagModalActions.showAddTagModal(linkKey, linkId))
-	}
-}
-
-const mapStateToProps = (store) => { return { username: store.userReducer.username } };
-
-export default connect(mapStateToProps, mapDispatchToProps)(LinkContainer);
+export default connect(
+  null,
+  mapDispatchToProps
+)(LinkContainer);
 
 // LinkContainer.propTypes = {
 // 	linkKey: PropTypes.number,

@@ -1,32 +1,27 @@
-import React, { Component } from 'react';
+import React from 'react';
 // import PropTypes from 'prop-types';
 
-class ColorButtons extends Component {
-	render() {
-		return (
-			<div className='px-2'>
-				<ul className="list-inline d-flex justify-content-around colorItems">
-					{
-						this.props.tagColors.length && this.props.tagColors.map((color, index) => {
-							return (
-								<li
-									key={index}
-									className={`list-inline-item colorItem rounded-circle${index === this.props.activeColor ? " active" : ""}`}
-									style={{ background: color }}
-									onClick={this.props.selectTagColor.bind(this, index)}
-									tabIndex={index}
-									onKeyPress={this.props.handleKeyPress}
-								>
-								</li>
-							)
-						})
-					}
-				</ul>
-			</div>
-		)
-	}
-}
-
+const ColorButtons = props => {
+  return (
+    <div className="px-2">
+      <ul className="list-inline d-flex justify-content-around colorItems">
+        {props.tagColors.length &&
+          props.tagColors.map((color, index) => {
+            return (
+              <li
+                key={index}
+                className={`list-inline-item colorItem rounded-circle${index === props.activeColor ? ' active' : ''}`}
+                style={{ background: color }}
+                onClick={() => props.selectTagColor(index)}
+                tabIndex={index}
+                onKeyPress={props.handleKeyPress}
+              ></li>
+            );
+          })}
+      </ul>
+    </div>
+  );
+};
 
 // ColorButtons.propTypes = {
 // 	tagColors: PropTypes.arrayOf(PropTypes.string).isRequired,
