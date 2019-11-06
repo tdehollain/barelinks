@@ -39,34 +39,6 @@ const TagsViewContainer = props => {
     load();
   }, [props.page, props.match.params.tagName]);
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (
-  //     prevProps.page !== props.page ||
-  //     decodeURIComponent(prevProps.match.params.tagName) !== decodeURIComponent(props.match.params.tagName)
-  //   ) {
-  //     let params = {
-  //       linksPerPage: props.linksPerPage,
-  //       page: props.page,
-  //       tagName: decodeURIComponent(props.match.params.tagName),
-  //       tagColor: props.match.params.tagColor
-  //     };
-  //     props.loadList(props.username, 'tagspage', params);
-  //   }
-  // }
-
-  // componentWillReceiveProps(nextProps) {
-  // 	// console.log('componentWillReceiveProps');
-  // 	if (nextProps.page !== props.page || decodeURIComponent(nextProps.match.params.tagName) !== decodeURIComponent(props.match.params.tagName)) {
-  // 		let params = {
-  // 			linksPerPage: nextProps.linksPerPage,
-  // 			page: nextProps.page,
-  // 			tagName: decodeURIComponent(nextProps.match.params.tagName),
-  // 			tagColor: nextProps.match.params.tagColor
-  // 		}
-  // 		props.loadList(nextProps.username, 'tagspage', params);
-  // 	}
-  // }
-
   const handleNextPage = async () => {
     if (props.page < props.maxPages) {
       let params = {
@@ -98,9 +70,7 @@ const TagsViewContainer = props => {
   return (
     <div>
       <div className="mb-3">
-        <span>
-          <u>Showing results for tag</u>{' '}
-        </span>
+        <span style={{ borderBottom: '1px solid black', paddingBottom: '2px' }}>Showing results for tag</span>{' '}
         <CommonTag
           key={1}
           name={decodeURIComponent(props.match.params.tagName)}

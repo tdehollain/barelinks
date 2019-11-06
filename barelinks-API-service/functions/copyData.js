@@ -1,7 +1,7 @@
 const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB.DocumentClient({ region: 'eu-west-1', apiVersion: '2012-08-10' });
 
-const newTableName = 'barelinks-dev';
+const newTableName = 'barelinks-production';
 const oldTableName = 'barelinks-production';
 
 exports.handler = async () => {

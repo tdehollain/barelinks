@@ -47,10 +47,9 @@ const SearchViewContainer = props => {
   return (
     <div>
       <div className="mt-3 mb-3">
-        <span>
-          <i>Showing results for term: </i>
-          <u>{decodeURIComponent(props.match.params.searchTerm)}</u>
-        </span>
+        <span style={{ borderBottom: '1px solid black', paddingBottom: '2px' }}>Showing results for term</span>
+        <span>: </span>
+        <i>{decodeURIComponent(props.match.params.searchTerm)}</i>
       </div>
       <List
         list={props.list}
