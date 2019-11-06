@@ -16,12 +16,14 @@ const onRedirectCallback = appState => {
   window.history.replaceState({}, document.title, appState && appState.targetUrl ? appState.targetUrl : window.location.pathname);
 };
 
+const stage = process.env.REACT_APP_STAGE || 'dev';
+
 ReactDOM.render(
   <Auth0Provider
-    domain={config.domain}
-    client_id={config.clientId}
+    domain={config[stage].domain}
+    client_id={config[stage].clientId}
     redirect_uri={window.location.origin}
-    audience={config.audience}
+    audience={config[stage].audience}
     onRedirectCallback={onRedirectCallback}
   >
     <Provider store={store}>
