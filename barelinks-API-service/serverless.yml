@@ -24,6 +24,8 @@ provider:
         - dynamodb:DeleteItem
       Resource:
         - 'Fn::GetAtt': ['BarelinksTable', 'Arn']
+        - arn:aws:dynamodb:eu-west-1:072129581133:table/barelinks-temp
+        - arn:aws:dynamodb:eu-west-1:072129581133:table/barelinks-production
 
 custom:
   auth0audience:
@@ -108,6 +110,10 @@ functions:
       JWKS_URI: https://barelinks.auth0.com/.well-known/jwks.json
       AUDIENCE: ${self:custom.auth0audience.${self:provider.stage}}
     cors: true
+  copyData:
+    handler: functions/copyData.handler
+    timeout: 300
+    memorySize: 512
 
 resources:
   Resources:

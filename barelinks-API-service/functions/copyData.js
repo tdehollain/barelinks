@@ -1,8 +1,8 @@
 const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB.DocumentClient({ region: 'eu-west-1', apiVersion: '2012-08-10' });
 
-const TableName = process.env.BARELINKS_TABLE;
-const oldTableName = 'Barelinks';
+const newTableName = 'barelinks-dev';
+const oldTableName = 'barelinks-production';
 
 exports.handler = async () => {
   // get links
@@ -21,12 +21,12 @@ exports.handler = async () => {
   let itemsSaved = 0;
   for (let item of items) {
     const params = {
-      TableName,
-      Item: item
+      TableName: newTableName,
+      Item: { ...item, userId: 'thibaut.dehollain@gmail.com' }
     };
     await ddb.put(params).promise();
     itemsSaved++;
   }
 
-  return { TableName, totalCount, itemsSaved };
+  return { newTableName, totalCount, itemsSaved };
 };
