@@ -1,4 +1,0 @@
-export default {
-	REMOVE_LINK: "REMOVE_LINK",
-	SHOW_MODAL: "SHOW_MODAL"
-}
