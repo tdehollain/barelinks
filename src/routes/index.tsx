@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { URLForm } from '../components/URLForm';
 
 export const Route = createFileRoute('/')({
   component: Index,
@@ -6,49 +7,8 @@ export const Route = createFileRoute('/')({
 
 function Index() {
   return (
-    <div className="p-2">
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
-      <h3>Welcome Home!</h3>
+    <div>
+      <URLForm />
     </div>
   );
 }
