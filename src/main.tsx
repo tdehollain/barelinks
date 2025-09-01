@@ -4,7 +4,7 @@ import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ClerkProvider } from '@clerk/clerk-react';
 import { ThemeProvider } from './hooks/useTheme';
-import './index.css';
+import './styles.css';
 
 // Import the generated route tree
 import { routeTree } from './routeTree.gen';
