@@ -19,6 +19,18 @@ This project uses Clerk to authenticate users and authorize API calls
 - The user button is on the far right side of the nav bar
 - When no user is signed it, there should be a button that says "Sign in"
 
+
+# Database
+Data for this app is stored on Neon DB.
+Server function can connect to it using the following code:
+```tsx
+import { neon } from '@neondatabase/serverless';
+const sql = neon('postgresql://neondb_owner:NEON_DB_PASSWORD@ep-summer-mode-aga44vze-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require');
+```
+
+Where NEON_DB_PASSWORD is an environment variable
+
+
 ## Styling
 
 This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
