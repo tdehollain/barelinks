@@ -22,19 +22,22 @@ function createWebRequest(req: VercelRequest): Request {
   return new Request(url, {
     method: req.method || 'GET',
     headers,
-    body:
-      req.method !== 'GET' && req.method !== 'HEAD'
-        ? JSON.stringify(req.body)
-        : undefined,
+    body: req.method !== 'GET' && req.method !== 'HEAD' ? JSON.stringify(req.body) : undefined,
   });
 }
 
 async function authenticateUser(req: VercelRequest): Promise<string | null> {
   try {
     const webRequest = createWebRequest(req);
+    let authorizedParty = process.env.VERCEL_ENV ? `https://${process.env.VERCEL_URL}` : `http://${process.env.VERCEL_URL}`;
+    if (process.env.VERCEL_BRANCH_URL) authorizedParty = `https://${process.env.VERCEL_BRANCH_URL}`;
+    if (process.env.VERCEL_PROJECT_PRODUCTION_URL) authorizedParty = `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+
+    console.log('Authorized Party:', authorizedParty);
+
     const requestState = await clerkClient.authenticateRequest(webRequest, {
       jwtKey: process.env.CLERK_JWT_KEY,
-      authorizedParties: ['http://localhost:3000', 'https://www.barelinks.in'],
+      authorizedParties: [authorizedParty],
     });
     const auth = requestState.toAuth();
     // console.log({ auth });
@@ -58,11 +61,7 @@ async function fetchPageTitle(url: string): Promise<string | null> {
     });
 
     if (!response.ok) {
-      console.warn(
-        'Failed to fetch page: status',
-        response.status,
-        response.statusText,
-      );
+      console.warn('Failed to fetch page: status', response.status, response.statusText);
       return null;
     }
     const html = await response.text();
@@ -82,6 +81,9 @@ async function fetchPageTitle(url: string): Promise<string | null> {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   console.log('VERCEL_ENV:', process.env.VERCEL_ENV);
+  console.log('VERCEL_URL:', process.env.VERCEL_URL);
+  console.log('VERCEL_BRANCH_URL:', process.env.VERCEL_BRANCH_URL);
+  console.log('VERCEL_PROJECT_PRODUCTION_URL:', process.env.VERCEL_PROJECT_PRODUCTION_URL);
 
   // Only allow POST requests
   if (req.method !== 'POST') {
