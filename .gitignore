@@ -30,3 +30,4 @@ src/routeTree.gen.ts
 # Nitro build artifacts
 .nitro/
 .output/
+.vercel
