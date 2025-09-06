@@ -38,12 +38,14 @@ async function authenticateUser(req: VercelRequest): Promise<string | null> {
       if (process.env.VERCEL_PROJECT_PRODUCTION_URL) authorizedParties.push(`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`);
     }
 
-    console.log('Authorized Party:', authorizedParties);
+    console.log('Authorized Parties:', authorizedParties);
 
     const requestState = await clerkClient.authenticateRequest(webRequest, {
       jwtKey: process.env.CLERK_JWT_KEY,
       authorizedParties: authorizedParties,
     });
+    console.log('Request State:', requestState);
+
     const auth = requestState.toAuth();
     console.log({ auth });
 
