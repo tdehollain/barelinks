@@ -1,4 +1,3 @@
-// import type { VercelRequest } from '@vercel/node';
 import { next } from '@vercel/functions';
 import { createClerkClient } from '@clerk/backend';
 
@@ -11,28 +10,9 @@ const clerkClient = createClerkClient({
   secretKey: process.env.CLERK_SECRET_KEY,
   publishableKey: process.env.CLERK_PUBLISHABLE_KEY,
 });
-// Convert VercelRequest to standard Request object
-// function createWebRequest(req: VercelRequest): Request {
-//   const url = `https://${req.headers.host}${req.url}`;
-//   const headers = new Headers();
-
-//   // Copy headers from VercelRequest to Headers object
-//   Object.entries(req.headers).forEach(([key, value]) => {
-//     if (value) {
-//       headers.set(key, Array.isArray(value) ? value.join(', ') : value);
-//     }
-//   });
-
-//   return new Request(url, {
-//     method: req.method || 'GET',
-//     headers,
-//     body: req.method !== 'GET' && req.method !== 'HEAD' ? JSON.stringify(req.body) : undefined,
-//   });
-// }
 
 async function authenticateUser(req: Request): Promise<string | null> {
   try {
-    // const webRequest = createWebRequest(req);
     const authorizedParties: string[] = [];
     if (!process.env.VERCEL_ENV) {
       authorizedParties.push(`http://${process.env.VERCEL_URL}`);
