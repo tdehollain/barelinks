@@ -40,16 +40,12 @@ async function authenticateUser(req: VercelRequest): Promise<string | null> {
 
     console.log('Authorized Parties:', authorizedParties);
 
-    console.log('webRequest', webRequest);
-
     const requestState = await clerkClient.authenticateRequest(webRequest, {
       jwtKey: process.env.CLERK_JWT_KEY,
       authorizedParties: authorizedParties,
     });
-    console.log('Request State:', requestState);
 
     const auth = requestState.toAuth();
-    console.log({ auth });
 
     return auth?.userId || null;
   } catch (error) {
