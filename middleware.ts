@@ -13,20 +13,21 @@ const clerkClient = createClerkClient({
 
 async function authenticateUser(req: Request): Promise<string | null> {
   try {
-    const authorizedParties: string[] = [];
+    let authorizedParty: string = '';
     if (!process.env.VERCEL_ENV) {
-      authorizedParties.push(`http://${process.env.VERCEL_URL}`);
+      authorizedParty = 'http://localhost:3000';
+    } else if (process.env.VERCEL_ENV === 'preview') {
+      authorizedParty = `https://dev.barelinks.in}`;
+    } else if (process.env.VERCEL_ENV === 'production') {
+      authorizedParty = `https://www.barelinks.in`;
     } else {
-      authorizedParties.push(`https://${process.env.VERCEL_URL}`);
-      if (process.env.VERCEL_BRANCH_URL) authorizedParties.push(`https://${process.env.VERCEL_BRANCH_URL}`);
-      if (process.env.VERCEL_PROJECT_PRODUCTION_URL) authorizedParties.push(`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`);
+      throw new Error('Unknown VERCEL_ENV value');
     }
-
-    console.log('Authorized Parties:', authorizedParties);
+    console.log('Authorized Party:', authorizedParty);
 
     const requestState = await clerkClient.authenticateRequest(req, {
       jwtKey: process.env.CLERK_JWT_KEY,
-      authorizedParties: authorizedParties,
+      authorizedParties: [authorizedParty],
     });
 
     const auth = requestState.toAuth();
