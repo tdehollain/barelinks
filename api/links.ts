@@ -29,15 +29,20 @@ function createWebRequest(req: VercelRequest): Request {
 async function authenticateUser(req: VercelRequest): Promise<string | null> {
   try {
     const webRequest = createWebRequest(req);
-    let authorizedParty = process.env.VERCEL_ENV ? `https://${process.env.VERCEL_URL}` : `http://${process.env.VERCEL_URL}`;
-    if (process.env.VERCEL_BRANCH_URL) authorizedParty = `https://${process.env.VERCEL_BRANCH_URL}`;
-    if (process.env.VERCEL_PROJECT_PRODUCTION_URL) authorizedParty = `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+    const authorizedParties: string[] = [];
+    if (!process.env.VERCEL_ENV) {
+      authorizedParties.push(`http://${process.env.VERCEL_URL}`);
+    } else {
+      authorizedParties.push(`https://${process.env.VERCEL_URL}`);
+      if (process.env.VERCEL_BRANCH_URL) authorizedParties.push(`https://${process.env.VERCEL_BRANCH_URL}`);
+      if (process.env.VERCEL_PROJECT_PRODUCTION_URL) authorizedParties.push(`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`);
+    }
 
-    console.log('Authorized Party:', authorizedParty);
+    console.log('Authorized Party:', authorizedParties);
 
     const requestState = await clerkClient.authenticateRequest(webRequest, {
       jwtKey: process.env.CLERK_JWT_KEY,
-      authorizedParties: [authorizedParty],
+      authorizedParties: authorizedParties,
     });
     const auth = requestState.toAuth();
     // console.log({ auth });
