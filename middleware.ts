@@ -18,13 +18,13 @@ async function authenticateUser(req: Request): Promise<string | null> {
     if (!process.env.VERCEL_ENV) {
       authorizedParty = 'http://localhost:3000';
     } else if (process.env.VERCEL_ENV === 'preview') {
-      authorizedParty = `https://dev.barelinks.in}`;
+      authorizedParty = `https://dev.barelinks.in`;
     } else if (process.env.VERCEL_ENV === 'production') {
       authorizedParty = `https://www.barelinks.in`;
     } else {
       throw new Error('Unknown VERCEL_ENV value');
     }
-    console.log('Authorized Party:', authorizedParty);
+    // console.log('Authorized Party:', authorizedParty);
 
     const requestState = await clerkClient.authenticateRequest(req, {
       jwtKey: process.env.CLERK_JWT_KEY,
