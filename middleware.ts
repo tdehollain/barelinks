@@ -1,5 +1,6 @@
 import { next } from '@vercel/functions';
 import { createClerkClient } from '@clerk/backend';
+import { log } from 'console';
 
 export const config = {
   runtime: 'nodejs', // defaults to 'edge'
@@ -29,6 +30,7 @@ async function authenticateUser(req: Request): Promise<string | null> {
       jwtKey: process.env.CLERK_JWT_KEY,
       authorizedParties: [authorizedParty],
     });
+    log('Request State:', requestState);
 
     const auth = requestState.toAuth();
 
@@ -48,7 +50,6 @@ export default async function middleware(request: Request) {
   // Authentication check
   const userId = await authenticateUser(request);
   if (!userId) {
-    // return res.status(401).json({ error: 'Authentication required' });
     return new Response(JSON.stringify({ error: 'Authentication required' }), {
       status: 401,
       headers: { 'Content-Type': 'application/json' },
