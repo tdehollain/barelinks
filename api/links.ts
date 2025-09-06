@@ -45,7 +45,7 @@ async function authenticateUser(req: VercelRequest): Promise<string | null> {
       authorizedParties: authorizedParties,
     });
     const auth = requestState.toAuth();
-    // console.log({ auth });
+    console.log({ auth });
 
     return auth?.userId || null;
   } catch (error) {
