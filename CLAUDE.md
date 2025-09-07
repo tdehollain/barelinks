@@ -27,6 +27,13 @@ This app allows users to save links for future reference.
 - The app is deployed on Vercel
 - Authentication is provided by Clerk
 
+# Tags
+
+- Each link that is displayed has a little "tag" button ("tag" icon) on the far right
+- When the user click that tag button, a modal opens, where the user can either create a new tag or pick one of the existing ones
+- Creating a new tag is done with 2 user inputs: a text field with a max length of 25 characters for the name, and a dropdown with a choice of about 20 colors for the tag's color.
+- 2 tags cannot have the same name
+
 # Authentication
 
 This project uses Clerk to authenticate users and authorize API calls

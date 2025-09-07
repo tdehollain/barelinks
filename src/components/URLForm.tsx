@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -25,6 +25,7 @@ const saveLink = async (url: string) => {
 
 export function URLForm() {
   const [url, setUrl] = useState('http://www.bbc.com/');
+  const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: saveLink,
@@ -34,6 +35,8 @@ export function URLForm() {
         description: data.data.title || data.data.url,
       });
       setUrl(''); // Clear form on success
+      // Invalidate and refetch links
+      queryClient.invalidateQueries({ queryKey: ['links'] });
     },
     onError: (error) => {
       console.error('Error saving link:', error);
@@ -53,19 +56,8 @@ export function URLForm() {
   return (
     <div className="w-full max-w-4xl mx-auto mt-16">
       <form onSubmit={handleSubmit} className="flex gap-3">
-        <Input
-          type="url"
-          placeholder="Enter a URL..."
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          className="flex-1"
-          required
-        />
-        <Button
-          type="submit"
-          className="cursor-pointer"
-          disabled={mutation.isPending}
-        >
+        <Input type="url" placeholder="Enter a URL..." value={url} onChange={(e) => setUrl(e.target.value)} className="flex-1" required />
+        <Button type="submit" className="cursor-pointer" disabled={mutation.isPending}>
           {mutation.isPending ? 'Adding...' : 'Add'}
         </Button>
       </form>

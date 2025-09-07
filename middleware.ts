@@ -4,7 +4,7 @@ import { log } from 'console';
 
 export const config = {
   runtime: 'nodejs', // defaults to 'edge'
-  matcher: '/api/:path*',
+  matcher: '/api/:path*', // Only apply middleware to /api/* routes
 };
 
 const clerkClient = createClerkClient({
@@ -30,7 +30,7 @@ async function authenticateUser(req: Request): Promise<string | null> {
       jwtKey: process.env.CLERK_JWT_KEY,
       authorizedParties: [authorizedParty],
     });
-    log('Request State:', requestState);
+    // log('Request State:', requestState);
 
     const auth = requestState.toAuth();
 
@@ -42,10 +42,12 @@ async function authenticateUser(req: Request): Promise<string | null> {
 }
 
 export default async function middleware(request: Request) {
-  console.log('VERCEL_ENV:', process.env.VERCEL_ENV);
-  console.log('VERCEL_URL:', process.env.VERCEL_URL);
-  console.log('VERCEL_BRANCH_URL:', process.env.VERCEL_BRANCH_URL);
-  console.log('VERCEL_PROJECT_PRODUCTION_URL:', process.env.VERCEL_PROJECT_PRODUCTION_URL);
+  log('VERCEL_ENV:', process.env.VERCEL_ENV);
+  log('VERCEL_URL:', process.env.VERCEL_URL);
+  log('VERCEL_BRANCH_URL:', process.env.VERCEL_BRANCH_URL);
+  log('VERCEL_PROJECT_PRODUCTION_URL:', process.env.VERCEL_PROJECT_PRODUCTION_URL);
+  log('Request Method:', request.method);
+  log('Request URL:', request.url);
 
   // Authentication check
   const userId = await authenticateUser(request);
