@@ -11,4 +11,6 @@ export const tagColors = [
   { name: 'Gray', value: 'gray', class: 'bg-gray-500' },
 ];
 
-export type TagColor = typeof tagColors[number];
+export type TagColor = (typeof tagColors)[number];
+
+export const LINKS_PER_PAGE = 20;

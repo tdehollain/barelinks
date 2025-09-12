@@ -15,20 +15,41 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   if (req.method === 'GET') {
     try {
+      // Get limit parameter for popular tags
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
+
       // Fetch user's tags with link counts
-      const tags = await sql`
-        SELECT 
-          t.id, 
-          t.name, 
-          t.color, 
-          t.created_at,
-          COUNT(lt.link_id) as link_count
-        FROM tags t
-        LEFT JOIN link_tags lt ON t.id = lt.tag_id
-        WHERE t.user_id = ${userId}
-        GROUP BY t.id, t.name, t.color, t.created_at
-        ORDER BY COUNT(lt.link_id) DESC, t.created_at DESC
-      `;
+      let tags;
+      if (limit) {
+        tags = await sql`
+          SELECT 
+            t.id, 
+            t.name, 
+            t.color, 
+            t.created_at,
+            COUNT(lt.link_id) as link_count
+          FROM tags t
+          LEFT JOIN link_tags lt ON t.id = lt.tag_id
+          WHERE t.user_id = ${userId}
+          GROUP BY t.id, t.name, t.color, t.created_at
+          ORDER BY COUNT(lt.link_id) DESC, t.created_at DESC
+          LIMIT ${limit}
+        `;
+      } else {
+        tags = await sql`
+          SELECT 
+            t.id, 
+            t.name, 
+            t.color, 
+            t.created_at,
+            COUNT(lt.link_id) as link_count
+          FROM tags t
+          LEFT JOIN link_tags lt ON t.id = lt.tag_id
+          WHERE t.user_id = ${userId}
+          GROUP BY t.id, t.name, t.color, t.created_at
+          ORDER BY COUNT(lt.link_id) DESC, t.created_at DESC
+        `;
+      }
 
       return res.status(200).json({ tags });
     } catch (error) {

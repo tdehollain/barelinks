@@ -24,7 +24,7 @@ const saveLink = async (url: string) => {
 };
 
 export function URLForm() {
-  const [url, setUrl] = useState('http://www.bbc.com/');
+  const [url, setUrl] = useState('');
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
@@ -54,7 +54,7 @@ export function URLForm() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto mt-16">
+    <div className="w-full max-w-5xl mx-auto mt-16">
       <form onSubmit={handleSubmit} className="flex gap-3">
         <Input type="url" placeholder="Enter a URL..." value={url} onChange={(e) => setUrl(e.target.value)} className="flex-1" required />
         <Button type="submit" className="cursor-pointer" disabled={mutation.isPending}>

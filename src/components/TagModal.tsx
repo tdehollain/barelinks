@@ -15,6 +15,13 @@ interface TagModalProps {
   linkId: string;
 }
 
+interface TagData {
+  id: number;
+  name: string;
+  color: string;
+  link_count: number;
+}
+
 // API function to fetch existing tags
 const fetchTags = async () => {
   const response = await fetch('/api/tags', {
@@ -72,10 +79,10 @@ const linkTagToLink = async (linkData: { linkId: string; tagId: number }) => {
 const createTagAndLink = async (data: { name: string; color: string; linkId: string }) => {
   // Step 1: Create the tag
   const tagResponse = await createTag({ name: data.name, color: data.color });
-  
+
   // Step 2: Link it to the link
   await linkTagToLink({ linkId: data.linkId, tagId: tagResponse.tag.id });
-  
+
   return tagResponse;
 };
 
@@ -85,7 +92,7 @@ export function TagModal({ isOpen, onClose, linkId }: TagModalProps) {
   const [selectedColor, setSelectedColor] = useState('');
 
   // Fetch existing tags
-  const { data: existingTags = [], isLoading: tagsLoading } = useQuery({
+  const { data: existingTags = [], isLoading: tagsLoading } = useQuery<TagData[]>({
     queryKey: ['tags'],
     queryFn: fetchTags,
   });
@@ -111,6 +118,24 @@ export function TagModal({ isOpen, onClose, linkId }: TagModalProps) {
     },
   });
 
+  const linkExistingTagMutation = useMutation({
+    mutationFn: linkTagToLink,
+    onSuccess: (data, variables) => {
+      const tag = existingTags.find((t) => t.id === variables.tagId);
+      toast.success('Tag linked!', {
+        description: `"${tag?.name}" added to this link`,
+      });
+      // Invalidate queries to refresh the lists
+      queryClient.invalidateQueries({ queryKey: ['tags'] });
+      queryClient.invalidateQueries({ queryKey: ['links'] });
+    },
+    onError: (error) => {
+      toast.error('Failed to link tag', {
+        description: error.message,
+      });
+    },
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!tagName.trim() || !selectedColor) return;
@@ -120,6 +145,14 @@ export function TagModal({ isOpen, onClose, linkId }: TagModalProps) {
       color: selectedColor,
       linkId,
     });
+  };
+
+  const handleTagClick = (tagId: number) => {
+    linkExistingTagMutation.mutate({
+      linkId,
+      tagId,
+    });
+    onClose();
   };
 
   const handleClose = () => {
@@ -150,14 +183,16 @@ export function TagModal({ isOpen, onClose, linkId }: TagModalProps) {
               ) : (
                 <div className="space-y-2">
                   <h3 className="text-sm font-medium">Your Tags</h3>
-                  <div className="grid gap-2">
-                    {existingTags.map((tag: any) => (
-                      <div key={tag.id} className="flex items-center gap-2">
-                        <Tag name={tag.name} color={tag.color} />
-                        <span className="text-xs text-muted-foreground">
-                          {tag.link_count} {tag.link_count === 1 ? 'link' : 'links'}
-                        </span>
-                      </div>
+                  <div className="flex flex-wrap gap-2">
+                    {existingTags.map((tag) => (
+                      <button
+                        key={tag.id}
+                        onClick={() => handleTagClick(tag.id)}
+                        disabled={linkExistingTagMutation.isPending}
+                        className="cursor-pointer transition-transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <Tag name={tag.name} color={tag.color} linkCount={tag.link_count} />
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -216,11 +251,7 @@ export function TagModal({ isOpen, onClose, linkId }: TagModalProps) {
                 <Button type="button" variant="outline" onClick={handleClose} className="flex-1">
                   Cancel
                 </Button>
-                <Button 
-                  type="submit" 
-                  disabled={!tagName.trim() || !selectedColor || createTagMutation.isPending} 
-                  className="flex-1"
-                >
+                <Button type="submit" disabled={!tagName.trim() || !selectedColor || createTagMutation.isPending} className="flex-1">
                   {createTagMutation.isPending ? 'Creating...' : 'Create Tag'}
                 </Button>
               </div>

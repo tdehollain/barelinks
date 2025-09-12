@@ -1,6 +1,5 @@
 import { next } from '@vercel/functions';
 import { createClerkClient } from '@clerk/backend';
-import { log } from 'console';
 
 export const config = {
   runtime: 'nodejs', // defaults to 'edge'
@@ -42,12 +41,12 @@ async function authenticateUser(req: Request): Promise<string | null> {
 }
 
 export default async function middleware(request: Request) {
-  log('VERCEL_ENV:', process.env.VERCEL_ENV);
-  log('VERCEL_URL:', process.env.VERCEL_URL);
-  log('VERCEL_BRANCH_URL:', process.env.VERCEL_BRANCH_URL);
-  log('VERCEL_PROJECT_PRODUCTION_URL:', process.env.VERCEL_PROJECT_PRODUCTION_URL);
-  log('Request Method:', request.method);
-  log('Request URL:', request.url);
+  // console.log('VERCEL_ENV:', process.env.VERCEL_ENV);
+  // console.log('VERCEL_URL:', process.env.VERCEL_URL);
+  // console.log('VERCEL_BRANCH_URL:', process.env.VERCEL_BRANCH_URL);
+  // console.log('VERCEL_PROJECT_PRODUCTION_URL:', process.env.VERCEL_PROJECT_PRODUCTION_URL);
+  // console.log('Request Method:', request.method);
+  // console.log('Request URL:', request.url);
 
   // Authentication check
   const userId = await authenticateUser(request);

@@ -16,7 +16,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === 'POST') {
     try {
       const { linkId, tagId } = req.body;
-      
+
       if (!linkId || !tagId) {
         return res.status(400).json({ error: 'Link ID and tag ID are required' });
       }
@@ -54,20 +54,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
     } catch (error) {
       console.error('Error linking tag to link:', error);
-      
+
       // Check for unique constraint violation (tag already linked to link)
       if (error && typeof error === 'object' && 'code' in error && error.code === '23505') {
         return res.status(409).json({ error: 'Tag is already linked to this link' });
       }
-      
+
       return res.status(500).json({ error: 'Internal server error' });
     }
   }
 
   if (req.method === 'DELETE') {
     try {
-      const { linkId, tagId } = req.body;
-      
+      const { linkId, tagId } = req.query;
+      // console.log({ linkId, tagId });
+
       if (!linkId || !tagId) {
         return res.status(400).json({ error: 'Link ID and tag ID are required' });
       }

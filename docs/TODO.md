@@ -3,9 +3,11 @@
 ## Frontend
 
 - [ ] Tags management
-  - tsc error in TagModal
-  - tag delete button should be visible only when displayed next to the link
   - list of existing tags: count should be displayed in brackets in the tag
+- [ ] Search
+  - search
+  - search by tag
+  - popular tags (+ show all tags)
 
 ## Backend
 

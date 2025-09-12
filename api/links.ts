@@ -1,6 +1,28 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { neon } from '@neondatabase/serverless';
 
+// Function to decode HTML entities
+function decodeHTMLEntities(text: string): string {
+  const entities: { [key: string]: string } = {
+    '&amp;': '&',
+    '&lt;': '<',
+    '&gt;': '>',
+    '&quot;': '"',
+    '&#x27;': "'",
+    '&#x2F;': '/',
+    '&#39;': "'",
+    '&apos;': "'",
+    '&nbsp;': ' ',
+    '&copy;': '©',
+    '&reg;': '®',
+    '&trade;': '™'
+  };
+
+  return text.replace(/&[#\w]+;/g, (entity) => {
+    return entities[entity] || entity;
+  });
+}
+
 // Function to fetch page title from URL
 async function fetchPageTitle(url: string): Promise<string | null> {
   try {
@@ -21,7 +43,8 @@ async function fetchPageTitle(url: string): Promise<string | null> {
     // Extract title using regex (simple approach)
     const titleMatch = html.match(/<title[^>]*>([^<]*)<\/title>/i);
     if (titleMatch && titleMatch[1]) {
-      return titleMatch[1].trim();
+      const rawTitle = titleMatch[1].trim();
+      return decodeHTMLEntities(rawTitle);
     }
 
     return null;
@@ -45,29 +68,170 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   if (req.method === 'GET') {
     try {
-      // Fetch user's links with their tags
-      const links = await sql`
-        SELECT 
-          l.id, 
-          l.url, 
-          l.title, 
-          l.created_at,
-          COALESCE(
-            JSON_AGG(
-              JSON_BUILD_OBJECT('id', t.id, 'name', t.name, 'color', t.color)
-              ORDER BY t.created_at
-            ) FILTER (WHERE t.id IS NOT NULL), 
-            '[]'
-          ) as tags
-        FROM links l
-        LEFT JOIN link_tags lt ON l.id = lt.link_id
-        LEFT JOIN tags t ON lt.tag_id = t.id
-        WHERE l.user_id = ${userId}
-        GROUP BY l.id, l.url, l.title, l.created_at
-        ORDER BY l.created_at DESC
-      `;
+      // Get pagination parameters
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const offset = (page - 1) * limit;
+      
+      // Get search parameters
+      const keyword = req.query.keyword as string || '';
+      const tagIds = req.query.tagIds as string || '';
+      const tagIdArray = tagIds ? tagIds.split(',').map(id => parseInt(id)).filter(id => !isNaN(id)) : [];
 
-      return res.status(200).json({ links });
+      // Build dynamic query conditions
+      let links, totalResult;
+
+      if (!keyword.trim() && tagIdArray.length === 0) {
+        // No search filters - use original query
+        links = await sql`
+          SELECT 
+            l.id, 
+            l.url, 
+            l.title, 
+            l.created_at,
+            COALESCE(
+              JSON_AGG(
+                JSON_BUILD_OBJECT('id', t.id, 'name', t.name, 'color', t.color)
+                ORDER BY t.created_at
+              ) FILTER (WHERE t.id IS NOT NULL), 
+              '[]'
+            ) as tags
+          FROM links l
+          LEFT JOIN link_tags lt ON l.id = lt.link_id
+          LEFT JOIN tags t ON lt.tag_id = t.id
+          WHERE l.user_id = ${userId}
+          GROUP BY l.id, l.url, l.title, l.created_at
+          ORDER BY l.created_at DESC
+          LIMIT ${limit} OFFSET ${offset}
+        `;
+
+        totalResult = await sql`
+          SELECT COUNT(*) as total
+          FROM links
+          WHERE user_id = ${userId}
+        `;
+      } else if (keyword.trim() && tagIdArray.length === 0) {
+        // Keyword search only
+        const keywordPattern = `%${keyword.trim()}%`;
+        links = await sql`
+          SELECT 
+            l.id, 
+            l.url, 
+            l.title, 
+            l.created_at,
+            COALESCE(
+              JSON_AGG(
+                JSON_BUILD_OBJECT('id', t.id, 'name', t.name, 'color', t.color)
+                ORDER BY t.created_at
+              ) FILTER (WHERE t.id IS NOT NULL), 
+              '[]'
+            ) as tags
+          FROM links l
+          LEFT JOIN link_tags lt ON l.id = lt.link_id
+          LEFT JOIN tags t ON lt.tag_id = t.id
+          WHERE l.user_id = ${userId} 
+            AND (l.title ILIKE ${keywordPattern} OR l.url ILIKE ${keywordPattern})
+          GROUP BY l.id, l.url, l.title, l.created_at
+          ORDER BY l.created_at DESC
+          LIMIT ${limit} OFFSET ${offset}
+        `;
+
+        totalResult = await sql`
+          SELECT COUNT(*) as total
+          FROM links l
+          WHERE l.user_id = ${userId} 
+            AND (l.title ILIKE ${keywordPattern} OR l.url ILIKE ${keywordPattern})
+        `;
+      } else if (!keyword.trim() && tagIdArray.length > 0) {
+        // Tag filtering only
+        links = await sql`
+          SELECT 
+            l.id, 
+            l.url, 
+            l.title, 
+            l.created_at,
+            COALESCE(
+              JSON_AGG(
+                JSON_BUILD_OBJECT('id', t.id, 'name', t.name, 'color', t.color)
+                ORDER BY t.created_at
+              ) FILTER (WHERE t.id IS NOT NULL), 
+              '[]'
+            ) as tags
+          FROM links l
+          LEFT JOIN link_tags lt ON l.id = lt.link_id
+          LEFT JOIN tags t ON lt.tag_id = t.id
+          WHERE l.user_id = ${userId} 
+            AND l.id IN (
+              SELECT DISTINCT lt.link_id 
+              FROM link_tags lt 
+              WHERE lt.tag_id = ANY(${tagIdArray})
+            )
+          GROUP BY l.id, l.url, l.title, l.created_at
+          ORDER BY l.created_at DESC
+          LIMIT ${limit} OFFSET ${offset}
+        `;
+
+        totalResult = await sql`
+          SELECT COUNT(DISTINCT l.id) as total
+          FROM links l
+          INNER JOIN link_tags lt ON l.id = lt.link_id
+          WHERE l.user_id = ${userId} 
+            AND lt.tag_id = ANY(${tagIdArray})
+        `;
+      } else {
+        // Both keyword and tag filtering
+        const keywordPattern = `%${keyword.trim()}%`;
+        links = await sql`
+          SELECT 
+            l.id, 
+            l.url, 
+            l.title, 
+            l.created_at,
+            COALESCE(
+              JSON_AGG(
+                JSON_BUILD_OBJECT('id', t.id, 'name', t.name, 'color', t.color)
+                ORDER BY t.created_at
+              ) FILTER (WHERE t.id IS NOT NULL), 
+              '[]'
+            ) as tags
+          FROM links l
+          LEFT JOIN link_tags lt ON l.id = lt.link_id
+          LEFT JOIN tags t ON lt.tag_id = t.id
+          WHERE l.user_id = ${userId} 
+            AND (l.title ILIKE ${keywordPattern} OR l.url ILIKE ${keywordPattern})
+            AND l.id IN (
+              SELECT DISTINCT lt.link_id 
+              FROM link_tags lt 
+              WHERE lt.tag_id = ANY(${tagIdArray})
+            )
+          GROUP BY l.id, l.url, l.title, l.created_at
+          ORDER BY l.created_at DESC
+          LIMIT ${limit} OFFSET ${offset}
+        `;
+
+        totalResult = await sql`
+          SELECT COUNT(DISTINCT l.id) as total
+          FROM links l
+          INNER JOIN link_tags lt ON l.id = lt.link_id
+          WHERE l.user_id = ${userId} 
+            AND (l.title ILIKE ${keywordPattern} OR l.url ILIKE ${keywordPattern})
+            AND lt.tag_id = ANY(${tagIdArray})
+        `;
+      }
+      const total = parseInt(totalResult[0].total);
+      const totalPages = Math.ceil(total / limit);
+
+      return res.status(200).json({ 
+        links,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages,
+          hasNext: page < totalPages,
+          hasPrev: page > 1
+        }
+      });
     } catch (error) {
       console.error('Error fetching links:', error);
       return res.status(500).json({ error: 'Internal server error' });
