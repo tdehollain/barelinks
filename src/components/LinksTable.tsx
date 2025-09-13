@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useUser } from '@clerk/clerk-react';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
 import { Trash2, Tag as TagIcon, Search } from 'lucide-react';
@@ -87,6 +88,7 @@ const deleteLink = async (id: string) => {
 };
 
 export function LinksTable() {
+  const { isSignedIn } = useUser();
   const queryClient = useQueryClient();
   const [tagModalOpen, setTagModalOpen] = useState(false);
   const [selectedLinkId, setSelectedLinkId] = useState<string>('');
@@ -99,6 +101,7 @@ export function LinksTable() {
   const { data, isLoading, error, isFetching, isPlaceholderData } = useQuery({
     queryKey: ['links', currentPage, pageSize, searchKeyword, selectedTagIds],
     queryFn: () => fetchLinks(currentPage, pageSize, searchKeyword, selectedTagIds),
+    enabled: isSignedIn, // Only fetch when user is signed in
     placeholderData: (previousData) => previousData,
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes (previously cacheTime)
@@ -183,7 +186,9 @@ export function LinksTable() {
 
       {isLoading ? (
         <div className="w-full max-w-4xl mx-auto mt-8">
-          <div className="text-center text-gray-500">Loading your links...</div>
+          <div className="text-center text-gray-500">
+            {isSignedIn ? 'Loading your links...' : 'Please sign in to view your links'}
+          </div>
         </div>
       ) : error ? (
         <div className="w-full max-w-4xl mx-auto mt-8">
