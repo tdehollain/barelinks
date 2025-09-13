@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -99,40 +98,173 @@ export function TagModal({ isOpen, onClose, linkId }: TagModalProps) {
 
   const createTagMutation = useMutation({
     mutationFn: createTagAndLink,
-    onSuccess: (data) => {
-      toast.success('Tag created and linked!', {
-        description: `"${data.tag.name}" added to this link`,
+    onMutate: async ({ name, color, linkId }) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['links'] });
+      
+      // Create temporary tag
+      const tempTag = {
+        id: Date.now(), // Temporary ID
+        name,
+        color
+      };
+      
+      // Store previous data for rollback
+      const previousData = new Map();
+      
+      // Update all link queries to add the new tag optimistically
+      queryClient.getQueryCache().getAll().forEach((query) => {
+        if (query.queryKey[0] === 'links' && query.queryKey.length === 5) {
+          const data = query.state.data;
+          if (data) {
+            previousData.set(query.queryKey, data);
+            queryClient.setQueryData(query.queryKey, (old: any) => {
+              if (!old) return old;
+              return {
+                ...old,
+                links: old.links.map((link: any) => 
+                  link.id === linkId 
+                    ? { 
+                        ...link, 
+                        tags: [...link.tags, tempTag] 
+                      }
+                    : link
+                )
+              };
+            });
+          }
+        }
       });
+      
+      // Also add the new tag to the tags list optimistically
+      const currentTags = queryClient.getQueryData(['tags']);
+      if (currentTags) {
+        previousData.set(['tags'], currentTags);
+        queryClient.setQueryData(['tags'], (old: TagData[] | undefined) => {
+          if (!old) return old;
+          return [...old, { 
+            id: tempTag.id, 
+            name: tempTag.name, 
+            color: tempTag.color, 
+            link_count: 1 
+          }];
+        });
+      }
+      
+      return { previousData, tempTag };
+    },
+    onError: (error, variables, context) => {
+      // Rollback on error
+      if (context?.previousData) {
+        context.previousData.forEach((data, queryKey) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
+    },
+    onSuccess: (data, variables, context) => {
+      // Replace temporary tag with real data
+      if (context?.tempTag) {
+        // Update links data
+        queryClient.getQueryCache().getAll().forEach((query) => {
+          if (query.queryKey[0] === 'links' && query.queryKey.length === 5) {
+            const queryData = query.state.data;
+            if (queryData) {
+              queryClient.setQueryData(query.queryKey, (old: any) => {
+                if (!old) return old;
+                return {
+                  ...old,
+                  links: old.links.map((link: any) => 
+                    link.id === variables.linkId 
+                      ? { 
+                          ...link, 
+                          tags: link.tags.map((tag: any) => 
+                            tag.id === context.tempTag.id 
+                              ? { id: data.tag.id, name: data.tag.name, color: data.tag.color }
+                              : tag
+                          )
+                        }
+                      : link
+                  )
+                };
+              });
+            }
+          }
+        });
+        
+        // Update tags list data
+        queryClient.setQueryData(['tags'], (old: TagData[] | undefined) => {
+          if (!old) return old;
+          return old.map((tag) => 
+            tag.id === context.tempTag.id 
+              ? { ...tag, id: data.tag.id }
+              : tag
+          );
+        });
+      }
+      
       // Invalidate queries to refresh the lists
       queryClient.invalidateQueries({ queryKey: ['tags'] });
-      queryClient.invalidateQueries({ queryKey: ['links'] });
       // Reset form and close modal
       setTagName('');
       setSelectedColor('');
       onClose();
     },
-    onError: (error) => {
-      toast.error('Failed to create tag', {
-        description: error.message,
-      });
-    },
   });
 
   const linkExistingTagMutation = useMutation({
     mutationFn: linkTagToLink,
-    onSuccess: (data, variables) => {
-      const tag = existingTags.find((t) => t.id === variables.tagId);
-      toast.success('Tag linked!', {
-        description: `"${tag?.name}" added to this link`,
+    onMutate: async ({ linkId, tagId }) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['links'] });
+      
+      // Find the tag to add
+      const tagToAdd = existingTags.find((t) => t.id === tagId);
+      if (!tagToAdd) return;
+      
+      // Store previous data for rollback
+      const previousData = new Map();
+      
+      // Update all link queries to add the tag optimistically
+      queryClient.getQueryCache().getAll().forEach((query) => {
+        if (query.queryKey[0] === 'links' && query.queryKey.length === 5) {
+          const data = query.state.data;
+          if (data) {
+            previousData.set(query.queryKey, data);
+            queryClient.setQueryData(query.queryKey, (old: any) => {
+              if (!old) return old;
+              return {
+                ...old,
+                links: old.links.map((link: any) => 
+                  link.id === linkId 
+                    ? { 
+                        ...link, 
+                        tags: [...link.tags, { 
+                          id: tagToAdd.id, 
+                          name: tagToAdd.name, 
+                          color: tagToAdd.color 
+                        }] 
+                      }
+                    : link
+                )
+              };
+            });
+          }
+        }
       });
+      
+      return { previousData, tagToAdd };
+    },
+    onError: (error, variables, context) => {
+      // Rollback on error
+      if (context?.previousData) {
+        context.previousData.forEach((data, queryKey) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
+    },
+    onSuccess: (data, variables, context) => {
       // Invalidate queries to refresh the lists
       queryClient.invalidateQueries({ queryKey: ['tags'] });
-      queryClient.invalidateQueries({ queryKey: ['links'] });
-    },
-    onError: (error) => {
-      toast.error('Failed to link tag', {
-        description: error.message,
-      });
     },
   });
 

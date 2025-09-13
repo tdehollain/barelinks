@@ -1,6 +1,5 @@
 import { Tag as TagIcon, Trash2 } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
 import { tagColors } from '../lib/constants';
 
 interface TagProps {
@@ -37,15 +36,46 @@ export function Tag({ name, color, className = '', showDelete = false, onDelete,
 
   const removeTagMutation = useMutation({
     mutationFn: ({ linkId, tagId }: { linkId: string; tagId: number }) => removeTagFromLink(linkId, tagId),
-    onSuccess: () => {
-      toast.success('Tag removed from link');
-      queryClient.invalidateQueries({ queryKey: ['links'] });
-      queryClient.invalidateQueries({ queryKey: ['tags'] });
-    },
-    onError: (error) => {
-      toast.error('Failed to remove tag', {
-        description: error.message,
+    onMutate: async ({ linkId, tagId }) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['links'] });
+      
+      // Store previous data for rollback
+      const previousData = new Map();
+      
+      // Update all link queries to remove the tag optimistically
+      queryClient.getQueryCache().getAll().forEach((query) => {
+        if (query.queryKey[0] === 'links' && query.queryKey.length === 5) {
+          const data = query.state.data;
+          if (data) {
+            previousData.set(query.queryKey, data);
+            queryClient.setQueryData(query.queryKey, (old: any) => {
+              if (!old) return old;
+              return {
+                ...old,
+                links: old.links.map((link: any) => 
+                  link.id === linkId 
+                    ? { ...link, tags: link.tags.filter((tag: any) => tag.id !== tagId) }
+                    : link
+                )
+              };
+            });
+          }
+        }
       });
+      
+      return { previousData };
+    },
+    onError: (error, variables, context) => {
+      // Rollback on error
+      if (context?.previousData) {
+        context.previousData.forEach((data, queryKey) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tags'] });
     },
   });
 

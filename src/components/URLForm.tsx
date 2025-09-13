@@ -1,8 +1,34 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
+
+interface Link {
+  id: string;
+  url: string;
+  title: string;
+  created_at: string;
+  tags: Array<{
+    id: number;
+    name: string;
+    color: string;
+  }>;
+  isPending?: boolean;
+}
+
+interface PaginationInfo {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrev: boolean;
+}
+
+interface LinksResponse {
+  links: Link[];
+  pagination: PaginationInfo;
+}
 
 // API function to save a link
 const saveLink = async (url: string) => {
@@ -29,20 +55,74 @@ export function URLForm() {
 
   const mutation = useMutation({
     mutationFn: saveLink,
-    onSuccess: (data) => {
-      console.log('Link saved successfully:', data);
-      toast.success('Link saved successfully!', {
-        description: data.data.title || data.data.url,
+    onMutate: async (url) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['links'] });
+      
+      // Create temporary link with URL as title
+      const tempId = `temp-${Date.now()}`;
+      const tempLink: Link = {
+        id: tempId,
+        url: url,
+        title: url, // Show URL until we get the real title
+        created_at: new Date().toISOString(),
+        tags: [],
+        isPending: true
+      };
+      
+      // Get all existing queries and update them
+      const previousData = new Map();
+      
+      // Update all link queries to add the new link at the beginning
+      queryClient.getQueryCache().getAll().forEach((query) => {
+        if (query.queryKey[0] === 'links' && query.queryKey.length === 5) {
+          const data = query.state.data as LinksResponse | undefined;
+          if (data && query.queryKey[1] === 1) { // Only add to page 1
+            previousData.set(query.queryKey, data);
+            queryClient.setQueryData(query.queryKey, {
+              ...data,
+              links: [tempLink, ...data.links],
+              pagination: {
+                ...data.pagination,
+                total: data.pagination.total + 1
+              }
+            });
+          }
+        }
       });
-      setUrl(''); // Clear form on success
-      // Invalidate and refetch links
-      queryClient.invalidateQueries({ queryKey: ['links'] });
+      
+      return { tempId, previousData };
     },
-    onError: (error) => {
+    onError: (error, _, context) => {
+      // Rollback on error - restore all previous data
+      if (context?.previousData) {
+        context.previousData.forEach((data, queryKey) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
       console.error('Error saving link:', error);
-      toast.error('Failed to save link', {
-        description: error.message || 'Please try again later',
-      });
+    },
+    onSuccess: (data, _, context) => {
+      console.log('Link saved successfully:', data);
+      
+      // Replace temporary link with real data in all queries
+      if (context?.tempId) {
+        queryClient.getQueryCache().getAll().forEach((query) => {
+          if (query.queryKey[0] === 'links' && query.queryKey.length === 5) {
+            const queryData = query.state.data as LinksResponse | undefined;
+            if (queryData && query.queryKey[1] === 1) { // Only update page 1
+              queryClient.setQueryData(query.queryKey, {
+                ...queryData,
+                links: queryData.links.map(link => 
+                  link.id === context.tempId ? data.data : link
+                )
+              });
+            }
+          }
+        });
+      }
+      
+      setUrl(''); // Clear form on success
     },
   });
 

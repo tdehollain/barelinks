@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useUser } from '@clerk/clerk-react';
 import { Button } from './ui/button';
-import { toast } from 'sonner';
 import { Trash2, Tag as TagIcon, Search } from 'lucide-react';
 import { TagModal } from './TagModal';
 import { Tag } from './Tag';
@@ -19,6 +18,7 @@ interface Link {
     name: string;
     color: string;
   }>;
+  isPending?: boolean;
 }
 
 interface PaginationInfo {
@@ -105,6 +105,7 @@ export function LinksTable() {
     placeholderData: (previousData) => previousData,
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes (previously cacheTime)
+    refetchOnWindowFocus: false, // Don't refetch when returning to tab
   });
 
   const links = data?.links || [];
@@ -112,14 +113,34 @@ export function LinksTable() {
 
   const deleteMutation = useMutation({
     mutationFn: deleteLink,
-    onSuccess: () => {
-      toast.success('Link deleted successfully');
-      queryClient.invalidateQueries({ queryKey: ['links'] });
-    },
-    onError: (error) => {
-      toast.error('Failed to delete link', {
-        description: error.message,
+    onMutate: async (deletedLinkId) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['links'] });
+      
+      // Get current data and remove the link optimistically
+      const previousData = queryClient.getQueryData(['links', currentPage, pageSize, searchKeyword, selectedTagIds]);
+      
+      queryClient.setQueryData(['links', currentPage, pageSize, searchKeyword, selectedTagIds], (old: LinksResponse | undefined) => {
+        if (!old) return old;
+        return {
+          ...old,
+          links: old.links.filter((link: Link) => link.id !== deletedLinkId),
+          pagination: {
+            ...old.pagination,
+            total: old.pagination.total - 1
+          }
+        };
       });
+      
+      return { previousData };
+    },
+    onError: (err, _, context) => {
+      // Rollback on error
+      if (context?.previousData) {
+        queryClient.setQueryData(['links', currentPage, pageSize, searchKeyword, selectedTagIds], context.previousData);
+      }
+    },
+    onSuccess: () => {
     },
   });
 
@@ -186,9 +207,7 @@ export function LinksTable() {
 
       {isLoading ? (
         <div className="w-full max-w-4xl mx-auto mt-8">
-          <div className="text-center text-gray-500">
-            {isSignedIn ? 'Loading your links...' : 'Please sign in to view your links'}
-          </div>
+          <div className="text-center text-gray-500">{isSignedIn ? 'Loading your links...' : 'Please sign in to view your links'}</div>
         </div>
       ) : error ? (
         <div className="w-full max-w-4xl mx-auto mt-8">
@@ -208,7 +227,7 @@ export function LinksTable() {
             {isFetching && !isPlaceholderData && <div className="text-center text-sm text-muted-foreground mb-2">Loading...</div>}
             <div className={`space-y-1 ${isPlaceholderData ? 'opacity-60' : ''}`}>
               {links.map((link: Link) => (
-                <div key={link.id} className="flex items-center gap-3">
+                <div key={link.id} className={`flex items-center gap-3 ${link.isPending ? 'opacity-50' : ''}`}>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -218,7 +237,7 @@ export function LinksTable() {
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
-                  <span className="text-sm text-muted-foreground italic">{new Date(link.created_at).toLocaleDateString()}</span>
+                  <span className="text-sm text-muted-foreground italic">{new Date(link.created_at).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}</span>
                   <div className="flex items-center gap-2 flex-1 min-w-0">
                     <a href={link.url} target="_blank" rel="noopener noreferrer" className="font-medium text-foreground truncate">
                       {link.title}
