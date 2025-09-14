@@ -20,9 +20,9 @@ interface PopularTag {
   link_count: number;
 }
 
-// API function to fetch popular tags
-const fetchPopularTags = async (): Promise<PopularTag[]> => {
-  const response = await fetch('/api/tags?limit=8', {
+// API function to fetch all tags
+const fetchAllTags = async (): Promise<PopularTag[]> => {
+  const response = await fetch('/api/tags', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -42,14 +42,19 @@ export function SearchBar({ onSearch, onClear, toggleButton }: SearchBarProps) {
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
   const [tagSearchQuery, setTagSearchQuery] = useState('');
 
-  // Fetch popular tags
-  const { data: popularTags = [] } = useQuery<PopularTag[]>({
-    queryKey: ['popularTags'],
-    queryFn: fetchPopularTags,
+  // Fetch all tags
+  const { data: allTags = [] } = useQuery<PopularTag[]>({
+    queryKey: ['allTags'],
+    queryFn: fetchAllTags,
   });
 
-  // Filter tags based on search query
-  const filteredTags = popularTags.filter((tag) => tag.name.toLowerCase().includes(tagSearchQuery.toLowerCase()));
+  // Filter tags based on search query, then limit display
+  const filteredAndSearchedTags = allTags.filter((tag) => tag.name.toLowerCase().includes(tagSearchQuery.toLowerCase()));
+  
+  // Show top 10 if no search query, otherwise show all matching results
+  const filteredTags = tagSearchQuery 
+    ? filteredAndSearchedTags 
+    : filteredAndSearchedTags.slice(0, 10);
 
   // Handle search submission
   const handleSearch = () => {
@@ -162,7 +167,7 @@ export function SearchBar({ onSearch, onClear, toggleButton }: SearchBarProps) {
                       <span className="text-sm font-medium">Selected tags:</span>
                       <div className="flex flex-wrap gap-1">
                         {selectedTags.map((tagId) => {
-                          const tag = popularTags.find((t) => t.id === tagId);
+                          const tag = allTags.find((t: PopularTag) => t.id === tagId);
                           if (!tag) return null;
                           return (
                             <button key={tagId} onClick={() => handleTagToggle(tagId)} className="relative group">

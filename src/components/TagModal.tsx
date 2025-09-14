@@ -89,12 +89,18 @@ export function TagModal({ isOpen, onClose, linkId }: TagModalProps) {
   const queryClient = useQueryClient();
   const [tagName, setTagName] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
+  const [tagFilter, setTagFilter] = useState('');
 
   // Fetch existing tags
   const { data: existingTags = [], isLoading: tagsLoading } = useQuery<TagData[]>({
     queryKey: ['tags'],
     queryFn: fetchTags,
   });
+
+  // Filter existing tags based on search query
+  const filteredExistingTags = existingTags.filter((tag) =>
+    tag.name.toLowerCase().includes(tagFilter.toLowerCase())
+  );
 
   const createTagMutation = useMutation({
     mutationFn: createTagAndLink,
@@ -313,19 +319,34 @@ export function TagModal({ isOpen, onClose, linkId }: TagModalProps) {
               ) : existingTags.length === 0 ? (
                 <p className="text-sm text-muted-foreground">No existing tags yet. Create your first tag using the "Create New Tag" tab!</p>
               ) : (
-                <div className="space-y-2">
-                  <h3 className="text-sm font-medium">Your Tags</h3>
+                <div className="space-y-3">
+                  <div className="space-y-2">
+                    <h3 className="text-sm font-medium">Your Tags</h3>
+                    <Input
+                      type="text"
+                      placeholder="Search existing tags..."
+                      value={tagFilter}
+                      onChange={(e) => setTagFilter(e.target.value)}
+                      className="w-full h-9"
+                    />
+                  </div>
                   <div className="flex flex-wrap gap-2">
-                    {existingTags.map((tag) => (
-                      <button
-                        key={tag.id}
-                        onClick={() => handleTagClick(tag.id)}
-                        disabled={linkExistingTagMutation.isPending}
-                        className="cursor-pointer transition-transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        <Tag name={tag.name} color={tag.color} linkCount={tag.link_count} />
-                      </button>
-                    ))}
+                    {filteredExistingTags.length > 0 ? (
+                      filteredExistingTags.slice(0, 10).map((tag) => (
+                        <button
+                          key={tag.id}
+                          onClick={() => handleTagClick(tag.id)}
+                          disabled={linkExistingTagMutation.isPending}
+                          className="cursor-pointer transition-transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          <Tag name={tag.name} color={tag.color} linkCount={tag.link_count} />
+                        </button>
+                      ))
+                    ) : tagFilter ? (
+                      <p className="text-sm text-muted-foreground">No tags found matching "{tagFilter}"</p>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">No tags available</p>
+                    )}
                   </div>
                 </div>
               )}
