@@ -13,6 +13,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as importFromNeon from "../importFromNeon.js";
 import type * as username from "../username.js";
 
 /**
@@ -24,6 +25,7 @@ import type * as username from "../username.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  importFromNeon: typeof importFromNeon;
   username: typeof username;
 }>;
 export declare const api: FilterApi<
