@@ -1,3 +1,6 @@
+import { ErrorBoundaryWrapper } from '@/components/ErrorBoundary';
+import { LinksTable } from '@/components/LinksTable';
+import { URLForm } from '@/components/URL_Form';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/')({
@@ -5,16 +8,14 @@ export const Route = createFileRoute('/')({
 });
 
 function RouteComponent() {
-  // const UserName = () => {
-  //   const user = useQuery(api.username.getCurrentUser);
-  //   if (!user) {
-  //     return <div>Not signed in</div>;
-  //   }
-  //   return <div>{user ? `Hello ${user.email}` : 'Loading...'}</div>;
-  // };
   return (
-    <main className="flex flex-col min-h-screen bg-background text-foreground">
-      <p>Hello {}</p>
+    <main>
+      <ErrorBoundaryWrapper>
+        <URLForm />
+      </ErrorBoundaryWrapper>
+      <ErrorBoundaryWrapper>
+        <LinksTable />
+      </ErrorBoundaryWrapper>
     </main>
   );
 }

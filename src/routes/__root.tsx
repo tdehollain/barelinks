@@ -9,9 +9,8 @@ export const Route = createRootRoute({
 function RootComponent() {
   return (
     <React.Fragment>
-      <NavBar>
-        <Outlet />
-      </NavBar>
+      <NavBar />
+      <Outlet />
     </React.Fragment>
   );
 }

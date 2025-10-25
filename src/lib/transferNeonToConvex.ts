@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'url';
 import { ConvexHttpClient } from 'convex/browser';
 import { api } from '../../convex/_generated/api';
+import { ConvexError } from 'convex/values';
 import { Pool } from 'pg';
 
 type NeonLinkRow = {
@@ -130,7 +131,11 @@ const runIfInvokedDirectly = async () => {
     const result = await transferNeonToConvex();
     console.log('Transfer complete', result);
   } catch (error) {
-    console.error('Transfer failed', error);
+    if (error instanceof ConvexError) {
+      console.error('Convex error data:', JSON.stringify(error.data, null, 2));
+    } else {
+      console.error('Transfer failed', error);
+    }
     process.exitCode = 1;
   }
 };

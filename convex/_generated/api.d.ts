@@ -14,7 +14,10 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as importFromNeon from "../importFromNeon.js";
-import type * as username from "../username.js";
+import type * as lib_fetchPageTitle from "../lib/fetchPageTitle.js";
+import type * as linkActions from "../linkActions.js";
+import type * as links from "../links.js";
+import type * as tags from "../tags.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -26,7 +29,10 @@ import type * as username from "../username.js";
  */
 declare const fullApi: ApiFromModules<{
   importFromNeon: typeof importFromNeon;
-  username: typeof username;
+  "lib/fetchPageTitle": typeof lib_fetchPageTitle;
+  linkActions: typeof linkActions;
+  links: typeof links;
+  tags: typeof tags;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
