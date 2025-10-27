@@ -23,6 +23,10 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
 
+<<<<<<< HEAD
+=======
+    /* From Shadcn */
+>>>>>>> preview
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]

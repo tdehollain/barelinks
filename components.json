@@ -5,8 +5,13 @@
   "tsx": true,
   "tailwind": {
     "config": "",
+<<<<<<< HEAD
     "css": "src/styles.css",
     "baseColor": "neutral",
+=======
+    "css": "src/index.css",
+    "baseColor": "slate",
+>>>>>>> preview
     "cssVariables": true,
     "prefix": ""
   },
@@ -17,5 +22,10 @@
     "ui": "@/components/ui",
     "lib": "@/lib",
     "hooks": "@/hooks"
+<<<<<<< HEAD
   }
+=======
+  },
+  "registries": {}
+>>>>>>> preview
 }
