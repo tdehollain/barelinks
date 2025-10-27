@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useMutation, useQuery } from 'convex/react';
 import { useUser } from '@clerk/clerk-react';
 import { useNavigate, useSearch } from '@tanstack/react-router';
@@ -10,14 +10,17 @@ import { TagIcon, Trash2 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Tag } from './Tag';
 import { TagModal } from './TagModal';
-import { LinksSearch } from './LinksSearch';
 
 export function LinksTable() {
   const { isLoaded, isSignedIn } = useUser();
   const deleteLink = useMutation(api.links.deleteLink);
   const detachTagFromLink = useMutation(api.tags.detachTagFromLink);
   const navigate = useNavigate({ from: '/' });
-  const { page, term: searchParamTerm } = useSearch({ from: '/' });
+  const {
+    page,
+    term: searchParamTerm,
+    tag: searchParamTag,
+  } = useSearch({ from: '/' });
   const currentPageIndex = Math.max(0, (page ?? 1) - 1);
   const [deletingId, setDeletingId] = useState<Id<'links'> | null>(null);
   const [tagModalLink, setTagModalLink] = useState<{
@@ -26,12 +29,7 @@ export function LinksTable() {
     tags: Array<Doc<'tags'>>;
   } | null>(null);
   const [removingTagKey, setRemovingTagKey] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState(searchParamTerm ?? '');
-  const [selectedTagId, setSelectedTagId] = useState<Id<'tags'> | null>(null);
-  useEffect(() => {
-    const normalized = searchParamTerm ?? '';
-    setSearchTerm((current) => (current === normalized ? current : normalized));
-  }, [searchParamTerm]);
+  const selectedTagId = (searchParamTag ?? null) as Id<'tags'> | null;
 
   const queryResult = useQuery(
     api.links.getLinks,
@@ -40,7 +38,8 @@ export function LinksTable() {
           page: currentPageIndex,
           pageSize: LINKS_PER_PAGE,
           tagId: selectedTagId ?? undefined,
-          term: searchTerm.trim().length > 0 ? searchTerm.trim() : undefined,
+          term:
+            (searchParamTerm ?? '').length > 0 ? searchParamTerm : undefined,
         }
       : 'skip'
   );
@@ -109,36 +108,14 @@ export function LinksTable() {
       ? Math.max(1, Math.ceil(totalLinks / LINKS_PER_PAGE))
       : currentPageIndex + 1 + (hasMore ? 1 : 0);
   const currentPageDisplay = currentPageIndex + 1;
-  const trimmedSearchTerm = searchTerm.trim();
+  const trimmedSearchTerm = (searchParamTerm ?? '').trim();
   const activeTag = selectedTagId
     ? tagsWithUsage.find(({ tag }) => tag._id === selectedTagId)?.tag ?? null
     : null;
 
-  const handleTagFilterChange = (tagId: Id<'tags'> | null) => {
-    setSelectedTagId(tagId);
-
-    if (currentPageIndex !== 0) {
-      navigate({
-        to: '/',
-        search: {
-          page: 1,
-          term: trimmedSearchTerm.length > 0 ? trimmedSearchTerm : undefined,
-        },
-      });
-    }
-  };
-
-  const handleTermChange = (value: string) => {
-    setSearchTerm(value);
-    const normalizedValue = value.trim();
-    navigate({
-      to: '/',
-      search: {
-        page: 1,
-        term: normalizedValue.length > 0 ? normalizedValue : undefined,
-      },
-    });
-  };
+  const termForSearchParam =
+    trimmedSearchTerm.length > 0 ? trimmedSearchTerm : undefined;
+  const tagForSearchParam = selectedTagId ?? undefined;
 
   const noResultsMessage = (() => {
     if (trimmedSearchTerm.length > 0 && selectedTagId) {
@@ -157,14 +134,7 @@ export function LinksTable() {
   })();
 
   return (
-    <div className="w-full max-w-5xl mx-auto mt-8 space-y-3 mb-8">
-      <LinksSearch
-        tagsWithUsage={tagsWithUsage}
-        selectedTagId={selectedTagId}
-        onSelectTag={handleTagFilterChange}
-        term={searchTerm}
-        onTermChange={handleTermChange}
-      />
+    <div className="w-full max-w-5xl mx-auto space-y-3 mb-8">
       {trimmedSearchTerm.length > 0 && (
         <div className="flex flex-start items-center gap-2 text-sm text-muted-foreground">
           <span>
@@ -175,7 +145,16 @@ export function LinksTable() {
             variant="ghost"
             size="sm"
             className="cursor-pointer"
-            onClick={() => handleTermChange('')}
+            onClick={() =>
+              navigate({
+                to: '/',
+                search: {
+                  page: 1,
+                  term: undefined,
+                  tag: tagForSearchParam,
+                },
+              })
+            }
           >
             Clear
           </Button>
@@ -189,7 +168,16 @@ export function LinksTable() {
             variant="ghost"
             size="sm"
             className="cursor-pointer"
-            onClick={() => handleTagFilterChange(null)}
+            onClick={() =>
+              navigate({
+                to: '/',
+                search: {
+                  page: 1,
+                  term: termForSearchParam,
+                  tag: undefined,
+                },
+              })
+            }
           >
             Clear
           </Button>
@@ -205,8 +193,8 @@ export function LinksTable() {
               to: '/',
               search: {
                 page: Math.max(1, currentPageIndex),
-                term:
-                  trimmedSearchTerm.length > 0 ? trimmedSearchTerm : undefined,
+                term: termForSearchParam,
+                tag: tagForSearchParam,
               },
             })
           }
@@ -226,8 +214,8 @@ export function LinksTable() {
               to: '/',
               search: {
                 page: currentPageIndex + 2,
-                term:
-                  trimmedSearchTerm.length > 0 ? trimmedSearchTerm : undefined,
+                term: termForSearchParam,
+                tag: tagForSearchParam,
               },
             })
           }

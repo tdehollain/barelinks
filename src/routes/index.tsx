@@ -11,7 +11,15 @@ export const Route = createFileRoute('/')({
       typeof search.term === 'string' && search.term.trim().length > 0
         ? search.term.trim()
         : undefined;
-    return { page, term } satisfies { page: number; term?: string };
+    const tag =
+      typeof search.tag === 'string' && search.tag.trim().length > 0
+        ? search.tag.trim()
+        : undefined;
+    return { page, term, tag } satisfies {
+      page: number;
+      term?: string;
+      tag?: string;
+    };
   },
   component: RouteComponent,
 });

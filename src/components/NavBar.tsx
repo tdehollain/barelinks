@@ -14,7 +14,7 @@ export function NavBar() {
               <LinkIcon className="h-6 w-6" />
               <Link
                 to="/"
-                search={{ page: 1, term: undefined }}
+                search={{ page: 1, term: undefined, tag: undefined }}
                 className="text-xl font-bold text-foreground hover:text-foreground transition-colors"
               >
                 Barelinks
