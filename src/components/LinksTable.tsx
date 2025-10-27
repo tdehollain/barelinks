@@ -40,8 +40,7 @@ export function LinksTable() {
           page: currentPageIndex,
           pageSize: LINKS_PER_PAGE,
           tagId: selectedTagId ?? undefined,
-          term:
-            searchTerm.trim().length > 0 ? searchTerm.trim() : undefined,
+          term: searchTerm.trim().length > 0 ? searchTerm.trim() : undefined,
         }
       : 'skip'
   );
@@ -158,7 +157,7 @@ export function LinksTable() {
   })();
 
   return (
-    <div className="w-full max-w-5xl mx-auto mt-8 space-y-3">
+    <div className="w-full max-w-5xl mx-auto mt-8 space-y-3 mb-8">
       <LinksSearch
         tagsWithUsage={tagsWithUsage}
         selectedTagId={selectedTagId}
@@ -207,9 +206,7 @@ export function LinksTable() {
               search: {
                 page: Math.max(1, currentPageIndex),
                 term:
-                  trimmedSearchTerm.length > 0
-                    ? trimmedSearchTerm
-                    : undefined,
+                  trimmedSearchTerm.length > 0 ? trimmedSearchTerm : undefined,
               },
             })
           }
@@ -230,9 +227,7 @@ export function LinksTable() {
               search: {
                 page: currentPageIndex + 2,
                 term:
-                  trimmedSearchTerm.length > 0
-                    ? trimmedSearchTerm
-                    : undefined,
+                  trimmedSearchTerm.length > 0 ? trimmedSearchTerm : undefined,
               },
             })
           }
