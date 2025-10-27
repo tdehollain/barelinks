@@ -26,11 +26,11 @@ export function NavBar() {
             <DarkModeToggle />
 
             <Unauthenticated>
-              <SignInButton />
+              <SignInButton className="cursor-pointer" />
             </Unauthenticated>
             <Authenticated>
               <UserButton />
-              <SignOutButton />
+              <SignOutButton className="cursor-pointer" />
             </Authenticated>
             <AuthLoading>
               <p>Still loading</p>
