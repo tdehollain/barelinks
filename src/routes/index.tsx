@@ -27,6 +27,9 @@ function RouteComponent() {
       <ErrorBoundaryWrapper>
         <LinksTable />
       </ErrorBoundaryWrapper>
+      <footer className="w-full max-w-5xl mx-auto my-6 flex justify-end">
+        <span className="text-xs italic text-muted-foreground">build: {import.meta.env.VERCEL_DEPLOYMENT_ID ?? 'local'}</span>
+      </footer>
     </main>
   );
 }
