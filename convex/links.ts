@@ -1,25 +1,64 @@
 import { mutation, query } from './_generated/server';
-import type { Doc } from './_generated/dataModel';
+import type { Doc, Id } from './_generated/dataModel';
+import type { QueryCtx } from './_generated/server';
 import { v } from 'convex/values';
 
 export const getLinks = query({
   args: {
+    page: v.number(),
     pageSize: v.number(),
+    tagId: v.optional(v.id('tags')),
+    term: v.optional(v.string()),
   },
-  handler: async (ctx, { pageSize }) => {
+  handler: async (ctx, { page, pageSize, tagId, term }) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
       throw new Error('Not authenticated');
     }
 
-    const links = await ctx.db
+    const safePageSize = Math.max(1, Math.floor(pageSize));
+    const currentPage = Math.max(0, Math.floor(page));
+
+    const linksQuery = ctx.db
       .query('links')
       .withIndex('by_user_createdAt', (q) => q.eq('userId', identity.subject))
-      .order('desc')
-      .take(pageSize);
+      .order('desc');
+
+    const links = await linksQuery.collect();
+
+    let filteredLinks: Doc<'links'>[] = links;
+
+    if (tagId) {
+      filteredLinks = await filterLinksByTag(
+        ctx,
+        filteredLinks,
+        tagId,
+        identity.subject
+      );
+    }
+
+    const normalizedTerm = term?.trim().toLowerCase() ?? null;
+    if (normalizedTerm) {
+      filteredLinks = filterLinksByTerm(filteredLinks, normalizedTerm);
+    }
+
+    const startIndex = currentPage * safePageSize;
+    if (startIndex >= filteredLinks.length) {
+      return {
+        links: [],
+        hasMore: false,
+        totalCount: filteredLinks.length,
+      };
+    }
+
+    const paginatedLinks: Doc<'links'>[] = filteredLinks.slice(
+      startIndex,
+      startIndex + safePageSize
+    );
+    const hasMore = startIndex + safePageSize < filteredLinks.length;
 
     const linksWithTags = await Promise.all(
-      links.map(
+      paginatedLinks.map(
         async (link): Promise<Doc<'links'> & { tags: Doc<'tags'>[] }> => {
           const linkTagRecords = await ctx.db
             .query('linkTags')
@@ -42,9 +81,43 @@ export const getLinks = query({
 
     return {
       links: linksWithTags,
+      hasMore,
+      totalCount: filteredLinks.length,
     };
   },
 });
+
+async function filterLinksByTag(
+  ctx: QueryCtx,
+  links: Doc<'links'>[],
+  tagId: Id<'tags'>,
+  userId: string
+): Promise<Doc<'links'>[]> {
+  const linkTagRecords = await ctx.db
+    .query('linkTags')
+    .withIndex('by_tag', (q) => q.eq('tagId', tagId))
+    .collect();
+
+  const allowedLinkIds = new Set(
+    linkTagRecords.map((linkTag) => linkTag.linkId)
+  );
+
+  return links.filter(
+    (link) => link.userId === userId && allowedLinkIds.has(link._id)
+  );
+}
+
+function filterLinksByTerm(
+  links: Doc<'links'>[],
+  normalizedTerm: string
+): Doc<'links'>[] {
+  return links.filter((link) => {
+    const title = link.title?.toLowerCase() ?? '';
+    const url = link.url.toLowerCase();
+
+    return title.includes(normalizedTerm) || url.includes(normalizedTerm);
+  });
+}
 
 export const insertLink = mutation({
   args: {
