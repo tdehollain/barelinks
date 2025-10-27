@@ -17,6 +17,7 @@ export const Route = createFileRoute('/')({
   },
   component: RouteComponent,
 });
+console.log({ env: import.meta.env });
 
 function RouteComponent() {
   return (
