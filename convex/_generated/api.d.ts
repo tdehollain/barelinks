@@ -13,7 +13,6 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
-import type * as importFromNeon from "../importFromNeon.js";
 import type * as lib_fetchPageTitle from "../lib/fetchPageTitle.js";
 import type * as linkActions from "../linkActions.js";
 import type * as links from "../links.js";
@@ -28,7 +27,6 @@ import type * as tags from "../tags.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
-  importFromNeon: typeof importFromNeon;
   "lib/fetchPageTitle": typeof lib_fetchPageTitle;
   linkActions: typeof linkActions;
   links: typeof links;
