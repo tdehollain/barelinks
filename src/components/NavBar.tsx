@@ -17,7 +17,7 @@ export function NavBar() {
                 search={{ page: 1, term: undefined }}
                 className="text-xl font-bold text-foreground hover:text-foreground transition-colors"
               >
-                Barelinks - Save your links, plain and simple
+                Barelinks
               </Link>
             </div>
           </div>
