@@ -1,5 +1,5 @@
 import { Authenticated, AuthLoading, Unauthenticated } from 'convex/react';
-import { UserButton, SignInButton, SignOutButton } from '@clerk/clerk-react';
+import { UserButton, SignInButton } from '@clerk/clerk-react';
 import { DarkModeToggle } from './DarkModeToggle';
 import { Link } from '@tanstack/react-router';
 import { LinkIcon } from 'lucide-react';
@@ -30,7 +30,6 @@ export function NavBar() {
             </Unauthenticated>
             <Authenticated>
               <UserButton />
-              <SignOutButton />
             </Authenticated>
             <AuthLoading>
               <p>Still loading</p>
