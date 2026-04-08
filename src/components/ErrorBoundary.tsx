@@ -1,9 +1,15 @@
-import { ErrorBoundary } from 'react-error-boundary';
+import {
+  ErrorBoundary,
+  type FallbackProps,
+} from 'react-error-boundary';
 
-type FallbackProps = {
-  error: Error;
-  resetErrorBoundary: () => void;
-};
+function getErrorMessage(error: unknown) {
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  return 'An unexpected error occurred.';
+}
 
 export function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   return (
@@ -13,7 +19,7 @@ export function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
     >
       <p className="font-semibold">Something went wrong.</p>
       <pre className="mt-2 overflow-x-auto whitespace-pre-wrap break-words text-xs">
-        {error.message}
+        {getErrorMessage(error)}
       </pre>
       <button
         type="button"
@@ -28,7 +34,7 @@ export function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
 
 type Props = {
   children: React.ReactNode;
-  fallback?: React.ReactElement | ((props: FallbackProps) => React.ReactElement);
+  fallback?: React.ReactElement | ((props: FallbackProps) => React.ReactNode);
   onReset?: () => void;
 };
 

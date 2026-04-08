@@ -5,8 +5,9 @@ import { ClerkProvider, useAuth } from '@clerk/clerk-react';
 import { ConvexProviderWithClerk } from 'convex/react-clerk';
 import { dark } from '@clerk/themes';
 import { ConvexReactClient } from 'convex/react';
-import { ThemeProvider, useTheme } from './components/theme-provider.tsx';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
+import { ThemeProvider } from './components/theme-provider.tsx';
+import { useTheme } from './hooks/useTheme.tsx';
 
 // Import the generated route tree
 import { routeTree } from './routeTree.gen';
