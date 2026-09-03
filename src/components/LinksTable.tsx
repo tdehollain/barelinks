@@ -225,7 +225,12 @@ export function LinksTable() {
               })}
             </span>
             <div className="flex flex-1 items-center gap-1 min-w-0">
-              <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-foreground truncate text-sm">
+              <a
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`truncate text-sm ${link.isTitlePending ? 'text-muted-foreground' : 'text-foreground'}`}
+              >
                 {link.title}
               </a>
               {link.tags.length > 0 && (

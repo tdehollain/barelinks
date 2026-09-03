@@ -1,7 +1,8 @@
-import { mutation, query } from './_generated/server';
+import { internalMutation, mutation, query } from './_generated/server';
 import type { Doc, Id } from './_generated/dataModel';
 import type { QueryCtx } from './_generated/server';
 import { v } from 'convex/values';
+import { getCompletedTitleFields } from './lib/createLinkWorkflow';
 
 export const getLinks = query({
   args: {
@@ -123,8 +124,9 @@ export const insertLink = mutation({
   args: {
     url: v.string(),
     title: v.optional(v.string()),
+    isTitlePending: v.optional(v.boolean()),
   },
-  handler: async (ctx, { url, title }) => {
+  handler: async (ctx, { url, title, isTitlePending }) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
       throw new Error('Not authenticated');
@@ -136,11 +138,31 @@ export const insertLink = mutation({
       userId: identity.subject,
       url,
       title: title?.trim() || undefined,
+      isTitlePending: isTitlePending || undefined,
       createdAtIso: now,
       updatedAtIso: now,
     });
 
     return linkId;
+  },
+});
+
+export const updateLinkTitle = internalMutation({
+  args: {
+    linkId: v.id('links'),
+    title: v.optional(v.string()),
+    userId: v.string(),
+  },
+  handler: async (ctx, { linkId, title, userId }) => {
+    const link = await ctx.db.get(linkId);
+    if (!link || link.userId !== userId) {
+      return;
+    }
+
+    await ctx.db.patch(linkId, {
+      ...getCompletedTitleFields(title),
+      updatedAtIso: new Date().toISOString(),
+    });
   },
 });
 

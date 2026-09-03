@@ -6,6 +6,7 @@ export default defineSchema({
     userId: v.string(),
     url: v.string(),
     title: v.optional(v.string()),
+    isTitlePending: v.optional(v.boolean()),
     createdAtIso: v.string(),
     updatedAtIso: v.optional(v.string()),
   })
