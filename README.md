@@ -13,6 +13,20 @@
 
 `pnpm i convex`
 
+### Cloudflare Browser Run
+
+Barelinks uses Cloudflare Browser Run to resolve titles after a page executes
+JavaScript. Create a Cloudflare API token with `Browser Rendering: Edit`
+permission, then configure the Convex deployment:
+
+```sh
+pnpm exec convex env set CLOUDFLARE_ACCOUNT_ID
+pnpm exec convex env set CLOUDFLARE_API_TOKEN
+```
+
+Omit the values to enter them interactively without saving the API token in
+shell history. Add `--prod` before `env` to configure the production deployment.
+
 ## Clerk
 
 - Create application in Clerk
