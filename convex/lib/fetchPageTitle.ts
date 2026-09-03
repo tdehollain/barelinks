@@ -1,57 +1,70 @@
-// Function to decode HTML entities
-function decodeHTMLEntities(text: string): string {
-  const entities: { [key: string]: string } = {
-    '&amp;': '&',
-    '&lt;': '<',
-    '&gt;': '>',
-    '&quot;': '"',
-    '&#x27;': "'",
-    '&#x2F;': '/',
-    '&#39;': "'",
-    '&apos;': "'",
-    '&nbsp;': ' ',
-    '&copy;': '©',
-    '&reg;': '®',
-    '&trade;': '™',
+/// <reference types="node" />
+
+type BrowserRunContentResponse = {
+  success: boolean;
+  meta?: {
+    title?: string;
   };
+  errors?: Array<{
+    code: number;
+    message: string;
+  }>;
+};
 
-  return text.replace(/&[#\w]+;/g, (entity) => {
-    return entities[entity] || entity;
-  });
-}
-
-// Function to fetch page title from URL
 export default async function fetchPageTitle(
   url: string
 ): Promise<string | null> {
+  const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
+  const apiToken = process.env.CLOUDFLARE_API_TOKEN;
+
+  if (!accountId || !apiToken) {
+    console.warn('Cloudflare Browser Run credentials are not configured');
+    return null;
+  }
+
   try {
-    const response = await fetch(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; Barelinks/1.0)',
+    const response = await fetch(
+      `https://api.cloudflare.com/client/v4/accounts/${accountId}/browser-rendering/content`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${apiToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          url,
+          gotoOptions: {
+            waitUntil: 'domcontentloaded',
+            timeout: 30_000,
+          },
+          waitForTimeout: 1_000,
+        }),
       },
-      redirect: 'follow',
-    });
+    );
 
     if (!response.ok) {
       console.warn(
-        'Failed to fetch page: status',
+        'Cloudflare Browser Run failed:',
         response.status,
         response.statusText
       );
       return null;
     }
-    const html = await response.text();
 
-    // Extract title using regex (simple approach)
-    const titleMatch = html.match(/<title[^>]*>([^<]*)<\/title>/i);
-    if (titleMatch && titleMatch[1]) {
-      const rawTitle = titleMatch[1].trim();
-      return decodeHTMLEntities(rawTitle);
+    const result = (await response.json()) as BrowserRunContentResponse;
+    const title = result.meta?.title?.trim();
+
+    if (!result.success || !title) {
+      console.warn('Cloudflare Browser Run did not return a page title');
+      return null;
     }
 
-    return null;
+    return title;
   } catch (error) {
-    console.warn('Failed to fetch page title:', error);
+    console.warn(
+      'Failed to fetch page title with Cloudflare Browser Run:',
+      error
+    );
     return null;
   }
 }

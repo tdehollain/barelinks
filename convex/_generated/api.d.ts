@@ -13,7 +13,9 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as lib_createLinkWorkflow from "../lib/createLinkWorkflow.js";
 import type * as lib_fetchPageTitle from "../lib/fetchPageTitle.js";
+import type * as lib_fetchRawPageTitle from "../lib/fetchRawPageTitle.js";
 import type * as linkActions from "../linkActions.js";
 import type * as links from "../links.js";
 import type * as tags from "../tags.js";
@@ -27,7 +29,9 @@ import type * as tags from "../tags.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  "lib/createLinkWorkflow": typeof lib_createLinkWorkflow;
   "lib/fetchPageTitle": typeof lib_fetchPageTitle;
+  "lib/fetchRawPageTitle": typeof lib_fetchRawPageTitle;
   linkActions: typeof linkActions;
   links: typeof links;
   tags: typeof tags;
